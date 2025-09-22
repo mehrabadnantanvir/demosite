@@ -17,8 +17,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js"></script>
 
     <!-- Internal CSS -->
     <style>
@@ -40,10 +40,6 @@
             --glass-bg: rgba(255, 255, 255, 0.1);
             --glass-border: rgba(255, 255, 255, 0.2);
             --glow-color: rgba(0, 122, 255, 0.3);
-            --free-color: #28a745;
-            --verified-color: #ffc107;
-            --premium-color: #007aff;
-            --diamond-color: #ff00ff;
         }
 
         /* Base Styles */
@@ -155,11 +151,17 @@
         .user-details p { font-size: 0.9rem; font-weight: 600; }
         .light-theme .user-details p { color: var(--subtle-text-light); }
         .dark-theme .user-details p { color: var(--subtle-text-dark); }
-        .membership-badge { font-size: 0.8rem; margin-left: 10px; font-weight: 600; }
-        .free-badge { color: var(--free-color); }
-        .verified-badge { color: var(--verified-color); }
-        .premium-badge { color: var(--premium-color); }
-        .diamond-badge { color: var(--diamond-color); }
+        .membership-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+        .free-badge { background: #28a745; color: #fff; }
+        .verified-badge { background: #ffc107; color: #000; }
+        .premium-badge { background: #007aff; color: #fff; }
+        .diamond-badge { background: linear-gradient(45deg, #00c4ff, #ff00ff); color: #fff; }
 
         /* Date and Time Display */
         .datetime-container {
@@ -744,46 +746,43 @@
                 hasJoinedChannel: false,
                 hasJoinedGroup: false,
                 userId: null,
-                username: null,
-                membership: 'free',
+                membership: 'free', // free, verified, premium, diamond
                 withdrawalHistory: [],
                 adWatchStreak: 0
             };
 
-            const saveState = () => {
+            const saveState = async () => {
                 if (userState.userId) {
-                    database.ref(`users/${userState.userId}`).set(userState);
+                    try {
+                        await database.ref(`users/${userState.userId}`).set(userState);
+                    } catch (error) {
+                        tg.showAlert('Failed to save user data. Please try again.');
+                    }
                 }
             };
 
-            const loadState = (userId, callback) => {
-                database.ref(`users/${userId}`).once('value', (snapshot) => {
+            const loadState = async (userId) => {
+                try {
+                    const snapshot = await database.ref(`users/${userId}`).once('value');
                     const data = snapshot.val();
                     if (data) {
                         userState = {
-                            points: data.points || 0,
-                            dailyAdWatchCount: data.dailyAdWatchCount || 0,
-                            lastAdWatchDate: data.lastAdWatchDate || null,
+                            ...data,
                             referrals: data.referrals || [],
-                            hasJoinedChannel: data.hasJoinedChannel || false,
                             hasJoinedGroup: data.hasJoinedGroup || false,
-                            userId: data.userId || userId,
-                            username: data.username || null,
                             membership: data.membership || 'free',
                             withdrawalHistory: data.withdrawalHistory || [],
                             adWatchStreak: data.adWatchStreak || 0
                         };
-                    } else {
-                        userState.userId = userId;
-                        userState.username = tg.initDataUnsafe.user.username || 'Unknown';
-                        saveState();
                     }
-                    callback();
-                });
+                    updateUI();
+                } catch (error) {
+                    tg.showAlert('Failed to load user data. Using default state.');
+                }
             };
 
             // --- Core Functions ---
-            const initApp = () => {
+            const initApp = async () => {
                 tg.ready();
                 tg.expand();
                 document.body.className = `${tg.colorScheme}-theme`;
@@ -794,21 +793,20 @@
                 }
 
                 userState.userId = user.id;
-                userState.username = user.username || 'Unknown';
-                loadState(user.id, () => {
-                    const today = new Date().toISOString().slice(0, 10);
-                    if (userState.lastAdWatchDate !== today) {
-                        userState.dailyAdWatchCount = 0;
-                        userState.lastAdWatchDate = today;
-                        userState.adWatchStreak = 0;
-                        saveState();
-                    }
+                await loadState(user.id);
 
-                    updateUI();
-                    setupNavigation();
-                    setupEventListeners();
-                    updateDateTime();
-                });
+                const today = new Date().toISOString().slice(0, 10);
+                if (userState.lastAdWatchDate !== today) {
+                    userState.dailyAdWatchCount = 0;
+                    userState.lastAdWatchDate = today;
+                    userState.adWatchStreak = 0;
+                    await saveState();
+                }
+
+                updateUI();
+                setupNavigation();
+                setupEventListeners();
+                updateDateTime();
             };
 
             const updateDateTime = () => {
@@ -849,20 +847,20 @@
                     joinGroupBtn.disabled = true;
                 }
 
-                // Fetch Leaderboard from Firebase
-                database.ref('users').orderByChild('points').limitToLast(10).once('value', (snapshot) => {
+                // Leaderboard (fetch from Firebase)
+                database.ref('users').orderByChild('points').limitToLast(10).once('value', snapshot => {
                     const users = [];
                     snapshot.forEach(child => {
                         const userData = child.val();
                         users.push({
-                            username: userData.username || 'Unknown',
+                            name: userData.name || 'User',
                             points: userData.points || 0,
                             membership: userData.membership || 'free'
                         });
                     });
                     leaderboardList.innerHTML = users.reverse().map((user, index) => `
                         <li class="leaderboard-item">
-                            <span>${index + 1}. @${user.username} <span class="membership-badge ${user.membership}-badge">${user.membership.charAt(0).toUpperCase() + user.membership.slice(1)}</span></span>
+                            <span>${index + 1}. ${user.name} <span class="membership-badge ${user.membership}-badge">${user.membership.charAt(0).toUpperCase() + user.membership.slice(1)}</span></span>
                             <span>${user.points} TK</span>
                         </li>`).join('');
                 });
@@ -925,7 +923,7 @@
                 });
             };
 
-            const handleWatchAd = (button, timerId, points) => {
+            const handleWatchAd = async (button, timerId, points) => {
                 if (userState.dailyAdWatchCount >= DAILY_AD_LIMIT) {
                     tg.showAlert("You have reached your daily ad watch limit.");
                     return;
@@ -946,25 +944,26 @@
                         }
                     }, 1000);
                 }
-                show_9712189().then(() => {
+                try {
+                    await show_9712189();
                     userState.points += points;
                     userState.dailyAdWatchCount++;
                     userState.adWatchStreak++;
-                    addCoinAnimation();
-                    saveState();
+                    await saveState();
                     updateUI();
                     tg.HapticFeedback.notificationOccurred('success');
                     tg.showAlert(`Congratulations! You've earned ${points} taka.`);
-                }).catch(() => {
+                    addCoinAnimation();
+                } catch {
                     tg.showAlert("Ad could not be loaded. Please try again later.");
-                }).finally(() => {
+                } finally {
                     loadingModal.style.display = 'none';
                     button.classList.remove('loading');
                     button.disabled = false;
-                });
+                }
             };
 
-            const handleWatch3Ads = () => {
+            const handleWatch3Ads = async () => {
                 if (userState.dailyAdWatchCount + 3 > DAILY_AD_LIMIT) {
                     tg.showAlert("Not enough ad slots for 3 ads.");
                     return;
@@ -983,22 +982,23 @@
                         timerElem.style.display = 'none';
                     }
                 }, 1000);
-                show_9712189().then(() => {
+                try {
+                    await show_9712189();
                     userState.points += 0.75;
                     userState.dailyAdWatchCount += 3;
                     userState.adWatchStreak += 3;
-                    addCoinAnimation();
-                    saveState();
+                    await saveState();
                     updateUI();
                     tg.HapticFeedback.notificationOccurred('success');
                     tg.showAlert("Congratulations! You've earned 0.75 TK for watching 3 ads!");
-                }).catch(() => {
+                    addCoinAnimation();
+                } catch {
                     tg.showAlert("Ad could not be loaded. Please try again later.");
-                }).finally(() => {
+                } finally {
                     loadingModal.style.display = 'none';
                     watch3AdsBtn.classList.remove('loading');
                     watch3AdsBtn.disabled = false;
-                });
+                }
             };
 
             const addCoinAnimation = () => {
@@ -1010,35 +1010,35 @@
                 setTimeout(() => coin.remove(), 1000);
             };
 
-            const handleJoinChannel = () => {
+            const handleJoinChannel = async () => {
                 if (userState.hasJoinedChannel) {
                     tg.showAlert('You have already claimed this bonus.');
                     return;
                 }
                 tg.openTelegramLink(CHANNEL_LINK);
-                setTimeout(() => {
+                setTimeout(async () => {
                     userState.points += CHANNEL_JOIN_BONUS;
                     userState.hasJoinedChannel = true;
-                    addCoinAnimation();
-                    tg.showAlert(`Thank you! You received ${CHANNEL_JOIN_BONUS} bonus taka.`);
-                    saveState();
+                    await saveState();
                     updateUI();
+                    tg.showAlert(`Thank you! You received ${CHANNEL_JOIN_BONUS} bonus taka.`);
+                    addCoinAnimation();
                 }, 3000);
             };
 
-            const handleJoinGroup = () => {
+            const handleJoinGroup = async () => {
                 if (userState.hasJoinedGroup) {
                     tg.showAlert('You have already claimed this bonus.');
                     return;
                 }
                 tg.openTelegramLink(GROUP_LINK);
-                setTimeout(() => {
+                setTimeout(async () => {
                     userState.points += GROUP_JOIN_BONUS;
                     userState.hasJoinedGroup = true;
-                    addCoinAnimation();
-                    tg.showAlert(`Thank you! You received ${GROUP_JOIN_BONUS} bonus taka.`);
-                    saveState();
+                    await saveState();
                     updateUI();
+                    tg.showAlert(`Thank you! You received ${GROUP_JOIN_BONUS} bonus taka.`);
+                    addCoinAnimation();
                 }, 3000);
             };
 
@@ -1072,7 +1072,7 @@
                     status: 'Pending',
                     date: new Date().toLocaleDateString('en-US')
                 });
-                saveState();
+                await saveState();
                 updateUI();
 
                 const user = tg.initDataUnsafe.user;
@@ -1100,7 +1100,7 @@
                     tg.showAlert("Failed to submit request. Your points have been returned.");
                     userState.points += amount;
                     userState.withdrawalHistory.pop();
-                    saveState();
+                    await saveState();
                     updateUI();
                 } finally {
                     withdrawSubmitBtn.classList.remove('loading');
