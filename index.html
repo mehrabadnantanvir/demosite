@@ -4,20 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Earn & Reward App</title>
-    
+   
     <!-- Google Fonts (Nunito) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    
+   
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-
     <!-- Internal CSS -->
     <style>
         /* Google Font Import */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
-
         /* CSS Variables for Theming */
         :root {
             --font-family: 'Nunito', sans-serif;
@@ -34,7 +32,6 @@
             --primary-color-dark: #0a84ff;
             --border-color-dark: #38383a;
         }
-
         /* Base Styles */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -43,12 +40,10 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
-
         /* Theme Styles */
         body.light-theme { background-color: var(--bg-color-light); color: var(--text-color-light); }
         body.dark-theme { background-color: var(--bg-color-dark); color: var(--text-color-dark); }
         #app { max-width: 500px; margin: 0 auto; padding-bottom: 70px; }
-
         /* Profile Header */
         .profile-header { padding: 20px 15px; display: flex; align-items: center; border-bottom: 1px solid; }
         .light-theme .profile-header { border-bottom-color: var(--border-color-light); }
@@ -64,14 +59,12 @@
         .user-details p { font-size: 0.9rem; font-weight: 600; }
         .light-theme .user-details p { color: var(--subtle-text-light); }
         .dark-theme .user-details p { color: var(--subtle-text-dark); }
-
         /* Main Content & Pages */
         main { padding: 15px; }
         .page { display: none; }
         .page.active { display: block; animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         h2 { font-size: 1.5rem; margin-bottom: 15px; }
-
         /* Home Page Stats & Referral */
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
         .stat-card { padding: 20px; border-radius: 12px; text-align: center; }
@@ -93,7 +86,7 @@
         #copy-ref-link-btn { width: 100%; padding: 12px; border: none; border-radius: 8px; color: #fff; cursor: pointer; font-weight: 600; }
         .light-theme #copy-ref-link-btn { background-color: var(--primary-color-light); }
         .dark-theme #copy-ref-link-btn { background-color: var(--primary-color-dark); }
-        
+       
         /* Task/Bonus Container */
         .task-container { padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
         .task-container:last-child { margin-bottom: 0; }
@@ -106,7 +99,6 @@
         .task-container p { font-size: 0.9rem; margin-bottom: 20px; }
         .light-theme .task-container p { color: var(--subtle-text-light); }
         .dark-theme .task-container p { color: var(--subtle-text-dark); }
-
         /* Action Button */
         .action-btn { width: 100%; padding: 15px; font-size: 1rem; font-weight: 700; color: #fff; border: none; border-radius: 10px; cursor: pointer; transition: background-color 0.2s, opacity 0.2s; position: relative; display: flex; justify-content: center; align-items: center; }
         .light-theme .action-btn { background-color: var(--primary-color-light); }
@@ -116,7 +108,6 @@
         .action-btn.loading .btn-text { visibility: hidden; }
         .action-btn.loading .btn-loader { display: block; position: absolute; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
         /* Form Styles */
         #withdraw-form .form-group { margin-bottom: 15px; }
         #withdraw-form label { display: block; margin-bottom: 5px; font-weight: 600; }
@@ -125,7 +116,7 @@
         .dark-theme #withdraw-form input, .dark-theme #withdraw-form select { background-color: var(--secondary-bg-dark); border: 1px solid var(--border-color-dark); color: var(--text-color-dark); }
         .light-theme input:focus, .light-theme select:focus { outline: none; border-color: var(--primary-color-light); box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15); }
         .dark-theme input:focus, .dark-theme select:focus { outline: none; border-color: var(--primary-color-dark); box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.2); }
-        
+       
         /* Bottom Navigation */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 500px; margin: 0 auto; display: flex; justify-content: space-around; padding: 5px 0; border-top: 1px solid; z-index: 1000; }
         .light-theme .bottom-nav { background-color: var(--secondary-bg-light); border-top-color: var(--border-color-light); }
@@ -137,7 +128,6 @@
         .nav-btn.active { font-weight: 700; }
         .light-theme .nav-btn.active { color: var(--primary-color-light); }
         .dark-theme .nav-btn.active { color: var(--primary-color-dark); }
-
         /* Modal Styles */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); justify-content: center; align-items: center; }
         .modal-content { padding: 30px; border-radius: 15px; text-align: center; }
@@ -146,10 +136,18 @@
         .loader { border: 5px solid #f3f3f3; border-radius: 50%; border-top: 5px solid; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px; }
         .light-theme .loader { border-top-color: var(--primary-color-light); }
         .dark-theme .loader { border-top-color: var(--primary-color-dark); }
+
+        /* Leaderboard Styles */
+        .leaderboard-section { margin-top: 30px; padding: 20px; border-radius: 12px; }
+        .light-theme .leaderboard-section { background-color: var(--secondary-bg-light); border: 1px solid var(--border-color-light); }
+        .dark-theme .leaderboard-section { background-color: var(--secondary-bg-dark); border: 1px solid var(--border-color-dark); }
+        .leaderboard-list { list-style: none; }
+        .leaderboard-item { padding: 10px; border-bottom: 1px solid var(--border-color-light); display: flex; justify-content: space-between; }
+        .dark-theme .leaderboard-item { border-bottom-color: var(--border-color-dark); }
+        .leaderboard-item:last-child { border-bottom: none; }
     </style>
 </head>
 <body>
-
     <div id="app">
         <header class="profile-header">
             <div class="profile-info">
@@ -160,7 +158,6 @@
                 </div>
             </div>
         </header>
-
         <main id="main-content">
             <!-- Home Page -->
             <div id="home-page" class="page active">
@@ -168,29 +165,64 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <h3>Daily Ads Watched</h3>
-                        <p><span id="daily-ads-watched">00</span> /  25</p>
+                        <p><span id="daily-ads-watched">00</span> / 25</p>
                     </div>
                     <div class="stat-card">
                         <h3>Total Referrals</h3>
                         <p id="referral-count">00</p>
                     </div>
                 </div>
-                <div class="referral-section">
-                    <h3>Refer & Earn More!</h3>
-                    <p>Share your link to get bonus points.</p>
-                    <input type="text" id="referral-link" readonly>
-                    <button id="copy-ref-link-btn">Copy Referral Link</button>
+                <div class="leaderboard-section">
+                    <h3>Leaderboard</h3>
+                    <ul class="leaderboard-list" id="leaderboard-list">
+                        <!-- Leaderboard items will be populated here via JS if needed -->
+                    </ul>
                 </div>
             </div>
-
             <!-- Tasks Page -->
             <div id="tasks-page" class="page">
                 <h2>Complete Tasks</h2>
                 <div class="task-container">
-                    <i class="fas fa-video task-icon"></i>
-                    <h3>Watch a Rewarded Ad</h3>
+                    <i class="fas fa-video task-icon">💸</i>
+                    <h3>✅ Watch Ad & Earn</h3>
                     <p>Earn 0.25 TK for every ad.</p>
-                    <button id="watch-ad-btn" class="action-btn">Watch Ad</button>
+                    <button id="watch-ad-btn" class="action-btn">Start</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-camera task-icon">📸</i>
+                    <h3>Watch Product Review Ad</h3>
+                    <p>Earn bonus points.</p>
+                    <button id="watch-product-review-btn" class="action-btn">Start</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-film task-icon">🎥</i>
+                    <h3>Watch 3 Ads in a Row</h3>
+                    <p>Earn extra rewards.</p>
+                    <button id="watch-3-ads-btn" class="action-btn">Start</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-video task-icon">💸</i>
+                    <h3>✅ Watch Ad & Earn</h3>
+                    <p>Earn 0.25 TK for every ad.</p>
+                    <button id="watch-ad-2-btn" class="action-btn">Start</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-magnet task-icon">🧲</i>
+                    <h3>Ad Multiplier (x2)</h3>
+                    <p>Double your earnings.</p>
+                    <button id="ad-multiplier-btn" class="action-btn">Start</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-coins task-icon">💰</i>
+                    <h3>Watch Ad & Earn</h3>
+                    <p>Earn points by watching.</p>
+                    <button id="watch-ad-3-btn" class="action-btn">Start</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-money-bill-wave task-icon">💵</i>
+                    <h3>Watch Ad & Earn</h3>
+                    <p>Earn more points.</p>
+                    <button id="watch-ad-4-btn" class="action-btn">Start</button>
                 </div>
                 <div class="task-container">
                     <i class="fab fa-telegram task-icon"></i>
@@ -205,7 +237,16 @@
                     <button id="join-group-btn" class="action-btn">Join & Claim Bonus</button>
                 </div>
             </div>
-            
+            <!-- New Refer & Earn Page -->
+            <div id="refer-page" class="page">
+                <h2>Refer & Earn More</h2>
+                <div class="referral-section">
+                    <h3>Refer & Earn More!</h3>
+                    <p>Share your link to get bonus points.</p>
+                    <input type="text" id="referral-link" readonly>
+                    <button id="copy-ref-link-btn">Copy Referral Link</button>
+                </div>
+            </div>
             <!-- Withdraw Page -->
             <div id="withdraw-page" class="page">
                 <h2>Withdraw</h2>
@@ -216,7 +257,6 @@
                         <select id="withdraw-method" required>
                             <option value="Bkash">Bkash</option>
                             <option value="Nagad">Nagad</option>
-                
                             <option value="Binance">Binance</option>
                         </select>
                     </div>
@@ -235,25 +275,23 @@
                 </form>
             </div>
         </main>
-
         <nav class="bottom-nav">
             <button class="nav-btn active" data-page="home-page"><i class="fas fa-home"></i><span>Home</span></button>
             <button class="nav-btn" data-page="tasks-page"><i class="fas fa-tasks"></i><span>Tasks</span></button>
+            <button class="nav-btn" data-page="refer-page"><i class="fas fa-user-friends"></i><span>Refer</span></button>
             <button class="nav-btn" data-page="withdraw-page"><i class="fas fa-wallet"></i><span>Withdraw</span></button>
         </nav>
     </div>
-
     <div id="loading-modal" class="modal">
         <div class="modal-content"><div class="loader"></div><p>Loading Ad...</p></div>
     </div>
-    
+   
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src='//libtl.com/sdk.js' data-zone='9712189' data-sdk=''></script>
-    
+   
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const tg = window.Telegram.WebApp;
-
             // --- Configuration ---
             const BOT_TOKEN = "7962156961:AAHZ5oI8JPLA3eVQVemgtif6MsZy7sD7QMQ";
             const BOT_USERNAME = "democash00_bot"; // Your bot's username
@@ -265,7 +303,6 @@
             const CHANNEL_JOIN_BONUS = 10;
             const GROUP_JOIN_BONUS = 0;
             const MIN_WITHDRAW_POINTS = 50;
-
             // --- DOM Elements ---
             const userPhotoElem = document.getElementById('user-photo');
             const userNameElem = document.getElementById('user-name');
@@ -280,7 +317,15 @@
             const referralLinkElem = document.getElementById('referral-link');
             const copyRefLinkBtn = document.getElementById('copy-ref-link-btn');
             const loadingModal = document.getElementById('loading-modal');
-
+            // Add placeholders for new buttons (implement logic as needed)
+            const watchProductReviewBtn = document.getElementById('watch-product-review-btn');
+            const watch3AdsBtn = document.getElementById('watch-3-ads-btn');
+            const watchAd2Btn = document.getElementById('watch-ad-2-btn');
+            const adMultiplierBtn = document.getElementById('ad-multiplier-btn');
+            const watchAd3Btn = document.getElementById('watch-ad-3-btn');
+            const watchAd4Btn = document.getElementById('watch-ad-4-btn');
+            // Leaderboard placeholder
+            const leaderboardList = document.getElementById('leaderboard-list');
             // --- State Management ---
             let userState = {
                 points: 0,
@@ -291,13 +336,11 @@
                 hasJoinedGroup: false, // New state for group join
                 userId: null
             };
-
             const saveState = () => {
                 if(userState.userId) {
                     localStorage.setItem(`userState_${userState.userId}`, JSON.stringify(userState));
                 }
             };
-
             const loadState = (userId) => {
                 const savedState = localStorage.getItem(`userState_${userId}`);
                 if (savedState) {
@@ -306,47 +349,44 @@
                     if (userState.hasJoinedGroup === undefined) userState.hasJoinedGroup = false;
                 }
             };
-            
+           
             // --- Core Functions ---
             const initApp = () => {
                 tg.ready();
                 tg.expand();
                 document.body.className = `${tg.colorScheme}-theme`;
-
                 const user = tg.initDataUnsafe.user;
                 if (!user || !user.id) {
                     tg.showAlert("Could not verify user. Please open this app through Telegram.", () => tg.close());
                     return;
                 }
-                
+               
                 userState.userId = user.id;
                 loadState(user.id);
-                
+               
                 const today = new Date().toISOString().slice(0, 10);
                 if (userState.lastAdWatchDate !== today) {
                     userState.dailyAdWatchCount = 0;
                     userState.lastAdWatchDate = today;
                 }
-                
+               
                 updateUI();
                 setupNavigation();
                 setupEventListeners();
                 saveState();
             };
-            
+           
             const updateUI = () => {
                 const user = tg.initDataUnsafe.user;
                 if (user) {
                     userPhotoElem.src = user.photo_url || 'https://i.imgur.com/placeholder.png';
                     userNameElem.innerHTML = `${user.first_name || ''} ${user.last_name || ''} <i class="fas fa-check-circle verified-icon"></i>`;
                 }
-                
+               
                 userPointsElem.textContent = userState.points;
                 dailyAdsWatchedElem.textContent = userState.dailyAdWatchCount;
                 referralCountElem.textContent = userState.referrals.length;
-
                 referralLinkElem.value = `https://t.me/${BOT_USERNAME}?start=ref_${userState.userId}`;
-
                 // Update task button states
                 if (userState.hasJoinedChannel) {
                     joinChannelBtn.textContent = 'Bonus Claimed';
@@ -356,16 +396,28 @@
                     joinGroupBtn.textContent = 'Bonus Claimed';
                     joinGroupBtn.disabled = true;
                 }
+                // Placeholder leaderboard data (replace with real data if available)
+                leaderboardList.innerHTML = `
+                    <li class="leaderboard-item"><span>User1</span><span>1000 TK</span></li>
+                    <li class="leaderboard-item"><span>User2</span><span>800 TK</span></li>
+                    <li class="leaderboard-item"><span>User3</span><span>600 TK</span></li>
+                `;
             };
-            
+           
             const setupEventListeners = () => {
                 watchAdBtn.addEventListener('click', handleWatchAd);
                 joinChannelBtn.addEventListener('click', handleJoinChannel);
                 joinGroupBtn.addEventListener('click', handleJoinGroup); // New listener
                 withdrawForm.addEventListener('submit', handleWithdraw);
                 copyRefLinkBtn.addEventListener('click', copyReferralLink);
+                // Add event listeners for new buttons (implement similar to handleWatchAd)
+                watchProductReviewBtn.addEventListener('click', handleWatchAd); // Placeholder
+                watch3AdsBtn.addEventListener('click', handleWatchAd); // Placeholder
+                watchAd2Btn.addEventListener('click', handleWatchAd); // Placeholder
+                adMultiplierBtn.addEventListener('click', handleWatchAd); // Placeholder
+                watchAd3Btn.addEventListener('click', handleWatchAd); // Placeholder
+                watchAd4Btn.addEventListener('click', handleWatchAd); // Placeholder
             };
-
             const handleWatchAd = () => {
                 if (userState.dailyAdWatchCount >= DAILY_AD_LIMIT) {
                     tg.showAlert("You have reached your daily ad watch limit."); return;
@@ -384,7 +436,7 @@
                     loadingModal.style.display = 'none';
                 });
             };
-            
+           
             const handleJoinChannel = () => {
                 if(userState.hasJoinedChannel) {
                     tg.showAlert('You have already claimed this bonus.'); return;
@@ -398,7 +450,6 @@
                     updateUI();
                 }, 3000);
             };
-
             const handleJoinGroup = () => {
                 if(userState.hasJoinedGroup) {
                     tg.showAlert('You have already claimed this bonus.'); return;
@@ -412,27 +463,23 @@
                     updateUI();
                 }, 3000);
             };
-
             const handleWithdraw = async (e) => {
                 e.preventDefault();
                 const method = document.getElementById('withdraw-method').value;
                 const accountNumber = document.getElementById('account-number').value;
                 const amount = parseInt(document.getElementById('amount').value, 10);
-
                 if (isNaN(amount) || amount <= 0) { tg.showAlert("Please enter a valid amount."); return; }
                 if (amount < MIN_WITHDRAW_POINTS) { tg.showAlert(`Minimum withdrawal is ${MIN_WITHDRAW_POINTS} points.`); return; }
                 if (amount > userState.points) { tg.showAlert("You don't have enough balance."); return; }
-
                 withdrawSubmitBtn.classList.add('loading');
                 withdrawSubmitBtn.disabled = true;
-
                 userState.points -= amount;
                 saveState();
                 updateUI();
-                
+               
                 const user = tg.initDataUnsafe.user;
                 const message = `<b>New Withdraw Request!</b>\n-----------------------------------\n<b>User:</b> ${user.first_name || ''} ${user.last_name || ''} (@${user.username || 'N/A'})\n<b>User ID:</b> <code>${user.id}</code>\n-----------------------------------\n<b>Method:</b> ${method}\n<b>Account:</b> <code>${accountNumber}</code>\n<b>Amount:</b> ${amount} Points\n-----------------------------------\n<b>Date:</b> ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' })}`;
-                
+               
                 const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
                 try {
                     const response = await fetch(url, {
@@ -457,14 +504,13 @@
                     withdrawSubmitBtn.disabled = false;
                 }
             };
-            
+           
             const copyReferralLink = () => {
                 navigator.clipboard.writeText(referralLinkElem.value).then(() => {
                     tg.HapticFeedback.notificationOccurred('success');
                     tg.showAlert("Referral link copied!");
                 });
             };
-
             const setupNavigation = () => {
                 const navButtons = document.querySelectorAll('.nav-btn');
                 const pages = document.querySelectorAll('.page');
@@ -478,7 +524,6 @@
                     });
                 });
             };
-
             initApp();
         });
     </script>
