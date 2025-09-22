@@ -1,685 +1,486 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="bn">
 <head>
- <meta charset="UTF-8" />
- <meta name="viewport"
-  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Earn & Reward App</title>
+    
+    <!-- Google Fonts (Nunito) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 
- <title>FinovaCash Dashboard</title>
- <script src="https://cdn.tailwindcss.com/3.4.16"></script>
- <script>
-  tailwind.config = {
-   theme: {
-    extend: {
-     colors: { primary: "#5B68FF", secondary: "#FF6B6B" },
-     borderRadius: {
-      none: "0px",
-      sm: "4px",
-      DEFAULT: "8px",
-      md: "12px",
-      lg: "16px",
-      xl: "20px",
-      "2xl": "24px",
-      "3xl": "32px",
-      full: "9999px",
-      button: "8px",
-     },
-    },
-   },
-  };
- </script>
- <link rel="preconnect" href="https://fonts.googleapis.com" />
- <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
- <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" />
+    <!-- Internal CSS -->
+    <style>
+        /* Google Font Import */
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
 
+        /* CSS Variables for Theming */
+        :root {
+            --font-family: 'Nunito', sans-serif;
+            --bg-color-light: #f4f4f9;
+            --secondary-bg-light: #ffffff;
+            --text-color-light: #1c1c1e;
+            --subtle-text-light: #6d6d72;
+            --primary-color-light: #007aff;
+            --border-color-light: #e0e0e0;
+            --bg-color-dark: #121212;
+            --secondary-bg-dark: #1c1c1e;
+            --text-color-dark: #ffffff;
+            --subtle-text-dark: #8e8e93;
+            --primary-color-dark: #0a84ff;
+            --border-color-dark: #38383a;
+        }
 
- <script src="https://telegram.org/js/telegram-web-app.js"></script>
+        /* Base Styles */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font-family);
+            transition: background-color 0.3s, color 0.3s;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
 
+        /* Theme Styles */
+        body.light-theme { background-color: var(--bg-color-light); color: var(--text-color-light); }
+        body.dark-theme { background-color: var(--bg-color-dark); color: var(--text-color-dark); }
+        #app { max-width: 500px; margin: 0 auto; padding-bottom: 70px; }
 
- <style>
-  .gradient-bg {
-   background: linear-gradient(135deg, #F8F9FE 0%, #FFFFFF 100%);
-  }
+        /* Profile Header */
+        .profile-header { padding: 20px 15px; display: flex; align-items: center; border-bottom: 1px solid; }
+        .light-theme .profile-header { border-bottom-color: var(--border-color-light); }
+        .dark-theme .profile-header { border-bottom-color: var(--border-color-dark); }
+        .profile-info { display: flex; align-items: center; gap: 15px; }
+        #user-photo { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid; }
+        .light-theme #user-photo { border-color: var(--primary-color-light); }
+        .dark-theme #user-photo { border-color: var(--primary-color-dark); }
+        .user-details h1 { font-size: 1.2rem; font-weight: 700; }
+        .verified-icon { font-size: 1rem; margin-left: 5px; }
+        .light-theme .verified-icon { color: var(--primary-color-light); }
+        .dark-theme .verified-icon { color: var(--primary-color-dark); }
+        .user-details p { font-size: 0.9rem; font-weight: 600; }
+        .light-theme .user-details p { color: var(--subtle-text-light); }
+        .dark-theme .user-details p { color: var(--subtle-text-dark); }
 
-  .glass-effect {
-   backdrop-filter: blur(10px);
-   background: rgba(255, 255, 255, 0.9);
-  }
+        /* Main Content & Pages */
+        main { padding: 15px; }
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        h2 { font-size: 1.5rem; margin-bottom: 15px; }
 
-  .glow-effect {
-   box-shadow: 0 0 20px rgba(91, 104, 255, 0.3);
-  }
+        /* Home Page Stats & Referral */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .stat-card { padding: 20px; border-radius: 12px; text-align: center; }
+        .light-theme .stat-card { background-color: var(--secondary-bg-light); border: 1px solid var(--border-color-light); }
+        .dark-theme .stat-card { background-color: var(--secondary-bg-dark); border: 1px solid var(--border-color-dark); }
+        .stat-card h3 { font-size: 0.9rem; margin-bottom: 10px; }
+        .light-theme .stat-card h3 { color: var(--subtle-text-light); }
+        .dark-theme .stat-card h3 { color: var(--subtle-text-dark); }
+        .stat-card p { font-size: 1.5rem; font-weight: 700; }
+        .light-theme .stat-card p { color: var(--primary-color-light); }
+        .dark-theme .stat-card p { color: var(--primary-color-dark); }
+        .referral-section { margin-top: 30px; padding: 20px; border-radius: 12px; }
+        .light-theme .referral-section { background-color: var(--secondary-bg-light); border: 1px solid var(--border-color-light); }
+        .dark-theme .referral-section { background-color: var(--secondary-bg-dark); border: 1px solid var(--border-color-dark); }
+        .referral-section h3 { text-align: center; }
+        #referral-link { width: 100%; padding: 10px; text-align: center; border: 1px dashed; border-radius: 8px; margin: 10px 0; font-size: 0.9rem; }
+        .light-theme #referral-link { border-color: var(--primary-color-light); background-color: var(--bg-color-light); color: var(--text-color-light); }
+        .dark-theme #referral-link { border-color: var(--primary-color-dark); background-color: var(--bg-color-dark); color: var(--text-color-dark); }
+        #copy-ref-link-btn { width: 100%; padding: 12px; border: none; border-radius: 8px; color: #fff; cursor: pointer; font-weight: 600; }
+        .light-theme #copy-ref-link-btn { background-color: var(--primary-color-light); }
+        .dark-theme #copy-ref-link-btn { background-color: var(--primary-color-dark); }
+        
+        /* Task/Bonus Container */
+        .task-container { padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
+        .task-container:last-child { margin-bottom: 0; }
+        .light-theme .task-container { background-color: var(--secondary-bg-light); border: 1px solid var(--border-color-light); }
+        .dark-theme .task-container { background-color: var(--secondary-bg-dark); border: 1px solid var(--border-color-dark); }
+        .task-icon { font-size: 3rem; margin-bottom: 15px; }
+        .light-theme .task-icon { color: var(--primary-color-light); }
+        .dark-theme .task-icon { color: var(--primary-color-dark); }
+        .task-container h3 { font-size: 1.2rem; margin-bottom: 5px; }
+        .task-container p { font-size: 0.9rem; margin-bottom: 20px; }
+        .light-theme .task-container p { color: var(--subtle-text-light); }
+        .dark-theme .task-container p { color: var(--subtle-text-dark); }
 
-  .card-shadow {
-   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  }
+        /* Action Button */
+        .action-btn { width: 100%; padding: 15px; font-size: 1rem; font-weight: 700; color: #fff; border: none; border-radius: 10px; cursor: pointer; transition: background-color 0.2s, opacity 0.2s; position: relative; display: flex; justify-content: center; align-items: center; }
+        .light-theme .action-btn { background-color: var(--primary-color-light); }
+        .dark-theme .action-btn { background-color: var(--primary-color-dark); }
+        .action-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-loader { width: 20px; height: 20px; border: 3px solid rgba(255, 255, 255, 0.4); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; display: none; }
+        .action-btn.loading .btn-text { visibility: hidden; }
+        .action-btn.loading .btn-loader { display: block; position: absolute; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-  .pulse-animation {
-   animation: pulse 2s infinite;
-  }
+        /* Form Styles */
+        #withdraw-form .form-group { margin-bottom: 15px; }
+        #withdraw-form label { display: block; margin-bottom: 5px; font-weight: 600; }
+        #withdraw-form input, #withdraw-form select { width: 100%; padding: 12px; border-radius: 8px; font-family: var(--font-family); font-size: 1rem; transition: border-color 0.2s, box-shadow 0.2s; }
+        .light-theme #withdraw-form input, .light-theme #withdraw-form select { background-color: var(--bg-color-light); border: 1px solid var(--border-color-light); color: var(--text-color-light); }
+        .dark-theme #withdraw-form input, .dark-theme #withdraw-form select { background-color: var(--secondary-bg-dark); border: 1px solid var(--border-color-dark); color: var(--text-color-dark); }
+        .light-theme input:focus, .light-theme select:focus { outline: none; border-color: var(--primary-color-light); box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15); }
+        .dark-theme input:focus, .dark-theme select:focus { outline: none; border-color: var(--primary-color-dark); box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.2); }
+        
+        /* Bottom Navigation */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 500px; margin: 0 auto; display: flex; justify-content: space-around; padding: 5px 0; border-top: 1px solid; z-index: 1000; }
+        .light-theme .bottom-nav { background-color: var(--secondary-bg-light); border-top-color: var(--border-color-light); }
+        .dark-theme .bottom-nav { background-color: var(--secondary-bg-dark); border-top-color: var(--border-color-dark); }
+        .nav-btn { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; padding: 5px 10px; font-family: var(--font-family); font-size: 0.7rem; transition: color 0.2s; flex-grow: 1; }
+        .light-theme .nav-btn { color: var(--subtle-text-light); }
+        .dark-theme .nav-btn { color: var(--subtle-text-dark); }
+        .nav-btn i { font-size: 1.4rem; margin-bottom: 3px; }
+        .nav-btn.active { font-weight: 700; }
+        .light-theme .nav-btn.active { color: var(--primary-color-light); }
+        .dark-theme .nav-btn.active { color: var(--primary-color-dark); }
 
-  @keyframes pulse {
-
-   0%,
-   100% {
-    transform: scale(1);
-   }
-
-   50% {
-    transform: scale(1.05);
-   }
-  }
-
-  .spin-animation {
-   animation: spin 3s linear infinite;
-  }
-
-  @keyframes spin {
-   from {
-    transform: rotate(0deg);
-   }
-
-   to {
-    transform: rotate(360deg);
-   }
-  }
-
-  .scratch-effect {
-   background: linear-gradient(45deg, #FFD93D, #FFA500);
-  }
-
-  .tap-effect {
-   transition: transform 0.1s;
-  }
-
-  .tap-effect:active {
-   transform: scale(0.95);
-  }
-
-
-
-
-  /* Custom scrollbar for main element */
-  html::-webkit-scrollbar {
-   width: 10px;
-  }
-
-  html::-webkit-scrollbar-track {
-   background: #f1f1f1;
-   border-radius: 5px;
-  }
-
-  html::-webkit-scrollbar-thumb {
-   background: linear-gradient(to bottom, #8B5CF6, #6366F1);
-   border-radius: 5px;
-  }
-
-  html::-webkit-scrollbar-thumb:hover {
-   background: linear-gradient(to bottom, #7C3AED, #4F46E5);
-  }
-
-  /* For Firefox */
-  html {
-   scrollbar-width: thin;
-   scrollbar-color: #6366F1 #f1f1f1;
-  }
-
-
- </style>
-
-
- <!-- Firebase SDKs -->
- <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
- <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js"></script>
- <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js"></script>
-
-
+        /* Modal Styles */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); justify-content: center; align-items: center; }
+        .modal-content { padding: 30px; border-radius: 15px; text-align: center; }
+        .light-theme .modal-content { background-color: var(--secondary-bg-light); }
+        .dark-theme .modal-content { background-color: var(--secondary-bg-dark); }
+        .loader { border: 5px solid #f3f3f3; border-radius: 50%; border-top: 5px solid; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+        .light-theme .loader { border-top-color: var(--primary-color-light); }
+        .dark-theme .loader { border-top-color: var(--primary-color-dark); }
+    </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
-  <!-- Header -->
-<header class="fixed top-0 w-full z-50 bg-white border-b border-gray-100" style="height: auto; padding-top: 40px;">
-  <div class="flex flex-col h-full px-4 py-2 justify-between">
+<body>
 
-    <!-- Top Row: Bot Name + Verified -->
-    <div class="flex items-center justify-center border-b border-gray-100">
-      <p class="font-bold text-gray-800 text-xl truncate py-2 max-w-[300px]">
-        FinovaCash
-      </p>
-      <i class="ri-verified-badge-fill text-blue-500 text-lg ml-1"></i>
-    </div>
+    <div id="app">
+        <header class="profile-header">
+            <div class="profile-info">
+                <img id="user-photo" src="" alt="User Photo">
+                <div class="user-details">
+                    <h1 id="user-name">Loading... <i class="fas fa-check-circle verified-icon"></i></h1>
+                    <p> Balance: ৳<span id="user-points">0</span>TK</p>
+                </div>
+            </div>
+        </header>
 
-    <div class="flex items-center justify-between py-1">
-
-      <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white card-shadow">
-          <img src="https://t.me/i/userpic/320/zoZJyw5Ox-NZeaOKbj0Y_RxZ_7PJ9e9pWW8OqPxBk9-izZLUIdJdyVKllp2T_W0H.svg" alt="Profile" class="w-full h-full object-cover" />
-        </div>
-        <div>
-          <div class="flex items-center space-x-1">
-            <span class="font-semibold text-gray-800 text-sm truncate max-w-[250px] block">
-              🐤 Mohammad Tanvir Ahmed Zihad
-            </span>
-            <i class="ri-verified-badge-fill text-green-500 text-sm"></i>
-          </div>
-          <div class="text-xs text-gray-500 truncate max-w-[250px] block">
-            @mohammadtanvir707 - 6453637469
-          </div>
-        </div>
-      </div>
-
-      <!-- Right: Balance -->
-      <div class="text-right">
-        <div class="flex items-center justify-end space-x-1 text-sm font-semibold text-gray-800">
-          <i class="ri-money-dollar-circle-line text-green-500"></i>
-          <span id="usdt-balance">0.000</span>
-          <span class="text-xs text-gray-500">USDT</span>
-        </div>
-        <div class="flex items-center justify-end space-x-1 text-xs text-gray-600">
-          <i class="ri-coin-line text-yellow-500"></i>
-          <span id="lmt-balance">0</span>
-          <span class="text-[10px] text-gray-500">LMT</span>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</header>
-  <!-- Main Content -->
-  <main class=" px-4" style="padding-top: 170px;  padding-bottom: 150px;">
-    <!-- Welcome Section -->
-    <section class="mb-6">
-      <h1 class="text-xl font-bold text-gray-800 mb-1">
-        Welcome back, 🐤 Mohammad Tanvir Ahmed Zihad!
-      </h1>
-      <p class="text-sm text-gray-600">
-        Joined on Sunday, September 21, 2025
-      </p>
-    </section>
-
-
-    <!-- Stats Grid -->
-    <section class="grid grid-cols-2 gap-3 mb-6">
-      <div class="bg-white rounded-lg p-4 card-shadow">
-        <div class="flex items-center mb-2">
-          <div class="w-6 h-6 flex items-center justify-center mr-2">
-            <i class="ri-money-dollar-circle-fill text-green-500"></i>
-          </div>
-          <span class="text-xs text-gray-600">USD Balance</span>
-        </div>
-
-        <!-- Total balance -->
-        <div class="text-lg font-bold text-gray-800">
-          <span id="usdt-balance-stat">0.000 USDT</span>
-        </div>
-
-        <!-- Added today -->
-        <div class="text-xs text-green-600">
-          +0.000
-          today
-        </div>
-      </div>
-
-
-      <div class="bg-white rounded-lg p-4 card-shadow">
-        <div class="flex items-center mb-2">
-          <div class="w-6 h-6 flex items-center justify-center mr-2">
-            <i class="ri-coin-fill text-yellow-500"></i>
-          </div>
-          <span class="text-xs text-gray-600"> LMT</span>
-        </div>
-        <div class="text-lg font-bold text-gray-800"><span id="lmt-balance-stat">0 LMT</span>
-        </div>
-        <div class="text-xs text-blue-600">
-          +0
-          today</div>
-      </div>
-
-      <div class="bg-white rounded-lg p-4 card-shadow">
-        <div class="flex items-center mb-2">
-          <div class="w-6 h-6 flex items-center justify-center mr-2">
-            <i class="ri-group-fill text-blue-500"></i>
-          </div>
-          <span class="text-xs text-gray-600">Referrals</span>
-        </div>
-
-        <!-- Total referrals -->
-        <div class="text-lg font-bold text-gray-800">
-          <span id="referrals-total">0</span>
-        </div>
-
-        <!-- Referrals this week -->
-        <div class="text-xs text-purple-600">
-          +0
-          this week
-        </div>
-      </div>
-
-
-      <div class="bg-white rounded-lg p-4 card-shadow">
-        <div class="flex items-center mb-2">
-          <div class="w-6 h-6 flex items-center justify-center mr-2">
-            <i class="ri-play-circle-fill text-red-500"></i>
-          </div>
-          <span class="text-xs text-gray-600">Ads Viewed</span>
-        </div>
-
-        <!-- Total ads viewed -->
-        <div class="text-lg font-bold text-gray-800">
-          <span id="ads-total">0</span>
-        </div>
-
-        <!-- Ads viewed today -->
-        <div class="text-xs text-orange-600">
-          +0
-          today
-        </div>
-      </div>
-
-    </section>
-
-    <section class="grid grid-cols-1 gap-3 mb-6">
-      <!-- Refer & Earn Card -->
-      <a onClick="showLoading(true);" href="https://lumetra.tzsmm.my.id/refer?initData=query_id%3DAAFdsaoAAwAAAF2xqgD71Pgk%26user%3D%257B%2522id%2522%253A6453637469%252C%2522first_name%2522%253A%2522%25F0%259F%2590%25A4%2520Mohammad%2520Tanvir%2520Ahmed%2522%252C%2522last_name%2522%253A%2522Zihad%2522%252C%2522username%2522%253A%2522mohammadtanvir707%2522%252C%2522language_code%2522%253A%2522en%2522%252C%2522allows_write_to_pm%2522%253Atrue%252C%2522photo_url%2522%253A%2522https%253A%255C%252F%255C%252Ft.me%255C%252Fi%255C%252Fuserpic%255C%252F320%255C%252FzoZJyw5Ox-NZeaOKbj0Y_RxZ_7PJ9e9pWW8OqPxBk9-izZLUIdJdyVKllp2T_W0H.svg%2522%257D%26auth_date%3D1758460075%26signature%3DP58Q2grWwxX2z4jWL6eKtjc6tt5LEaPWFYbKWglnjKXKCDThqUURqwjn4b2xKQcjJXsSnXEpJpsuP3QEVDhGAQ%26hash%3De18a8ff5b17362038aa9045e40e3d6596359f9b26ad251b947ecf9e3f4d3951e"
-        class="block bg-gradient-to-r from-blue-500 to-indigo-600 rounded-sm shadow-xl p-5 transition transform relative overflow-hidden">
-        <div class="flex items-center justify-between">
-          <div>
-            <h3 class="text-lg font-bold text-white mb-1">💸 Refer & Earn</h3>
-            <p class="text-sm text-white/90">
-              Invite friends and earn <span class="font-extrabold">11%</span> commission on
-              every successful referral.
-            </p>
-          </div>
-          <div class="text-4xl text-white opacity-30">
-            <i class="ri-share-forward-fill"></i>
-          </div>
-        </div>
-
-        <!-- Decorative SVG / Icon -->
-        <div class="absolute -bottom-6 -right-6 opacity-20 w-32 h-32">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-              d="M12 6v6h4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        </div>
-      </a>
-
-    </section>
-
-
-
-    
-
-
-    
-  </main>
-
-  <!-- Bottom Navigation -->
-<nav class="fixed bottom-0 w-full z-50">
-    <div class="mx-0 mb-0">
-        <div class="glass-effect rounded-sm border border-white/20 card-shadow">
-            <div class="grid grid-cols-5 py-2">
-
-                <!-- Home -->
-                <a onClick="showLoading(true);"
-                    href="https://lumetra.tzsmm.my.id?initData=query_id%3DAAFdsaoAAwAAAF2xqgD71Pgk%26user%3D%257B%2522id%2522%253A6453637469%252C%2522first_name%2522%253A%2522%25F0%259F%2590%25A4%2520Mohammad%2520Tanvir%2520Ahmed%2522%252C%2522last_name%2522%253A%2522Zihad%2522%252C%2522username%2522%253A%2522mohammadtanvir707%2522%252C%2522language_code%2522%253A%2522en%2522%252C%2522allows_write_to_pm%2522%253Atrue%252C%2522photo_url%2522%253A%2522https%253A%255C%252F%255C%252Ft"
-                    class="nav-tab flex flex-col items-center py-2 cursor-pointer active">
-                    <div class="w-6 h-6 flex items-center justify-center mb-1">
-                        <i
-                            class="ri-home-4-fill text-primary"></i>
+        <main id="main-content">
+            <!-- Home Page -->
+            <div id="home-page" class="page active">
+                <h2>Dashboard</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Daily Ads Watched</h3>
+                        <p><span id="daily-ads-watched">00</span> /  25</p>
                     </div>
-                    <span
-                        class="text-xs font-medium text-primary">Home</span>
-                </a>
-
-                <!-- Earn -->
-                <a onClick="showLoading(true);"
-                    href="https://lumetra.tzsmm.my.id/earn?initData=query_id%3DAAFdsaoAAwAAAF2xqgD71Pgk%26user%3D%257B%2522id%2522%253A6453637469%252C%2522first_name%2522%253A%2522%25F0%259F%2590%25A4%2520Mohammad%2520Tanvir%2520Ahmed%2522%252C%2522last_name%2522%253A%2522Zihad%2522%252C%2522username%2522%253A%2522mohammadtanvir707%2522%252C%2522language_code%2522%253A%2522en%2522%252C%2522allows_write_to_pm%2522%253Atrue%252C%2522photo_url%2522%253A%2522https%253A%255C%252F%255C%252Ft.me%255C%252Fi%255C%252Fuserpic%255C%252F320%255C%252FzoZJyw5Ox-NZeaOKbj0Y_RxZ_7PJ9e9pWW8OqPxBk9-izZLUIdJdyVKllp2T_W0H.svg%2522%257D%26auth_date%3D1758460075%26signature%3DP58Q2grWwxX2z4jWL6eKtjc6tt5LEaPWFYbKWglnjKXKCDThqUURqwjn4b2xKQcjJXsSnXEpJpsuP3QEVDhGAQ%26hash%3De18a8ff5b17362038aa9045e40e3d6596359f9b26ad251b947ecf9e3f4d3951e"
-                    class="nav-tab flex flex-col items-center py-2 cursor-pointer ">
-                    <div class="w-6 h-6 flex items-center justify-center mb-1">
-                        <i
-                            class="ri-money-dollar-circle-line text-gray-500"></i>
+                    <div class="stat-card">
+                        <h3>Total Referrals</h3>
+                        <p id="referral-count">00</p>
                     </div>
-                    <span
-                        class="text-xs font-medium text-gray-500">Earn</span>
-                </a>
+                </div>
+                <div class="referral-section">
+                    <h3>Refer & Earn More!</h3>
+                    <p>Share your link to get bonus points.</p>
+                    <input type="text" id="referral-link" readonly>
+                    <button id="copy-ref-link-btn">Copy Referral Link</button>
+                </div>
+            </div>
 
-                <!-- Wallet -->
-                <a onClick="showLoading(true);"
-                    href="https://lumetra.tzsmm.my.id/wallet?initData=query_id%3DAAFdsaoAAwAAAF2xqgD71Pgk%26user%3D%257B%2522id%2522%253A6453637469%252C%2522first_name%2522%253A%2522%25F0%259F%2590%25A4%2520Mohammad%2520Tanvir%2520Ahmed%2522%252C%2522last_name%2522%253A%2522Zihad%2522%252C%2522username%2522%253A%2522mohammadtanvir707%2522%252C%2522language_code%2522%253A%2522en%2522%252C%2522allows_write_to_pm%2522%253Atrue%252C%2522photo_url%2522%253A%2522https%253A%255C%252F%255C%252Ft.me%255C%252Fi%255C%252Fuserpic%255C%252F320%255C%252FzoZJyw5Ox-NZeaOKbj0Y_RxZ_7PJ9e9pWW8OqPxBk9-izZLUIdJdyVKllp2T_W0H.svg%2522%257D%26auth_date%3D1758460075%26signature%3DP58Q2grWwxX2z4jWL6eKtjc6tt5LEaPWFYbKWglnjKXKCDThqUURqwjn4b2xKQcjJXsSnXEpJpsuP3QEVDhGAQ%26hash%3De18a8ff5b17362038aa9045e40e3d6596359f9b26ad251b947ecf9e3f4d3951e"
-                    class="nav-tab flex flex-col items-center py-2 cursor-pointer ">
-                    <div class="w-6 h-6 flex items-center justify-center mb-1">
-                        <i
-                            class="ri-wallet-3-line text-gray-500"></i>
-                    </div>
-                    <span
-                        class="text-xs font-medium text-gray-500">Wallet</span>
-                </a>
-
-
-                <!-- Refer -->
-                <a onClick="showLoading(true);"
-                    href="https://lumetra.tzsmm.my.id/refer?initData=query_id%3DAAFdsaoAAwAAAF2xqgD71Pgk%26user%3D%257B%2522id%2522%253A6453637469%252C%2522first_name%2522%253A%2522%25F0%259F%2590%25A4%2520Mohammad%2520Tanvir%2520Ahmed%2522%252C%2522last_name%2522%253A%2522Zihad%2522%252C%2522username%2522%253A%2522mohammadtanvir707%2522%252C%2522language_code%2522%253A%2522en%2522%252C%2522allows_write_to_pm%2522%253Atrue%252C%2522photo_url%2522%253A%2522https%253A%255C%252F%255C%252Ft.me%255C%252Fi%255C%252Fuserpic%255C%252F320%255C%252FzoZJyw5Ox-NZeaOKbj0Y_RxZ_7PJ9e9pWW8OqPxBk9-izZLUIdJdyVKllp2T_W0H.svg%2522%257D%26auth_date%3D1758460075%26signature%3DP58Q2grWwxX2z4jWL6eKtjc6tt5LEaPWFYbKWglnjKXKCDThqUURqwjn4b2xKQcjJXsSnXEpJpsuP3QEVDhGAQ%26hash%3De18a8ff5b17362038aa9045e40e3d6596359f9b26ad251b947ecf9e3f4d3951e"
-                    class="nav-tab flex flex-col items-center py-2 cursor-pointer ">
-                    <div class="w-6 h-6 flex items-center justify-center mb-1">
-                        <i
-                            class="ri-gift-line text-gray-500"></i>
-
-                    </div>
-                    <span
-                        class="text-xs font-medium text-gray-500">
-                        Refer
-                    </span>
-                </a>
-
-
-
-
-                <!-- Withdraw -->
+            <!-- Tasks Page -->
+            <div id="tasks-page" class="page">
+                <h2>Complete Tasks</h2>
+                <div class="task-container">
+                    <i class="fas fa-video task-icon"></i>
+                    <h3>Watch a Rewarded Ad</h3>
+                    <p>Earn 0.25 TK for every ad.</p>
+                    <button id="watch-ad-btn" class="action-btn">Watch Ad</button>
+                </div>
+                <div class="task-container">
+                    <i class="fab fa-telegram task-icon"></i>
+                    <h3>Join Our Channel</h3>
+                    <p>Get ৳10 bonus.</p>
+                    <button id="join-channel-btn" class="action-btn">Join & Claim Bonus</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-users task-icon"></i>
+                    <h3>Join Our Group</h3>
+                    <p>Get ৳2 bonus.</p>
+                    <button id="join-group-btn" class="action-btn">Join & Claim Bonus</button>
+                </div>
+            </div>
+            
+            <!-- Withdraw Page -->
+            <div id="withdraw-page" class="page">
+                <h2>Withdraw</h2>
+                <p>Minimum 50 TK required to withdraw.</p>
+                <form id="withdraw-form">
+                    <div class="form-group">
+                        <label for="withdraw-method">Method:</label>
+                        <select id="withdraw-method" required>
+                            <option value="Bkash">Bkash</option>
+                            <option value="Nagad">Nagad</option>
                 
-                <!-- Profile -->
-                <a onClick="showLoading(true);"
-                    href="https://lumetra.tzsmm.my.id/profile?initData=query_id%3DAAFdsaoAAwAAAF2xqgD71Pgk%26user%3D%257B%2522id%2522%253A6453637469%252C%2522first_name%2522%253A%2522%25F0%259F%2590%25A4%2520Mohammad%2520Tanvir%2520Ahmed%2522%252C%2522last_name%2522%253A%2522Zihad%2522%252C%2522username%2522%253A%2522mohammadtanvir707%2522%252C%2522language_code%2522%253A%2522en%2522%252C%2522allows_write_to_pm%2522%253Atrue%252C%2522photo_url%2522%253A%2522https%253A%255C%252F%255C%252Ft.me%255C%252Fi%255C%252Fuserpic%255C%252F320%255C%252FzoZJyw5Ox-NZeaOKbj0Y_RxZ_7PJ9e9pWW8OqPxBk9-izZLUIdJdyVKllp2T_W0H.svg%2522%257D%26auth_date%3D1758460075%26signature%3DP58Q2grWwxX2z4jWL6eKtjc6tt5LEaPWFYbKWglnjKXKCDThqUURqwjn4b2xKQcjJXsSnXEpJpsuP3QEVDhGAQ%26hash%3De18a8ff5b17362038aa9045e40e3d6596359f9b26ad251b947ecf9e3f4d3951e"
-                    class="nav-tab flex flex-col items-center py-2 cursor-pointer ">
-                    <div class="w-6 h-6 flex items-center justify-center mb-1">
-                        <i
-                            class="ri-user-3-line text-gray-500"></i>
+                            <option value="Binance">Binance</option>
+                        </select>
                     </div>
-                    <span
-                        class="text-xs font-medium text-gray-500">Profile</span>
-                </a>
-
+                    <div class="form-group">
+                        <label for="account-number">Account Number/ID:</label>
+                        <input type="text" id="account-number" placeholder="e.g., 012345..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Taka to Withdraw:</label>
+                        <input type="number" id="amount" placeholder="e.g., 02" required>
+                    </div>
+                    <button type="submit" id="withdraw-submit-btn" class="action-btn">
+                        <span class="btn-text">Submit Request</span>
+                        <span class="btn-loader"></span>
+                    </button>
+                </form>
             </div>
-        </div>
+        </main>
+
+        <nav class="bottom-nav">
+            <button class="nav-btn active" data-page="home-page"><i class="fas fa-home"></i><span>Home</span></button>
+            <button class="nav-btn" data-page="tasks-page"><i class="fas fa-tasks"></i><span>Tasks</span></button>
+            <button class="nav-btn" data-page="withdraw-page"><i class="fas fa-wallet"></i><span>Withdraw</span></button>
+        </nav>
     </div>
-</nav>
+
+    <div id="loading-modal" class="modal">
+        <div class="modal-content"><div class="loader"></div><p>Loading Ad...</p></div>
+    </div>
+    
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src='//libtl.com/sdk.js' data-zone='9712189' data-sdk=''></script>
+    
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.BackButton.hide();
+        document.addEventListener('DOMContentLoaded', () => {
+            const tg = window.Telegram.WebApp;
+
+            // --- Configuration ---
+            const BOT_TOKEN = "7962156961:AAHZ5oI8JPLA3eVQVemgtif6MsZy7sD7QMQ";
+            const BOT_USERNAME = "democash00_bot"; // Your bot's username
+            const ADMIN_CHAT_ID = "6453637469";
+            const CHANNEL_LINK = "";
+            const GROUP_LINK = "";
+            const DAILY_AD_LIMIT = 25;
+            const POINTS_PER_AD = 0.25;
+            const CHANNEL_JOIN_BONUS = 10;
+            const GROUP_JOIN_BONUS = 0;
+            const MIN_WITHDRAW_POINTS = 50;
+
+            // --- DOM Elements ---
+            const userPhotoElem = document.getElementById('user-photo');
+            const userNameElem = document.getElementById('user-name');
+            const userPointsElem = document.getElementById('user-points');
+            const dailyAdsWatchedElem = document.getElementById('daily-ads-watched');
+            const referralCountElem = document.getElementById('referral-count');
+            const watchAdBtn = document.getElementById('watch-ad-btn');
+            const joinChannelBtn = document.getElementById('join-channel-btn');
+            const joinGroupBtn = document.getElementById('join-group-btn');
+            const withdrawForm = document.getElementById('withdraw-form');
+            const withdrawSubmitBtn = document.getElementById('withdraw-submit-btn');
+            const referralLinkElem = document.getElementById('referral-link');
+            const copyRefLinkBtn = document.getElementById('copy-ref-link-btn');
+            const loadingModal = document.getElementById('loading-modal');
+
+            // --- State Management ---
+            let userState = {
+                points: 0,
+                dailyAdWatchCount: 0,
+                lastAdWatchDate: null,
+                referrals: [],
+                hasJoinedChannel: false,
+                hasJoinedGroup: false, // New state for group join
+                userId: null
+            };
+
+            const saveState = () => {
+                if(userState.userId) {
+                    localStorage.setItem(`userState_${userState.userId}`, JSON.stringify(userState));
+                }
+            };
+
+            const loadState = (userId) => {
+                const savedState = localStorage.getItem(`userState_${userId}`);
+                if (savedState) {
+                    userState = JSON.parse(savedState);
+                    // Ensure new state properties exist
+                    if (userState.hasJoinedGroup === undefined) userState.hasJoinedGroup = false;
+                }
+            };
+            
+            // --- Core Functions ---
+            const initApp = () => {
+                tg.ready();
+                tg.expand();
+                document.body.className = `${tg.colorScheme}-theme`;
+
+                const user = tg.initDataUnsafe.user;
+                if (!user || !user.id) {
+                    tg.showAlert("Could not verify user. Please open this app through Telegram.", () => tg.close());
+                    return;
+                }
+                
+                userState.userId = user.id;
+                loadState(user.id);
+                
+                const today = new Date().toISOString().slice(0, 10);
+                if (userState.lastAdWatchDate !== today) {
+                    userState.dailyAdWatchCount = 0;
+                    userState.lastAdWatchDate = today;
+                }
+                
+                updateUI();
+                setupNavigation();
+                setupEventListeners();
+                saveState();
+            };
+            
+            const updateUI = () => {
+                const user = tg.initDataUnsafe.user;
+                if (user) {
+                    userPhotoElem.src = user.photo_url || 'https://i.imgur.com/placeholder.png';
+                    userNameElem.innerHTML = `${user.first_name || ''} ${user.last_name || ''} <i class="fas fa-check-circle verified-icon"></i>`;
+                }
+                
+                userPointsElem.textContent = userState.points;
+                dailyAdsWatchedElem.textContent = userState.dailyAdWatchCount;
+                referralCountElem.textContent = userState.referrals.length;
+
+                referralLinkElem.value = `https://t.me/${BOT_USERNAME}?start=ref_${userState.userId}`;
+
+                // Update task button states
+                if (userState.hasJoinedChannel) {
+                    joinChannelBtn.textContent = 'Bonus Claimed';
+                    joinChannelBtn.disabled = true;
+                }
+                if (userState.hasJoinedGroup) {
+                    joinGroupBtn.textContent = 'Bonus Claimed';
+                    joinGroupBtn.disabled = true;
+                }
+            };
+            
+            const setupEventListeners = () => {
+                watchAdBtn.addEventListener('click', handleWatchAd);
+                joinChannelBtn.addEventListener('click', handleJoinChannel);
+                joinGroupBtn.addEventListener('click', handleJoinGroup); // New listener
+                withdrawForm.addEventListener('submit', handleWithdraw);
+                copyRefLinkBtn.addEventListener('click', copyReferralLink);
+            };
+
+            const handleWatchAd = () => {
+                if (userState.dailyAdWatchCount >= DAILY_AD_LIMIT) {
+                    tg.showAlert("You have reached your daily ad watch limit."); return;
+                }
+                loadingModal.style.display = 'flex';
+                show_9712189().then(() => {
+                    userState.points += POINTS_PER_AD;
+                    userState.dailyAdWatchCount++;
+                    saveState();
+                    updateUI();
+                    tg.HapticFeedback.notificationOccurred('success');
+                    tg.showAlert(`Congratulations! You've earned ${POINTS_PER_AD} taka.`);
+                }).catch(() => {
+                    tg.showAlert("Ad could not be loaded. Please try again later.");
+                }).finally(() => {
+                    loadingModal.style.display = 'none';
+                });
+            };
+            
+            const handleJoinChannel = () => {
+                if(userState.hasJoinedChannel) {
+                    tg.showAlert('You have already claimed this bonus.'); return;
+                }
+                tg.openTelegramLink(CHANNEL_LINK);
+                setTimeout(() => {
+                    userState.points += CHANNEL_JOIN_BONUS;
+                    userState.hasJoinedChannel = true;
+                    tg.showAlert(`Thank you! You received ${CHANNEL_JOIN_BONUS} bonus taka.`);
+                    saveState();
+                    updateUI();
+                }, 3000);
+            };
+
+            const handleJoinGroup = () => {
+                if(userState.hasJoinedGroup) {
+                    tg.showAlert('You have already claimed this bonus.'); return;
+                }
+                tg.openTelegramLink(GROUP_LINK);
+                setTimeout(() => {
+                    userState.points += GROUP_JOIN_BONUS;
+                    userState.hasJoinedGroup = true;
+                    tg.showAlert(`Thank you! You received ${GROUP_JOIN_BONUS} bonus taka.`);
+                    saveState();
+                    updateUI();
+                }, 3000);
+            };
+
+            const handleWithdraw = async (e) => {
+                e.preventDefault();
+                const method = document.getElementById('withdraw-method').value;
+                const accountNumber = document.getElementById('account-number').value;
+                const amount = parseInt(document.getElementById('amount').value, 10);
+
+                if (isNaN(amount) || amount <= 0) { tg.showAlert("Please enter a valid amount."); return; }
+                if (amount < MIN_WITHDRAW_POINTS) { tg.showAlert(`Minimum withdrawal is ${MIN_WITHDRAW_POINTS} points.`); return; }
+                if (amount > userState.points) { tg.showAlert("You don't have enough balance."); return; }
+
+                withdrawSubmitBtn.classList.add('loading');
+                withdrawSubmitBtn.disabled = true;
+
+                userState.points -= amount;
+                saveState();
+                updateUI();
+                
+                const user = tg.initDataUnsafe.user;
+                const message = `<b>New Withdraw Request!</b>\n-----------------------------------\n<b>User:</b> ${user.first_name || ''} ${user.last_name || ''} (@${user.username || 'N/A'})\n<b>User ID:</b> <code>${user.id}</code>\n-----------------------------------\n<b>Method:</b> ${method}\n<b>Account:</b> <code>${accountNumber}</code>\n<b>Amount:</b> ${amount} Points\n-----------------------------------\n<b>Date:</b> ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' })}`;
+                
+                const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ chat_id: ADMIN_CHAT_ID, text: message, parse_mode: 'HTML'})
+                    });
+                    const result = await response.json();
+                    if (result.ok) {
+                        tg.HapticFeedback.notificationOccurred('success');
+                        tg.showAlert("Withdrawal request submitted successfully!");
+                        withdrawForm.reset();
+                    } else { throw new Error(result.description); }
+                } catch (error) {
+                    tg.HapticFeedback.notificationOccurred('error');
+                    tg.showAlert("Failed to submit request. Your points have been returned.");
+                    userState.points += amount;
+                    saveState();
+                    updateUI();
+                } finally {
+                    withdrawSubmitBtn.classList.remove('loading');
+                    withdrawSubmitBtn.disabled = false;
+                }
+            };
+            
+            const copyReferralLink = () => {
+                navigator.clipboard.writeText(referralLinkElem.value).then(() => {
+                    tg.HapticFeedback.notificationOccurred('success');
+                    tg.showAlert("Referral link copied!");
+                });
+            };
+
+            const setupNavigation = () => {
+                const navButtons = document.querySelectorAll('.nav-btn');
+                const pages = document.querySelectorAll('.page');
+                navButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const pageId = button.dataset.page;
+                        pages.forEach(page => page.classList.remove('active'));
+                        document.getElementById(pageId).classList.add('active');
+                        navButtons.forEach(btn => btn.classList.remove('active'));
+                        button.classList.add('active');
+                    });
+                });
+            };
+
+            initApp();
+        });
     </script>
-
-
-
-
-
-
-
-
-
-<!-- Fullscreen Loading Overlay -->
-<div id="loadingOverlay"
-    class="hidden fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm">
-    <div class="flex flex-col items-center space-y-4">
-        <!-- Spinner -->
-        <div class="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
-        <!-- Text -->
-        <p class="text-white text-lg font-semibold">Loading...</p>
-    </div>
-</div>
-<script>
-    function showLoading(show) {
-        const overlay = document.getElementById("loadingOverlay");
-        if (show) {
-            overlay.classList.remove("hidden");
-        } else {
-            overlay.classList.add("hidden");
-        }
-    }
-</script>
-
-
-
-  <!-- Modal -->
-<div id="adModal_container" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-    <div class="bg-white rounded-2xl shadow-2xl w-11/12 max-w-md p-6 relative animate-fadeIn_adModal">
-
-        <!-- Close Button -->
-        <button id="adModal_closeBtn" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-2xl font-bold">
-            ✕
-        </button>
-
-        <!-- Title -->
-        <h2 class="text-lg font-bold text-gray-800 text-center mb-6">Select Ad Type</h2>
-
-        <!-- Options -->
-        <div id="adModal_optionList" class="grid grid-cols-2 gap-4">
-                            <a onclick="showLoading(true);"
-                    href="https://lumetra.tzsmm.my.id/task/Lumetra?initData=query_id%3DAAFdsaoAAwAAAF2xqgD71Pgk%26user%3D%257B%2522id%2522%253A6453637469%252C%2522first_name%2522%253A%2522%25F0%259F%2590%25A4%2520Mohammad%2520Tanvir%2520Ahmed%2522%252C%2522last_name%2522%253A%2522Zihad%2522%252C%2522username%2522%253A%2522mohammadtanvir707%2522%252C%2522language_code%2522%253A%2522en%2522%252C%2522allows_write_to_pm%2522%253Atrue%252C%2522photo_url%2522%253A%2522https%253A%255C%252F%255C%252Ft.me%255C%252Fi%255C%252Fuserpic%255C%252F320%255C%252FzoZJyw5Ox-NZeaOKbj0Y_RxZ_7PJ9e9pWW8OqPxBk9-izZLUIdJdyVKllp2T_W0H.svg%2522%257D%26auth_date%3D1758460075%26signature%3DP58Q2grWwxX2z4jWL6eKtjc6tt5LEaPWFYbKWglnjKXKCDThqUURqwjn4b2xKQcjJXsSnXEpJpsuP3QEVDhGAQ%26hash%3De18a8ff5b17362038aa9045e40e3d6596359f9b26ad251b947ecf9e3f4d3951e"
-                    class="adModal_optionCard p-4 border rounded-xl cursor-pointer text-center transition hover:shadow-md block">
-                    <img src="https://i.postimg.cc/pTCWNvpK/images-2.png" alt="FinovaCash"
-                        class="w-12 h-12 mx-auto mb-2 rounded-lg" />
-                    <p class="font-semibold text-sm text-gray-800">Finova Cash ˗ˋˏ$ˎˊ˗</p>
-                </a>
-                    </div>
-
-        <!-- Continue Button (optional use) -->
-        <div class="text-center mt-6">
-            <button id="adModal_continueBtn"
-                class="bg-indigo-600 text-white px-4 py-2 rounded-lg shadow opacity-50 cursor-not-allowed hidden"
-                disabled>
-                Continue
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- Animations -->
-<style>
-    @keyframes fadeIn_adModal {
-        from {
-            opacity: 0;
-            transform: scale(0.9);
-        }
-
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-
-    .animate-fadeIn_adModal {
-        animation: fadeIn_adModal 0.3s ease-out;
-    }
-
-    .adModal_optionCard.active {
-        border: 2px solid #2563eb;
-        background-color: #f0f7ff;
-    }
-</style>
-
-<!-- JS for Modal -->
-<script>
-    const adModal_container = document.getElementById("adModal_container");
-    const adModal_openBtn = document.getElementById("watchNowBtn"); // external button
-    const adModal_closeBtn = document.getElementById("adModal_closeBtn");
-    const adModal_continueBtn = document.getElementById("adModal_continueBtn");
-    const adModal_optionCards = document.querySelectorAll(".adModal_optionCard");
-    let adModal_selectedOption = null;
-
-    // Open modal
-    if (adModal_openBtn) {
-        adModal_openBtn.addEventListener("click", () => {
-            adModal_container.classList.remove("hidden");
-        });
-    }
-
-    function showAdsModal() {
-        adModal_container.classList.remove("hidden");
-    }
-
-    // Close modal
-    adModal_closeBtn.addEventListener("click", () => {
-        adModal_container.classList.add("hidden");
-        adModal_resetSelection();
-    });
-
-    // Close if clicked outside modal content
-    adModal_container.addEventListener("click", (e) => {
-        if (e.target === adModal_container) {
-            adModal_container.classList.add("hidden");
-            adModal_resetSelection();
-        }
-    });
-
-    // Handle option selection
-    adModal_optionCards.forEach(card => {
-        card.addEventListener("click", () => {
-            adModal_optionCards.forEach(c => c.classList.remove("active"));
-            card.classList.add("active");
-            adModal_selectedOption = card.querySelector("p.font-semibold").textContent;
-            adModal_continueBtn.disabled = false;
-            adModal_continueBtn.classList.remove("opacity-50", "cursor-not-allowed");
-            adModal_continueBtn.classList.remove("hidden");
-        });
-    });
-
-    // Continue button
-    adModal_continueBtn.addEventListener("click", () => {
-        if (adModal_selectedOption) {
-            // Add logic for selected ad type, e.g., redirect or process
-            console.log("Selected: " + adModal_selectedOption);
-            adModal_container.classList.add("hidden");
-            adModal_resetSelection();
-        }
-    });
-
-    function adModal_resetSelection() {
-        adModal_optionCards.forEach(c => c.classList.remove("active"));
-        adModal_selectedOption = null;
-        adModal_continueBtn.disabled = true;
-        adModal_continueBtn.classList.add("opacity-50", "cursor-not-allowed", "hidden");
-    }
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- Modal -->
-<div id="appModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
-    <div class="bg-white rounded-xl p-6 mx-4 max-w-sm w-full">
-        <div class="text-center">
-            <div id="modalIconWrapper" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i id="modalIcon" class="ri-information-line ri-2x"></i>
-            </div>
-            <h3 id="modalTitle" class="text-lg font-semibold text-gray-800 mb-2">Info</h3>
-            <p id="modalMessage" class="text-sm text-gray-600 mb-4">This is an info message.</p>
-            <button id="closeModal" class="w-full bg-primary text-white py-2 rounded !rounded-button cursor-pointer">
-                Continue
-            </button>
-        </div>
-    </div>
-</div>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const modal = document.getElementById("appModal");
-        const closeModalBtn = document.getElementById("closeModal");
-        const modalTitle = document.getElementById("modalTitle");
-        const modalMessage = document.getElementById("modalMessage");
-        const modalIcon = document.getElementById("modalIcon");
-        const modalIconWrapper = document.getElementById("modalIconWrapper");
-
-        function showModal(type, title, message) {
-            modalIconWrapper.className = "w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4";
-            modalIcon.className = "ri-2x";
-
-            if (type === "success") {
-                modalIconWrapper.classList.add("bg-green-100");
-                modalIcon.classList.add("ri-check-line", "text-green-600");
-                modalTitle.textContent = title || "Success!";
-            } else if (type === "error") {
-                modalIconWrapper.classList.add("bg-red-100");
-                modalIcon.classList.add("ri-close-line", "text-red-600");
-                modalTitle.textContent = title || "Error!";
-            } else if (type === "info") {
-                modalIconWrapper.classList.add("bg-blue-100");
-                modalIcon.classList.add("ri-information-line", "text-blue-600");
-                modalTitle.textContent = title || "Info";
-            }
-
-            modalMessage.textContent = message || "";
-            modal.classList.remove("hidden");
-        }
-
-        window.showSuccessModal = (msg) => showModal("success", "Success!", msg);
-        window.showErrorModal = (msg) => showModal("error", "Error!", msg);
-        window.showInfoModal = (msg) => showModal("info", "Info", msg);
-
-        closeModalBtn.addEventListener("click", () => modal.classList.add("hidden"));
-        modal.addEventListener("click", (e) => { if (e.target === modal) modal.classList.add("hidden"); });
-    });
-</script>
-
-<script>
-    // Firebase configuration (replace with your own Firebase project config)
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
-
-    // Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.database(app);
-    const auth = firebase.auth(app);
-
-    // Telegram user data
-    const tgUser = window.Telegram.WebApp.initDataUnsafe.user;
-    const userId = tgUser ? tgUser.id : '6453637469'; // Fallback to hardcoded if not available
-
-    // Function to fetch and update user data from Firebase
-    function loadUserData() {
-      const userRef = db.ref('users/' + userId);
-      userRef.on('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          document.getElementById('usdt-balance').textContent = data.usdt_balance || '0.000';
-          document.getElementById('lmt-balance').textContent = data.lmt_balance || '0';
-          document.getElementById('usdt-balance-stat').textContent = (data.usdt_balance || '0.000') + ' USDT';
-          document.getElementById('lmt-balance-stat').textContent = (data.lmt_balance || '0') + ' LMT';
-          document.getElementById('referrals-total').textContent = data.referrals || '0';
-          document.getElementById('ads-total').textContent = data.ads_viewed || '0';
-        } else {
-          // If no data, set default or create new user
-          userRef.set({
-            usdt_balance: 0.000,
-            lmt_balance: 0,
-            referrals: 0,
-            ads_viewed: 0,
-            join_date: 'September 21, 2025'
-          });
-        }
-      });
-    }
-
-    // Load data on page load
-    document.addEventListener("DOMContentLoaded", () => {
-        loadUserData();
-    });
-</script>
-
 </body>
-
 </html>
-
-
-
-
-💸
