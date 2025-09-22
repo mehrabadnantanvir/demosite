@@ -16,6 +16,10 @@
     <!-- QR Code Generator Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database.js"></script>
+
     <!-- Internal CSS -->
     <style>
         /* CSS Variables for Theming */
@@ -36,6 +40,10 @@
             --glass-bg: rgba(255, 255, 255, 0.1);
             --glass-border: rgba(255, 255, 255, 0.2);
             --glow-color: rgba(0, 122, 255, 0.3);
+            --free-color: #28a745;
+            --verified-color: #ffc107;
+            --premium-color: #007aff;
+            --diamond-color: #ff00ff;
         }
 
         /* Base Styles */
@@ -147,17 +155,11 @@
         .user-details p { font-size: 0.9rem; font-weight: 600; }
         .light-theme .user-details p { color: var(--subtle-text-light); }
         .dark-theme .user-details p { color: var(--subtle-text-dark); }
-        .membership-badge {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            margin-left: 10px;
-        }
-        .free-badge { background: #28a745; color: #fff; }
-        .verified-badge { background: #ffc107; color: #000; }
-        .premium-badge { background: #007aff; color: #fff; }
-        .diamond-badge { background: linear-gradient(45deg, #00c4ff, #ff00ff); color: #fff; }
+        .membership-badge { font-size: 0.8rem; margin-left: 10px; font-weight: 600; }
+        .free-badge { color: var(--free-color); }
+        .verified-badge { color: var(--verified-color); }
+        .premium-badge { color: var(--premium-color); }
+        .diamond-badge { color: var(--diamond-color); }
 
         /* Date and Time Display */
         .datetime-container {
@@ -666,6 +668,21 @@
     <script src='//libtl.com/sdk.js' data-zone='9712189' data-sdk=''></script>
 
     <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyArRxp25Bnd117Z7323Yr50_D0GsiVNfC4",
+            authDomain: "tg-earning-02.firebaseapp.com",
+            databaseURL: "https://tg-earning-02-default-rtdb.firebaseio.com",
+            projectId: "tg-earning-02",
+            storageBucket: "tg-earning-02.firebasestorage.app",
+            messagingSenderId: "335697733595",
+            appId: "1:335697733595:web:7a311a0b5aafdb597ba9fe"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
         document.addEventListener('DOMContentLoaded', () => {
             const tg = window.Telegram.WebApp;
 
@@ -727,26 +744,42 @@
                 hasJoinedChannel: false,
                 hasJoinedGroup: false,
                 userId: null,
-                membership: 'free', // free, verified, premium, diamond
+                username: null,
+                membership: 'free',
                 withdrawalHistory: [],
                 adWatchStreak: 0
             };
 
             const saveState = () => {
                 if (userState.userId) {
-                    localStorage.setItem(`userState_${userState.userId}`, JSON.stringify(userState));
+                    database.ref(`users/${userState.userId}`).set(userState);
                 }
             };
 
-            const loadState = (userId) => {
-                const savedState = localStorage.getItem(`userState_${userId}`);
-                if (savedState) {
-                    userState = JSON.parse(savedState);
-                    if (userState.hasJoinedGroup === undefined) userState.hasJoinedGroup = false;
-                    if (userState.membership === undefined) userState.membership = 'free';
-                    if (userState.withdrawalHistory === undefined) userState.withdrawalHistory = [];
-                    if (userState.adWatchStreak === undefined) userState.adWatchStreak = 0;
-                }
+            const loadState = (userId, callback) => {
+                database.ref(`users/${userId}`).once('value', (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        userState = {
+                            points: data.points || 0,
+                            dailyAdWatchCount: data.dailyAdWatchCount || 0,
+                            lastAdWatchDate: data.lastAdWatchDate || null,
+                            referrals: data.referrals || [],
+                            hasJoinedChannel: data.hasJoinedChannel || false,
+                            hasJoinedGroup: data.hasJoinedGroup || false,
+                            userId: data.userId || userId,
+                            username: data.username || null,
+                            membership: data.membership || 'free',
+                            withdrawalHistory: data.withdrawalHistory || [],
+                            adWatchStreak: data.adWatchStreak || 0
+                        };
+                    } else {
+                        userState.userId = userId;
+                        userState.username = tg.initDataUnsafe.user.username || 'Unknown';
+                        saveState();
+                    }
+                    callback();
+                });
             };
 
             // --- Core Functions ---
@@ -761,20 +794,21 @@
                 }
 
                 userState.userId = user.id;
-                loadState(user.id);
+                userState.username = user.username || 'Unknown';
+                loadState(user.id, () => {
+                    const today = new Date().toISOString().slice(0, 10);
+                    if (userState.lastAdWatchDate !== today) {
+                        userState.dailyAdWatchCount = 0;
+                        userState.lastAdWatchDate = today;
+                        userState.adWatchStreak = 0;
+                        saveState();
+                    }
 
-                const today = new Date().toISOString().slice(0, 10);
-                if (userState.lastAdWatchDate !== today) {
-                    userState.dailyAdWatchCount = 0;
-                    userState.lastAdWatchDate = today;
-                    userState.adWatchStreak = 0;
-                }
-
-                updateUI();
-                setupNavigation();
-                setupEventListeners();
-                updateDateTime();
-                saveState();
+                    updateUI();
+                    setupNavigation();
+                    setupEventListeners();
+                    updateDateTime();
+                });
             };
 
             const updateDateTime = () => {
@@ -815,25 +849,25 @@
                     joinGroupBtn.disabled = true;
                 }
 
-                // Leaderboard (mock data, replace with API call for real-time data)
-                leaderboardList.innerHTML = [
-                    { name: 'User1', points: 1000, membership: 'diamond' },
-                    { name: 'User2', points: 800, membership: 'premium' },
-                    { name: 'User3', points: 600, membership: 'verified' },
-                    { name: 'User4', points: 500, membership: 'free' },
-                    { name: 'User5', points: 400, membership: 'premium' },
-                    { name: 'User6', points: 300, membership: 'diamond' },
-                    { name: 'User7', points: 200, membership: 'verified' },
-                    { name: 'User8', points: 150, membership: 'free' },
-                    { name: 'User9', points: 100, membership: 'premium' },
-                    { name: 'User10', points: 50, membership: 'free' }
-                ].map((user, index) => `
-                    <li class="leaderboard-item">
-                        <span>${index + 1}. ${user.name} <span class="membership-badge ${user.membership}-badge">${user.membership.charAt(0).toUpperCase() + user.membership.slice(1)}</span></span>
-                        <span>${user.points} TK</span>
-                    </li>`).join('');
+                // Fetch Leaderboard from Firebase
+                database.ref('users').orderByChild('points').limitToLast(10).once('value', (snapshot) => {
+                    const users = [];
+                    snapshot.forEach(child => {
+                        const userData = child.val();
+                        users.push({
+                            username: userData.username || 'Unknown',
+                            points: userData.points || 0,
+                            membership: userData.membership || 'free'
+                        });
+                    });
+                    leaderboardList.innerHTML = users.reverse().map((user, index) => `
+                        <li class="leaderboard-item">
+                            <span>${index + 1}. @${user.username} <span class="membership-badge ${user.membership}-badge">${user.membership.charAt(0).toUpperCase() + user.membership.slice(1)}</span></span>
+                            <span>${user.points} TK</span>
+                        </li>`).join('');
+                });
 
-                // Refer History (mock data)
+                // Refer History
                 referHistoryTable.innerHTML = userState.referrals.length ? userState.referrals.map((ref, index) => `
                     <tr>
                         <td>${index + 1}</td>
@@ -842,7 +876,7 @@
                         <td>${REFERRAL_BONUS} TK</td>
                     </tr>`).join('') : '<tr><td colspan="4">No referrals yet</td></tr>';
 
-                // Withdrawal Status (mock data)
+                // Withdrawal Status
                 statusList.innerHTML = userState.withdrawalHistory.length ? userState.withdrawalHistory.map(item => `
                     <div class="status-item">
                         <span>${item.amount} TK — ${item.status} (${item.date})</span>
