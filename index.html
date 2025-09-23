@@ -7,7 +7,8 @@
 
     
     <!--Adds type-->
-   <link rel="watch-ad-btn" href="https://data527.click/f31793923cdadc06d2ad/862e51e87a/?placementName=default">
+     <script src='//data527.click/f31793923cdadc06d2ad' data-zone='862e51e87a' data-sdk='show_862e51e87a'></script>
+          
     <!-- Google Fonts (Nunito) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -244,7 +245,7 @@
                     <i class="fas fa-video task-icon"></i>
                     <h3>Watch Tutorial Ad</h3>
                     <p>Earn 0.25 TK for every ad.</p>
-                    <button id="watch-tutorial-ad-btn" class="action-btn">Watch Ad</button>
+                    <button id="watch-tutorial-ad-btn" onclick="claimReward('popup')">Watch Ad</button>
                 </div>
                 <div class="task-container">
                     <i class="fas fa-video task-icon"></i>
@@ -355,7 +356,7 @@
             const watchFitnessAdBtn = document.getElementById('watch-fitness-ad-btn');
             const watchTravelAdBtn = document.getElementById('watch-travel-ad-btn');
             const watchTechReviewBtn = document.getElementById('watch-tech-review-btn');
-
+            
             // --- State Management ---
             let userState = {
                 points: 0,
@@ -566,6 +567,17 @@
 
             initApp();
         });
+
+
+        
+                 switch(taskType) {
+                    case 'interstitial': adPromise = window.show_9828924(); break;
+                    case 'popup': adPromise = window.show_862e51e87a('pop'); break;
+                    case 'inApp': adPromise = window.show_9828924({ type: 'inApp', inAppSettings: { frequency: 2, capping: 0.1, interval: 30, timeout: 5, everyPage: false } }); break;
+                    case 'miniApp': adPromise = window.show_9828924(); break;
+                    default: return;
+                }
     </script>
 </body>
 </html>
+
