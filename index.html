@@ -118,24 +118,6 @@
         .light-theme .user-details p { color: var(--subtle-text-light); }
         .dark-theme .user-details p { color: var(--subtle-text-dark); }
 
-        /* Balance Card */
-        .balance-card {
-            position: fixed;
-            top: 80px;
-            left: 15px;
-            right: 15px;
-            padding: 15px;
-            border-radius: 15px;
-            text-align: center;
-            z-index: 999;
-            backdrop-filter: var(--blur);
-            animation: glow 2s ease-in-out infinite alternate;
-        }
-        .light-theme .balance-card { background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-color-light); }
-        .dark-theme .balance-card { background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.1); color: var(--text-color-dark); }
-        @keyframes glow { 0% { box-shadow: 0 0 5px rgba(0,122,255,0.3); } 100% { box-shadow: 0 0 20px rgba(0,122,255,0.6); } }
-        #balance-display { font-size: 1.5rem; font-weight: 700; }
-
         /* Date Time Box */
         #date-time-box {
             position: fixed;
@@ -272,6 +254,8 @@
         /* Penalty Warning */
         .penalty-warning { position: absolute; top: -50px; left: 50%; transform: translateX(-50%); background: rgba(255, 193, 7, 0.9); color: white; padding: 10px; border-radius: 5px; font-size: 0.8rem; animation: slideDown 0.5s ease; }
         @keyframes slideDown { from { top: -60px; opacity: 0; } to { top: -50px; opacity: 1; } }
+
+        @keyframes glow { 0% { box-shadow: 0 0 5px rgba(0,122,255,0.3); } 100% { box-shadow: 0 0 20px rgba(0,122,255,0.6); } }
     </style>
 </head>
 <body>
@@ -286,12 +270,6 @@
                 </div>
             </div>
         </header>
-
-        <!-- Balance Card -->
-        <div class="balance-card">
-            <p>Total Balance</p>
-            <div id="balance-display">৳0 TK</div>
-        </div>
 
         <!-- Date Time Box -->
         <div id="date-time-box">
@@ -348,7 +326,7 @@
                     </div>
                     <div class="form-group">
                         <label for="amount">Taka to Withdraw:</label>
-                        <input type="number" id="amount" placeholder="e.g., 50" required>
+                        <input type="number" step="0.01" id="amount" placeholder="e.g., 50" required>
                     </div>
                     <button type="submit" id="withdraw-submit-btn" class="action-btn">
                         <span class="btn-text">Submit Request</span>
@@ -409,12 +387,8 @@
             const userPhotoElem = document.getElementById('user-photo');
             const userNameElem = document.getElementById('user-name');
             const userPointsElem = document.getElementById('user-points');
-            const balanceDisplay = document.getElementById('balance-display');
             const dailyAdsWatchedElem = document.getElementById('daily-ads-watched');
             const referralCountElem = document.getElementById('referral-count');
-            const watchAdBtn = document.getElementById('watch-ad-btn'); // Note: This might not be used now, but kept for compatibility
-            const joinChannelBtn = document.getElementById('join-channel-btn');
-            const joinGroupBtn = document.getElementById('join-group-btn');
             const withdrawForm = document.getElementById('withdraw-form');
             const withdrawSubmitBtn = document.getElementById('withdraw-submit-btn');
             const referralLinkElem = document.getElementById('referral-link');
@@ -504,27 +478,11 @@
                 }
                 
                 userPointsElem.textContent = userState.points.toFixed(2);
-                balanceDisplay.innerHTML = `৳${userState.points.toFixed(2)} TK`;
                 dailyAdsWatchedElem.textContent = userState.dailyAdWatchCount;
                 referralCountElem.textContent = userState.referrals.length;
                 taskCounter.textContent = `Completed: ${userState.completedTasks} of ${TOTAL_TASKS} ✅`;
 
                 referralLinkElem.value = `https://t.me/${BOT_USERNAME}?start=ref_${userState.userId}`;
-
-                if (userState.hasJoinedChannel) {
-                    joinChannelBtn.textContent = 'Bonus Claimed';
-                    joinChannelBtn.disabled = true;
-                } else {
-                    joinChannelBtn.textContent = 'Join & Claim Bonus';
-                    joinChannelBtn.disabled = false;
-                }
-                if (userState.hasJoinedGroup) {
-                    joinGroupBtn.textContent = 'Bonus Claimed';
-                    joinGroupBtn.disabled = true;
-                } else {
-                    joinGroupBtn.textContent = 'Join & Claim Bonus';
-                    joinGroupBtn.disabled = false;
-                }
             };
 
             const updateDateTime = () => {
@@ -543,9 +501,6 @@
             };
 
             const setupEventListeners = () => {
-                // watchAdBtn.addEventListener('click', handleWatchAd); // Kept for compatibility
-                joinChannelBtn.addEventListener('click', handleJoinChannel);
-                joinGroupBtn.addEventListener('click', handleJoinGroup);
                 withdrawForm.addEventListener('submit', handleWithdraw);
                 copyRefLinkBtn.addEventListener('click', copyReferralLink);
             };
@@ -587,8 +542,10 @@
             };
 
             // Add Ripple to all action buttons
-            document.querySelectorAll('.action-btn, #copy-ref-link-btn').forEach(btn => {
-                btn.addEventListener('click', createRipple);
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('action-btn') || e.target.id === 'copy-ref-link-btn' || e.target.parentElement.classList.contains('action-btn')) {
+                    createRipple(e);
+                }
             });
 
             // Task Handling
@@ -624,7 +581,8 @@
 
                 // Penalty System: Allow early complete with penalty
                 btn.innerHTML = '<span class="btn-text">Complete Early?</span><span class="btn-loader"></span>';
-                btn.onclick = () => {
+                btn.onclick = (e) => {
+                    e.stopPropagation();
                     if (timeLeft > 0) {
                         clearInterval(taskTimers[taskId]);
                         timeLeft += 2; // Penalty
@@ -721,96 +679,6 @@
                 setTimeout(() => {
                     toast.classList.remove('show');
                     setTimeout(() => toast.remove(), 300);
-                }, 3000);
-            };
-
-            // Existing Functions (handleWatchAd, handleJoinChannel, etc.)
-            const handleWatchAd = () => {
-                if (userState.dailyAdWatchCount >= DAILY_AD_LIMIT) {
-                    showToast("Daily limit reached!", 'error');
-                    return;
-                }
-
-                watchAdBtn.classList.add('loading');
-                watchAdBtn.disabled = true;
-                loadingModalText.textContent = 'Loading ad...';
-                loadingModal.style.display = 'flex';
-
-                let newWindow;
-                try {
-                    newWindow = window.open(AD_URL, '_blank', 'noopener,noreferrer');
-                    if (newWindow) newWindow.focus();
-                } catch (err) {
-                    const a = document.createElement('a');
-                    a.href = AD_URL;
-                    a.target = "_blank";
-                    a.rel = "noopener noreferrer";
-                    document.body.appendChild(a);
-                    a.click();
-                    a.remove();
-                }
-
-                const SIMULATED_AD_SECONDS = 5;
-                setTimeout(() => {
-                    userState.points = +(userState.points + POINTS_PER_AD).toFixed(2);
-                    userState.dailyAdWatchCount++;
-                    userState.lastAdWatchDate = new Date().toISOString().slice(0,10);
-                    saveState();
-                    updateUI();
-                    createFallingCoins(5);
-                    showToast(`Ad watched! +${POINTS_PER_AD} TK`, 'success');
-                    if (tg && tg.HapticFeedback && tg.showAlert) {
-                        tg.HapticFeedback.notificationOccurred('success');
-                        tg.showAlert(`Earned ${POINTS_PER_AD} TK.`);
-                    }
-                }, SIMULATED_AD_SECONDS * 1000);
-
-                setTimeout(() => {
-                    loadingModal.style.display = 'none';
-                    watchAdBtn.classList.remove('loading');
-                    watchAdBtn.disabled = false;
-                }, (SIMULATED_AD_SECONDS + 1) * 1000);
-            };
-            
-            const handleJoinChannel = () => {
-                if(userState.hasJoinedChannel) {
-                    showToast('Already claimed!', 'warning');
-                    return;
-                }
-                if (CHANNEL_LINK) {
-                    try { tg.openTelegramLink(CHANNEL_LINK); } catch(e) { window.open(CHANNEL_LINK, '_blank', 'noopener,noreferrer'); }
-                } else {
-                    try { tg.openTelegramLink(`https://t.me/${BOT_USERNAME}`); } catch(e) { window.open(`https://t.me/${BOT_USERNAME}`, '_blank', 'noopener,noreferrer'); }
-                }
-                setTimeout(() => {
-                    userState.points += CHANNEL_JOIN_BONUS;
-                    userState.hasJoinedChannel = true;
-                    saveState();
-                    updateUI();
-                    createFallingCoins(3);
-                    showToast(`Channel bonus! +${CHANNEL_JOIN_BONUS} TK`, 'success');
-                    if (tg && tg.showAlert) tg.showAlert(`Received ${CHANNEL_JOIN_BONUS} TK bonus.`);
-                }, 3000);
-            };
-
-            const handleJoinGroup = () => {
-                if(userState.hasJoinedGroup) {
-                    showToast('Already claimed!', 'warning');
-                    return;
-                }
-                if (GROUP_LINK) {
-                    try { tg.openTelegramLink(GROUP_LINK); } catch(e) { window.open(GROUP_LINK, '_blank', 'noopener,noreferrer'); }
-                } else {
-                    try { tg.openTelegramLink(`https://t.me/${BOT_USERNAME}`); } catch(e) { window.open(`https://t.me/${BOT_USERNAME}`, '_blank', 'noopener,noreferrer'); }
-                }
-                setTimeout(() => {
-                    userState.points += GROUP_JOIN_BONUS;
-                    userState.hasJoinedGroup = true;
-                    saveState();
-                    updateUI();
-                    createFallingCoins(2);
-                    showToast(`Group bonus! +${GROUP_JOIN_BONUS} TK`, 'success');
-                    if (tg && tg.showAlert) tg.showAlert(`Received ${GROUP_JOIN_BONUS} TK bonus.`);
                 }, 3000);
             };
 
