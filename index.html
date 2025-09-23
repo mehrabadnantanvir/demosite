@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Earn & Reward App</title>
+    <title>Finova Cash</title>
     
     <!-- Google Fonts (Nunito) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,6 +12,9 @@
     
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    <!-- Remix Icon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css">
 
     <!-- Internal CSS -->
     <style>
@@ -155,7 +158,7 @@
             <div class="profile-info">
                 <img id="user-photo" src="" alt="User Photo">
                 <div class="user-details">
-                    <h1 id="user-name">Loading... <i class="fas fa-check-circle verified-icon"></i></h1>
+                    <h1 id="user-name">Loading... <i class="ri-verified-badge-fill" style="color: #3b82f6; font-size: 1.125rem; margin-left: 0.25rem;"></i></h1>
                     <p> Balance: ৳<span id="user-points">0</span>TK</p>
                 </div>
             </div>
@@ -204,6 +207,66 @@
                     <p>Get ৳2 bonus.</p>
                     <button id="join-group-btn" class="action-btn">Join & Claim Bonus</button>
                 </div>
+                <div class="task-container">
+                    <i class="fas fa-video task-icon"></i>
+                    <h3>Watch Product Video Ad</h3>
+                    <p>Earn 0.25 TK for every ad.</p>
+                    <button id="watch-product-video-btn" class="action-btn">Watch Ad</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-video task-icon"></i>
+                    <h3>Watch Movie Trailer Ad</h3>
+                    <p>Earn 0.25 TK for every ad.</p>
+                    <button id="watch-movie-trailer-btn" class="action-btn">Watch Ad</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-video task-icon"></i>
+                    <h3>Watch Game Ad</h3>
+                    <p>Earn 0.25 TK for every ad.</p>
+                    <button id="watch-game-ad-btn" class="action-btn">Watch Ad</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-video task-icon"></i>
+                    <h3>Watch Music Video Ad</h3>
+                    <p>Earn 0.25 TK for every ad.</p>
+                    <button id="watch-music-video-btn" class="action-btn">Watch Ad</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-video task-icon"></i>
+                    <h3>Watch News Clip Ad</h3>
+                    <p>Earn 0.25 TK for every ad.</p>
+                    <button id="watch-news-clip-btn" class="action-btn">Watch Ad</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-video task-icon"></i>
+                    <h3>Watch Tutorial Ad</h3>
+                    <p>Earn 0.25 TK for every ad.</p>
+                    <button id="watch-tutorial-ad-btn" class="action-btn">Watch Ad</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-video task-icon"></i>
+                    <h3>Watch Recipe Ad</h3>
+                    <p>Earn 0.25 TK for every ad.</p>
+                    <button id="watch-recipe-ad-btn" class="action-btn">Watch Ad</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-video task-icon"></i>
+                    <h3>Watch Fitness Ad</h3>
+                    <p>Earn 0.25 TK for every ad.</p>
+                    <button id="watch-fitness-ad-btn" class="action-btn">Watch Ad</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-video task-icon"></i>
+                    <h3>Watch Travel Ad</h3>
+                    <p>Earn 0.25 TK for every ad.</p>
+                    <button id="watch-travel-ad-btn" class="action-btn">Watch Ad</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-video task-icon"></i>
+                    <h3>Watch Tech Review Ad</h3>
+                    <p>Earn 0.25 TK for every ad.</p>
+                    <button id="watch-tech-review-btn" class="action-btn">Watch Ad</button>
+                </div>
             </div>
             
             <!-- Withdraw Page -->
@@ -247,7 +310,7 @@
     </div>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script type="text/javascript" src="//data527.click/306ccb464bcfc25064fd/93997cc648/?placementName=default"></script>
+    <script src='//libtl.com/sdk.js' data-zone='9712189' data-sdk=''></script>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -259,7 +322,7 @@
             const ADMIN_CHAT_ID = "6453637469";
             const CHANNEL_LINK = "";
             const GROUP_LINK = "";
-            const DAILY_AD_LIMIT = 25;
+            const DAILY_AD_LIMIT = 1500;
             const POINTS_PER_AD = 0.25;
             const CHANNEL_JOIN_BONUS = 10;
             const GROUP_JOIN_BONUS = 0;
@@ -279,6 +342,16 @@
             const referralLinkElem = document.getElementById('referral-link');
             const copyRefLinkBtn = document.getElementById('copy-ref-link-btn');
             const loadingModal = document.getElementById('loading-modal');
+            const watchProductVideoBtn = document.getElementById('watch-product-video-btn');
+            const watchMovieTrailerBtn = document.getElementById('watch-movie-trailer-btn');
+            const watchGameAdBtn = document.getElementById('watch-game-ad-btn');
+            const watchMusicVideoBtn = document.getElementById('watch-music-video-btn');
+            const watchNewsClipBtn = document.getElementById('watch-news-clip-btn');
+            const watchTutorialAdBtn = document.getElementById('watch-tutorial-ad-btn');
+            const watchRecipeAdBtn = document.getElementById('watch-recipe-ad-btn');
+            const watchFitnessAdBtn = document.getElementById('watch-fitness-ad-btn');
+            const watchTravelAdBtn = document.getElementById('watch-travel-ad-btn');
+            const watchTechReviewBtn = document.getElementById('watch-tech-review-btn');
 
             // --- State Management ---
             let userState = {
@@ -337,7 +410,7 @@
                 const user = tg.initDataUnsafe.user;
                 if (user) {
                     userPhotoElem.src = user.photo_url || 'https://i.imgur.com/placeholder.png';
-                    userNameElem.innerHTML = `${user.first_name || ''} ${user.last_name || ''} <i class="fas fa-check-circle verified-icon"></i>`;
+                    userNameElem.innerHTML = `${user.first_name || ''} ${user.last_name || ''} <i class="ri-verified-badge-fill" style="color: #3b82f6; font-size: 1.125rem; margin-left: 0.25rem;"></i>`;
                 }
                 
                 userPointsElem.textContent = userState.points;
@@ -363,6 +436,16 @@
                 joinGroupBtn.addEventListener('click', handleJoinGroup); // New listener
                 withdrawForm.addEventListener('submit', handleWithdraw);
                 copyRefLinkBtn.addEventListener('click', copyReferralLink);
+                watchProductVideoBtn.addEventListener('click', handleWatchAd);
+                watchMovieTrailerBtn.addEventListener('click', handleWatchAd);
+                watchGameAdBtn.addEventListener('click', handleWatchAd);
+                watchMusicVideoBtn.addEventListener('click', handleWatchAd);
+                watchNewsClipBtn.addEventListener('click', handleWatchAd);
+                watchTutorialAdBtn.addEventListener('click', handleWatchAd);
+                watchRecipeAdBtn.addEventListener('click', handleWatchAd);
+                watchFitnessAdBtn.addEventListener('click', handleWatchAd);
+                watchTravelAdBtn.addEventListener('click', handleWatchAd);
+                watchTechReviewBtn.addEventListener('click', handleWatchAd);
             };
 
             const handleWatchAd = () => {
@@ -370,7 +453,7 @@
                     tg.showAlert("You have reached your daily ad watch limit."); return;
                 }
                 loadingModal.style.display = 'flex';
-                show_93997cc648().then(() => {
+                show_9712189().then(() => {
                     userState.points += POINTS_PER_AD;
                     userState.dailyAdWatchCount++;
                     saveState();
