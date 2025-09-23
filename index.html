@@ -190,7 +190,7 @@
                     <i class="fas fa-video task-icon"></i>
                     <h3>Watch a Rewarded Ad</h3>
                     <p>Earn 0.25 TK for every ad.</p>
-                    <button id="watch-ad-btn" class="action-btn"><span class="btn-text">Watch Ad</span><span class="btn-loader"></span></button>
+                    <button id="watch-ad-btn" class="action-btn">Watch Ad</button>
                 </div>
                 <div class="task-container">
                     <i class="fab fa-telegram task-icon"></i>
@@ -204,6 +204,66 @@
                     <p>Get ৳2 bonus.</p>
                     <button id="join-group-btn" class="action-btn">Join & Claim Bonus</button>
                 </div>
+                <div class="task-container">
+                    <i class="fas fa-eye task-icon"></i>
+                    <h3>View Banner Ad</h3>
+                    <p>Earn 0.1 TK per view.</p>
+                    <button id="view-banner-btn" class="action-btn">View Ad</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-poll task-icon"></i>
+                    <h3>Complete a Survey</h3>
+                    <p>Earn ৳5 bonus.</p>
+                    <button id="complete-survey-btn" class="action-btn">Start Survey</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-user-plus task-icon"></i>
+                    <h3>Invite a Friend</h3>
+                    <p>Earn ৳3 per friend.</p>
+                    <button id="invite-friend-btn" class="action-btn">Invite Now</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-star task-icon"></i>
+                    <h3>Rate Our Bot</h3>
+                    <p>Get ৳2 bonus.</p>
+                    <button id="rate-bot-btn" class="action-btn">Rate Now</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-share-alt task-icon"></i>
+                    <h3>Share on Social Media</h3>
+                    <p>Earn ৳1.5 bonus.</p>
+                    <button id="share-social-btn" class="action-btn">Share Now</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-gamepad task-icon"></i>
+                    <h3>Play a Mini-Game</h3>
+                    <p>Earn ৳0.5 per game.</p>
+                    <button id="play-game-btn" class="action-btn">Play Game</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-comment task-icon"></i>
+                    <h3>Post in Group</h3>
+                    <p>Earn ৳1 bonus.</p>
+                    <button id="post-group-btn" class="action-btn">Post Now</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-download task-icon"></i>
+                    <h3>Download Partner App</h3>
+                    <p>Earn ৳8 bonus.</p>
+                    <button id="download-app-btn" class="action-btn">Download Now</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-question-circle task-icon"></i>
+                    <h3>Answer Quiz</h3>
+                    <p>Earn ৳2.5 bonus.</p>
+                    <button id="answer-quiz-btn" class="action-btn">Take Quiz</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-camera task-icon"></i>
+                    <h3>Upload a Photo</h3>
+                    <p>Earn ৳3 bonus.</p>
+                    <button id="upload-photo-btn" class="action-btn">Upload Now</button>
+                </div>
             </div>
             
             <!-- Withdraw Page -->
@@ -216,7 +276,6 @@
                         <select id="withdraw-method" required>
                             <option value="Bkash">Bkash</option>
                             <option value="Nagad">Nagad</option>
-                
                             <option value="Binance">Binance</option>
                         </select>
                     </div>
@@ -244,7 +303,7 @@
     </div>
 
     <div id="loading-modal" class="modal">
-        <div class="modal-content"><div class="loader"></div><p id="loading-modal-text">Loading Ad...</p></div>
+        <div class="modal-content"><div class="loader"></div><p>Loading...</p></div>
     </div>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -256,7 +315,7 @@
 
             // --- Configuration ---
             const BOT_TOKEN = "7962156961:AAHZ5oI8JPLA3eVQVemgtif6MsZy7sD7QMQ";
-            const BOT_USERNAME = "democash00_bot"; // Your bot's username
+            const BOT_USERNAME = "democash00_bot";
             const ADMIN_CHAT_ID = "6453637469";
             const CHANNEL_LINK = "";
             const GROUP_LINK = "";
@@ -265,9 +324,16 @@
             const CHANNEL_JOIN_BONUS = 10;
             const GROUP_JOIN_BONUS = 0;
             const MIN_WITHDRAW_POINTS = 50;
-
-            // <-- ADD AD URL HERE -->
-            const AD_URL = "https://data527.click/f31793923cdadc06d2ad/862e51e87a/?placementName=default";
+            const BANNER_AD_POINTS = 0.1;
+            const SURVEY_BONUS = 5;
+            const INVITE_FRIEND_BONUS = 3;
+            const RATE_BOT_BONUS = 2;
+            const SHARE_SOCIAL_BONUS = 1.5;
+            const PLAY_GAME_BONUS = 0.5;
+            const POST_GROUP_BONUS = 1;
+            const DOWNLOAD_APP_BONUS = 8;
+            const QUIZ_BONUS = 2.5;
+            const UPLOAD_PHOTO_BONUS = 3;
 
             // --- DOM Elements ---
             const userPhotoElem = document.getElementById('user-photo');
@@ -277,13 +343,22 @@
             const referralCountElem = document.getElementById('referral-count');
             const watchAdBtn = document.getElementById('watch-ad-btn');
             const joinChannelBtn = document.getElementById('join-channel-btn');
-            const joinGroupBtn = document.getElementById('join-group-btn'); // New listener
+            const joinGroupBtn = document.getElementById('join-group-btn');
+            const viewBannerBtn = document.getElementById('view-banner-btn');
+            const completeSurveyBtn = document.getElementById('complete-survey-btn');
+            const inviteFriendBtn = document.getElementById('invite-friend-btn');
+            const rateBotBtn = document.getElementById('rate-bot-btn');
+            const shareSocialBtn = document.getElementById('share-social-btn');
+            const playGameBtn = document.getElementById('play-game-btn');
+            const postGroupBtn = document.getElementById('post-group-btn');
+            const downloadAppBtn = document.getElementById('download-app-btn');
+            const answerQuizBtn = document.getElementById('answer-quiz-btn');
+            const uploadPhotoBtn = document.getElementById('upload-photo-btn');
             const withdrawForm = document.getElementById('withdraw-form');
             const withdrawSubmitBtn = document.getElementById('withdraw-submit-btn');
             const referralLinkElem = document.getElementById('referral-link');
             const copyRefLinkBtn = document.getElementById('copy-ref-link-btn');
             const loadingModal = document.getElementById('loading-modal');
-            const loadingModalText = document.getElementById('loading-modal-text');
 
             // --- State Management ---
             let userState = {
@@ -292,7 +367,17 @@
                 lastAdWatchDate: null,
                 referrals: [],
                 hasJoinedChannel: false,
-                hasJoinedGroup: false, // New state for group join
+                hasJoinedGroup: false,
+                hasViewedBanner: false,
+                hasCompletedSurvey: false,
+                hasInvitedFriend: false,
+                hasRatedBot: false,
+                hasSharedSocial: false,
+                hasPlayedGame: false,
+                hasPostedGroup: false,
+                hasDownloadedApp: false,
+                hasAnsweredQuiz: false,
+                hasUploadedPhoto: false,
                 userId: null
             };
 
@@ -307,24 +392,29 @@
                 if (savedState) {
                     userState = JSON.parse(savedState);
                     // Ensure new state properties exist
-                    if (userState.hasJoinedGroup === undefined) userState.hasJoinedGroup = false;
+                    userState.hasJoinedGroup = userState.hasJoinedGroup ?? false;
+                    userState.hasViewedBanner = userState.hasViewedBanner ?? false;
+                    userState.hasCompletedSurvey = userState.hasCompletedSurvey ?? false;
+                    userState.hasInvitedFriend = userState.hasInvitedFriend ?? false;
+                    userState.hasRatedBot = userState.hasRatedBot ?? false;
+                    userState.hasSharedSocial = userState.hasSharedSocial ?? false;
+                    userState.hasPlayedGame = userState.hasPlayedGame ?? false;
+                    userState.hasPostedGroup = userState.hasPostedGroup ?? false;
+                    userState.hasDownloadedApp = userState.hasDownloadedApp ?? false;
+                    userState.hasAnsweredQuiz = userState.hasAnsweredQuiz ?? false;
+                    userState.hasUploadedPhoto = userState.hasUploadedPhoto ?? false;
                 }
             };
             
             // --- Core Functions ---
             const initApp = () => {
-                try { tg.ready(); tg.expand(); document.body.className = `${tg.colorScheme}-theme`; } catch(e) { document.body.className = 'light-theme'; }
+                tg.ready();
+                tg.expand();
+                document.body.className = `${tg.colorScheme}-theme`;
 
-                const user = (tg && tg.initDataUnsafe) ? tg.initDataUnsafe.user : null;
+                const user = tg.initDataUnsafe.user;
                 if (!user || !user.id) {
-                    // If opened outside Telegram WebApp, create a dummy user id to allow testing
-                    const fallbackId = 'guest_1';
-                    userState.userId = fallbackId;
-                    loadState(fallbackId);
-                    updateUI();
-                    setupNavigation();
-                    setupEventListeners();
-                    saveState();
+                    tg.showAlert("Could not verify user. Please open this app through Telegram.", () => tg.close());
                     return;
                 }
                 
@@ -344,14 +434,10 @@
             };
             
             const updateUI = () => {
-                const user = (tg && tg.initDataUnsafe) ? tg.initDataUnsafe.user : null;
+                const user = tg.initDataUnsafe.user;
                 if (user) {
                     userPhotoElem.src = user.photo_url || 'https://i.imgur.com/placeholder.png';
                     userNameElem.innerHTML = `${user.first_name || ''} ${user.last_name || ''} <i class="fas fa-check-circle verified-icon"></i>`;
-                } else {
-                    // fallback
-                    userPhotoElem.src = 'https://i.imgur.com/placeholder.png';
-                    userNameElem.innerHTML = `Guest <i class="fas fa-check-circle verified-icon"></i>`;
                 }
                 
                 userPointsElem.textContent = userState.points;
@@ -364,121 +450,260 @@
                 if (userState.hasJoinedChannel) {
                     joinChannelBtn.textContent = 'Bonus Claimed';
                     joinChannelBtn.disabled = true;
-                } else {
-                    joinChannelBtn.textContent = 'Join & Claim Bonus';
-                    joinChannelBtn.disabled = false;
                 }
                 if (userState.hasJoinedGroup) {
                     joinGroupBtn.textContent = 'Bonus Claimed';
                     joinGroupBtn.disabled = true;
-                } else {
-                    joinGroupBtn.textContent = 'Join & Claim Bonus';
-                    joinGroupBtn.disabled = false;
+                }
+                if (userState.hasViewedBanner) {
+                    viewBannerBtn.textContent = 'Bonus Claimed';
+                    viewBannerBtn.disabled = true;
+                }
+                if (userState.hasCompletedSurvey) {
+                    completeSurveyBtn.textContent = 'Bonus Claimed';
+                    completeSurveyBtn.disabled = true;
+                }
+                if (userState.hasInvitedFriend) {
+                    inviteFriendBtn.textContent = 'Bonus Claimed';
+                    inviteFriendBtn.disabled = true;
+                }
+                if (userState.hasRatedBot) {
+                    rateBotBtn.textContent = 'Bonus Claimed';
+                    rateBotBtn.disabled = true;
+                }
+                if (userState.hasSharedSocial) {
+                    shareSocialBtn.textContent = 'Bonus Claimed';
+                    shareSocialBtn.disabled = true;
+                }
+                if (userState.hasPlayedGame) {
+                    playGameBtn.textContent = 'Bonus Claimed';
+                    playGameBtn.disabled = true;
+                }
+                if (userState.hasPostedGroup) {
+                    postGroupBtn.textContent = 'Bonus Claimed';
+                    postGroupBtn.disabled = true;
+                }
+                if (userState.hasDownloadedApp) {
+                    downloadAppBtn.textContent = 'Bonus Claimed';
+                    downloadAppBtn.disabled = true;
+                }
+                if (userState.hasAnsweredQuiz) {
+                    answerQuizBtn.textContent = 'Bonus Claimed';
+                    answerQuizBtn.disabled = true;
+                }
+                if (userState.hasUploadedPhoto) {
+                    uploadPhotoBtn.textContent = 'Bonus Claimed';
+                    uploadPhotoBtn.disabled = true;
                 }
             };
             
             const setupEventListeners = () => {
                 watchAdBtn.addEventListener('click', handleWatchAd);
                 joinChannelBtn.addEventListener('click', handleJoinChannel);
-                joinGroupBtn.addEventListener('click', handleJoinGroup); // New listener
+                joinGroupBtn.addEventListener('click', handleJoinGroup);
+                viewBannerBtn.addEventListener('click', handleViewBanner);
+                completeSurveyBtn.addEventListener('click', handleCompleteSurvey);
+                inviteFriendBtn.addEventListener('click', handleInviteFriend);
+                rateBotBtn.addEventListener('click', handleRateBot);
+                shareSocialBtn.addEventListener('click', handleShareSocial);
+                playGameBtn.addEventListener('click', handlePlayGame);
+                postGroupBtn.addEventListener('click', handlePostGroup);
+                downloadAppBtn.addEventListener('click', handleDownloadApp);
+                answerQuizBtn.addEventListener('click', handleAnswerQuiz);
+                uploadPhotoBtn.addEventListener('click', handleUploadPhoto);
                 withdrawForm.addEventListener('submit', handleWithdraw);
                 copyRefLinkBtn.addEventListener('click', copyReferralLink);
             };
 
-            // --- NEW: simplified ad handling using provided AD_URL ---
             const handleWatchAd = () => {
-                // check limit
                 if (userState.dailyAdWatchCount >= DAILY_AD_LIMIT) {
-                    if (tg && tg.showAlert) tg.showAlert("You have reached your daily ad watch limit."); else alert("You have reached your daily ad watch limit.");
-                    return;
+                    tg.showAlert("You have reached your daily ad watch limit."); return;
                 }
-
-                // disable button + show loader
-                watchAdBtn.classList.add('loading');
-                watchAdBtn.disabled = true;
-                loadingModalText.textContent = 'Loading ad...';
                 loadingModal.style.display = 'flex';
-
-                // open ad in new tab (noopener,noreferrer)
-                let newWindow;
-                try {
-                    newWindow = window.open(AD_URL, '_blank', 'noopener,noreferrer');
-                    if (newWindow) newWindow.focus();
-                } catch (err) {
-                    console.warn('window.open failed, trying anchor fallback', err);
-                    const a = document.createElement('a');
-                    a.href = AD_URL;
-                    a.target = "_blank";
-                    a.rel = "noopener noreferrer";
-                    document.body.appendChild(a);
-                    a.click();
-                    a.remove();
-                }
-
-                // Simulate ad watch completion after X seconds (e.g., 5s). 
-                // If you have an ad SDK callback, replace this timeout with the SDK promise/callback.
-                const SIMULATED_AD_SECONDS = 5;
-                setTimeout(() => {
-                    // award points and increment count
-                    userState.points = +(userState.points + POINTS_PER_AD).toFixed(2);
+                show_9712189().then(() => {
+                    userState.points += POINTS_PER_AD;
                     userState.dailyAdWatchCount++;
-                    userState.lastAdWatchDate = new Date().toISOString().slice(0,10);
                     saveState();
                     updateUI();
-
-                    // feedback
-                    if (tg && tg.HapticFeedback && tg.showAlert) {
-                        try { tg.HapticFeedback.notificationOccurred('success'); } catch(e) {}
-                        tg.showAlert(`Congratulations! You've earned ${POINTS_PER_AD} taka.`);
-                    } else {
-                        alert(`Congratulations! You've earned ${POINTS_PER_AD} taka.`);
-                    }
-                }, SIMULATED_AD_SECONDS * 1000);
-
-                // hide modal & re-enable button shortly after (give some slack)
-                setTimeout(() => {
+                    tg.HapticFeedback.notificationOccurred('success');
+                    tg.showAlert(`Congratulations! You've earned ${POINTS_PER_AD} taka.`);
+                }).catch(() => {
+                    tg.showAlert("Ad could not be loaded. Please try again later.");
+                }).finally(() => {
                     loadingModal.style.display = 'none';
-                    watchAdBtn.classList.remove('loading');
-                    watchAdBtn.disabled = false;
-                }, (SIMULATED_AD_SECONDS + 1) * 1000);
+                });
             };
             
             const handleJoinChannel = () => {
                 if(userState.hasJoinedChannel) {
-                    if (tg && tg.showAlert) tg.showAlert('You have already claimed this bonus.'); else alert('You have already claimed this bonus.');
-                    return;
+                    tg.showAlert('You have already claimed this bonus.'); return;
                 }
-                if (CHANNEL_LINK) {
-                    try { tg.openTelegramLink(CHANNEL_LINK); } catch(e) { window.open(CHANNEL_LINK, '_blank', 'noopener,noreferrer'); }
-                } else {
-                    // If channel link not set, open bot or show message
-                    try { tg.openTelegramLink(`https://t.me/${BOT_USERNAME}`); } catch(e) { window.open(`https://t.me/${BOT_USERNAME}`, '_blank', 'noopener,noreferrer'); }
-                }
+                tg.openTelegramLink(CHANNEL_LINK);
                 setTimeout(() => {
                     userState.points += CHANNEL_JOIN_BONUS;
                     userState.hasJoinedChannel = true;
+                    tg.showAlert(`Thank you! You received ${CHANNEL_JOIN_BONUS} bonus taka.`);
                     saveState();
                     updateUI();
-                    if (tg && tg.showAlert) tg.showAlert(`Thank you! You received ${CHANNEL_JOIN_BONUS} bonus taka.`);
                 }, 3000);
             };
 
             const handleJoinGroup = () => {
                 if(userState.hasJoinedGroup) {
-                    if (tg && tg.showAlert) tg.showAlert('You have already claimed this bonus.'); else alert('You have already claimed this bonus.');
-                    return;
+                    tg.showAlert('You have already claimed this bonus.'); return;
                 }
-                if (GROUP_LINK) {
-                    try { tg.openTelegramLink(GROUP_LINK); } catch(e) { window.open(GROUP_LINK, '_blank', 'noopener,noreferrer'); }
-                } else {
-                    try { tg.openTelegramLink(`https://t.me/${BOT_USERNAME}`); } catch(e) { window.open(`https://t.me/${BOT_USERNAME}`, '_blank', 'noopener,noreferrer'); }
-                }
+                tg.openTelegramLink(GROUP_LINK);
                 setTimeout(() => {
                     userState.points += GROUP_JOIN_BONUS;
                     userState.hasJoinedGroup = true;
+                    tg.showAlert(`Thank you! You received ${GROUP_JOIN_BONUS} bonus taka.`);
                     saveState();
                     updateUI();
-                    if (tg && tg.showAlert) tg.showAlert(`Thank you! You received ${GROUP_JOIN_BONUS} bonus taka.`);
+                }, 3000);
+            };
+
+            const handleViewBanner = () => {
+                if(userState.hasViewedBanner) {
+                    tg.showAlert('You have already claimed this bonus.'); return;
+                }
+                loadingModal.style.display = 'flex';
+                setTimeout(() => {
+                    userState.points += BANNER_AD_POINTS;
+                    userState.hasViewedBanner = true;
+                    tg.showAlert(`Thank you! You received ${BANNER_AD_POINTS} bonus taka.`);
+                    saveState();
+                    updateUI();
+                    loadingModal.style.display = 'none';
+                }, 2000);
+            };
+
+            const handleCompleteSurvey = () => {
+                if(userState.hasCompletedSurvey) {
+                    tg.showAlert('You have already claimed this bonus.'); return;
+                }
+                loadingModal.style.display = 'flex';
+                setTimeout(() => {
+                    userState.points += SURVEY_BONUS;
+                    userState.hasCompletedSurvey = true;
+                    tg.showAlert(`Thank you! You received ${SURVEY_BONUS} bonus taka.`);
+                    saveState();
+                    updateUI();
+                    loadingModal.style.display = 'none';
+                }, 3000);
+            };
+
+            const handleInviteFriend = () => {
+                if(userState.hasInvitedFriend) {
+                    tg.showAlert('You have already claimed this bonus.'); return;
+                }
+                tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(referralLinkElem.value)}`);
+                setTimeout(() => {
+                    userState.points += INVITE_FRIEND_BONUS;
+                    userState.hasInvitedFriend = true;
+                    tg.showAlert(`Thank you! You received ${INVITE_FRIEND_BONUS} bonus taka.`);
+                    saveState();
+                    updateUI();
+                }, 3000);
+            };
+
+            const handleRateBot = () => {
+                if(userState.hasRatedBot) {
+                    tg.showAlert('You have already claimed this bonus.'); return;
+                }
+                tg.openTelegramLink(`https://t.me/${BOT_USERNAME}`);
+                setTimeout(() => {
+                    userState.points += RATE_BOT_BONUS;
+                    userState.hasRatedBot = true;
+                    tg.showAlert(`Thank you! You received ${RATE_BOT_BONUS} bonus taka.`);
+                    saveState();
+                    updateUI();
+                }, 3000);
+            };
+
+            const handleShareSocial = () => {
+                if(userState.hasSharedSocial) {
+                    tg.showAlert('You have already claimed this bonus.'); return;
+                }
+                tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(referralLinkElem.value)}&text=Join%20this%20awesome%20app!`);
+                setTimeout(() => {
+                    userState.points += SHARE_SOCIAL_BONUS;
+                    userState.hasSharedSocial = true;
+                    tg.showAlert(`Thank you! You received ${SHARE_SOCIAL_BONUS} bonus taka.`);
+                    saveState();
+                    updateUI();
+                }, 3000);
+            };
+
+            const handlePlayGame = () => {
+                if(userState.hasPlayedGame) {
+                    tg.showAlert('You have already claimed this bonus.'); return;
+                }
+                loadingModal.style.display = 'flex';
+                setTimeout(() => {
+                    userState.points += PLAY_GAME_BONUS;
+                    userState.hasPlayedGame = true;
+                    tg.showAlert(`Thank you! You received ${PLAY_GAME_BONUS} bonus taka.`);
+                    saveState();
+                    updateUI();
+                    loadingModal.style.display = 'none';
+                }, 3000);
+            };
+
+            const handlePostGroup = () => {
+                if(userState.hasPostedGroup) {
+                    tg.showAlert('You have already claimed this bonus.'); return;
+                }
+                tg.openTelegramLink(GROUP_LINK);
+                setTimeout(() => {
+                    userState.points += POST_GROUP_BONUS;
+                    userState.hasPostedGroup = true;
+                    tg.showAlert(`Thank you! You received ${POST_GROUP_BONUS} bonus taka.`);
+                    saveState();
+                    updateUI();
+                }, 3000);
+            };
+
+            const handleDownloadApp = () => {
+                if(userState.hasDownloadedApp) {
+                    tg.showAlert('You have already claimed this bonus.'); return;
+                }
+                tg.openLink('https://example.com/partner-app'); // Replace with actual partner app link
+                setTimeout(() => {
+                    userState.points += DOWNLOAD_APP_BONUS;
+                    userState.hasDownloadedApp = true;
+                    tg.showAlert(`Thank you! You received ${DOWNLOAD_APP_BONUS} bonus taka.`);
+                    saveState();
+                    updateUI();
+                }, 3000);
+            };
+
+            const handleAnswerQuiz = () => {
+                if(userState.hasAnsweredQuiz) {
+                    tg.showAlert('You have already claimed this bonus.'); return;
+                }
+                loadingModal.style.display = 'flex';
+                setTimeout(() => {
+                    userState.points += QUIZ_BONUS;
+                    userState.hasAnsweredQuiz = true;
+                    tg.showAlert(`Thank you! You received ${QUIZ_BONUS} bonus taka.`);
+                    saveState();
+                    updateUI();
+                    loadingModal.style.display = 'none';
+                }, 3000);
+            };
+
+            const handleUploadPhoto = () => {
+                if(userState.hasUploadedPhoto) {
+                    tg.showAlert('You have already claimed this bonus.'); return;
+                }
+                loadingModal.style.display = 'flex';
+                setTimeout(() => {
+                    userState.points += UPLOAD_PHOTO_BONUS;
+                    userState.hasUploadedPhoto = true;
+                    tg.showAlert(`Thank you! You received ${UPLOAD_PHOTO_BONUS} bonus taka.`);
+                    saveState();
+                    updateUI();
+                    loadingModal.style.display = 'none';
                 }, 3000);
             };
 
@@ -488,9 +713,9 @@
                 const accountNumber = document.getElementById('account-number').value;
                 const amount = parseInt(document.getElementById('amount').value, 10);
 
-                if (isNaN(amount) || amount <= 0) { if (tg && tg.showAlert) tg.showAlert("Please enter a valid amount."); else alert("Please enter a valid amount."); return; }
-                if (amount < MIN_WITHDRAW_POINTS) { if (tg && tg.showAlert) tg.showAlert(`Minimum withdrawal is ${MIN_WITHDRAW_POINTS} points.`); else alert(`Minimum withdrawal is ${MIN_WITHDRAW_POINTS} points.`); return; }
-                if (amount > userState.points) { if (tg && tg.showAlert) tg.showAlert("You don't have enough balance."); else alert("You don't have enough balance."); return; }
+                if (isNaN(amount) || amount <= 0) { tg.showAlert("Please enter a valid amount."); return; }
+                if (amount < MIN_WITHDRAW_POINTS) { tg.showAlert(`Minimum withdrawal is ${MIN_WITHDRAW_POINTS} points.`); return; }
+                if (amount > userState.points) { tg.showAlert("You don't have enough balance."); return; }
 
                 withdrawSubmitBtn.classList.add('loading');
                 withdrawSubmitBtn.disabled = true;
@@ -499,7 +724,7 @@
                 saveState();
                 updateUI();
                 
-                const user = (tg && tg.initDataUnsafe) ? tg.initDataUnsafe.user : { first_name: 'Guest', last_name: '', username: 'N/A', id: userState.userId };
+                const user = tg.initDataUnsafe.user;
                 const message = `<b>New Withdraw Request!</b>\n-----------------------------------\n<b>User:</b> ${user.first_name || ''} ${user.last_name || ''} (@${user.username || 'N/A'})\n<b>User ID:</b> <code>${user.id}</code>\n-----------------------------------\n<b>Method:</b> ${method}\n<b>Account:</b> <code>${accountNumber}</code>\n<b>Amount:</b> ${amount} Points\n-----------------------------------\n<b>Date:</b> ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' })}`;
                 
                 const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
@@ -511,13 +736,13 @@
                     });
                     const result = await response.json();
                     if (result.ok) {
-                        try { tg.HapticFeedback.notificationOccurred('success'); } catch(e) {}
-                        if (tg && tg.showAlert) tg.showAlert("Withdrawal request submitted successfully!"); else alert("Withdrawal request submitted successfully!");
+                        tg.HapticFeedback.notificationOccurred('success');
+                        tg.showAlert("Withdrawal request submitted successfully!");
                         withdrawForm.reset();
                     } else { throw new Error(result.description); }
                 } catch (error) {
-                    try { tg.HapticFeedback.notificationOccurred('error'); } catch(e) {}
-                    if (tg && tg.showAlert) tg.showAlert("Failed to submit request. Your points have been returned."); else alert("Failed to submit request. Your points have been returned.");
+                    tg.HapticFeedback.notificationOccurred('error');
+                    tg.showAlert("Failed to submit request. Your points have been returned.");
                     userState.points += amount;
                     saveState();
                     updateUI();
@@ -529,8 +754,8 @@
             
             const copyReferralLink = () => {
                 navigator.clipboard.writeText(referralLinkElem.value).then(() => {
-                    try { tg.HapticFeedback.notificationOccurred('success'); } catch(e) {}
-                    if (tg && tg.showAlert) tg.showAlert("Referral link copied!"); else alert("Referral link copied!");
+                    tg.HapticFeedback.notificationOccurred('success');
+                    tg.showAlert("Referral link copied!");
                 });
             };
 
