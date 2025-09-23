@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Finova Cash</title>
 
-    
-    <!--Adds type-->
-     <script src='//data527.click/f31793923cdadc06d2ad' data-zone='862e51e87a' data-sdk='show_862e51e87a'></script>
+
+     <!-- Advertica Ads Script -->
+       <script src="https://data527.click/f31793923cdadc06d2ad/862e51e87a/?placementName=default"></script>
           
     <!-- Google Fonts (Nunito) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     
     <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <!-- Remix Icon -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css">
@@ -245,7 +245,7 @@
                     <i class="fas fa-video task-icon"></i>
                     <h3>Watch Tutorial Ad</h3>
                     <p>Earn 0.25 TK for every ad.</p>
-                    <button id="watch-tutorial-ad-btn" onclick="claimReward('popup')">Watch Ad</button>
+                    <button id="advertica-ad" onclick="claimReward('popup')">Watch Ad</button>
                 </div>
                 <div class="task-container">
                     <i class="fas fa-video task-icon"></i>
@@ -383,6 +383,14 @@
                 }
             };
             
+
+            <!-- Ads Placeholder -->
+            <div id="advertica-ad"></div>
+              Advertica.loadAd({
+              containerId: 'advertica-ad',
+               adUnit: 'https://data527.click/f31793923cdadc06d2ad/862e51e87a/?placementName=default'
+               });
+
             // --- Core Functions ---
             const initApp = () => {
                 tg.ready();
@@ -568,15 +576,6 @@
             initApp();
         });
 
-
-        
-                 switch(taskType) {
-                    case 'interstitial': adPromise = window.show_9828924(); break;
-                    case 'popup': adPromise = window.show_862e51e87a('pop'); break;
-                    case 'inApp': adPromise = window.show_9828924({ type: 'inApp', inAppSettings: { frequency: 2, capping: 0.1, interval: 30, timeout: 5, everyPage: false } }); break;
-                    case 'miniApp': adPromise = window.show_9828924(); break;
-                    default: return;
-                }
     </script>
 </body>
 </html>
