@@ -190,7 +190,7 @@
                     <i class="fas fa-video task-icon"></i>
                     <h3>Watch a Rewarded Ad</h3>
                     <p>Earn 0.25 TK for every ad.</p>
-                    <button id="watch-ad-btn" class="action-btn">Watch Ad</button>
+                    <button id="watch-ad-btn" class="action-btn"><span class="btn-text">Watch Ad</span><span class="btn-loader"></span></button>
                 </div>
                 <div class="task-container">
                     <i class="fab fa-telegram task-icon"></i>
@@ -244,7 +244,7 @@
     </div>
 
     <div id="loading-modal" class="modal">
-        <div class="modal-content"><div class="loader"></div><p>Loading Ad...</p></div>
+        <div class="modal-content"><div class="loader"></div><p id="loading-modal-text">Loading Ad...</p></div>
     </div>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -266,6 +266,9 @@
             const GROUP_JOIN_BONUS = 0;
             const MIN_WITHDRAW_POINTS = 50;
 
+            // <-- ADD AD URL HERE -->
+            const AD_URL = "https://data527.click/f31793923cdadc06d2ad/862e51e87a/?placementName=default";
+
             // --- DOM Elements ---
             const userPhotoElem = document.getElementById('user-photo');
             const userNameElem = document.getElementById('user-name');
@@ -274,12 +277,13 @@
             const referralCountElem = document.getElementById('referral-count');
             const watchAdBtn = document.getElementById('watch-ad-btn');
             const joinChannelBtn = document.getElementById('join-channel-btn');
-            const joinGroupBtn = document.getElementById('join-group-btn');
+            const joinGroupBtn = document.getElementById('join-group-btn'); // New listener
             const withdrawForm = document.getElementById('withdraw-form');
             const withdrawSubmitBtn = document.getElementById('withdraw-submit-btn');
             const referralLinkElem = document.getElementById('referral-link');
             const copyRefLinkBtn = document.getElementById('copy-ref-link-btn');
             const loadingModal = document.getElementById('loading-modal');
+            const loadingModalText = document.getElementById('loading-modal-text');
 
             // --- State Management ---
             let userState = {
@@ -309,13 +313,18 @@
             
             // --- Core Functions ---
             const initApp = () => {
-                tg.ready();
-                tg.expand();
-                document.body.className = `${tg.colorScheme}-theme`;
+                try { tg.ready(); tg.expand(); document.body.className = `${tg.colorScheme}-theme`; } catch(e) { document.body.className = 'light-theme'; }
 
-                const user = tg.initDataUnsafe.user;
+                const user = (tg && tg.initDataUnsafe) ? tg.initDataUnsafe.user : null;
                 if (!user || !user.id) {
-                    tg.showAlert("Could not verify user. Please open this app through Telegram.", () => tg.close());
+                    // If opened outside Telegram WebApp, create a dummy user id to allow testing
+                    const fallbackId = 'guest_1';
+                    userState.userId = fallbackId;
+                    loadState(fallbackId);
+                    updateUI();
+                    setupNavigation();
+                    setupEventListeners();
+                    saveState();
                     return;
                 }
                 
@@ -335,10 +344,14 @@
             };
             
             const updateUI = () => {
-                const user = tg.initDataUnsafe.user;
+                const user = (tg && tg.initDataUnsafe) ? tg.initDataUnsafe.user : null;
                 if (user) {
                     userPhotoElem.src = user.photo_url || 'https://i.imgur.com/placeholder.png';
                     userNameElem.innerHTML = `${user.first_name || ''} ${user.last_name || ''} <i class="fas fa-check-circle verified-icon"></i>`;
+                } else {
+                    // fallback
+                    userPhotoElem.src = 'https://i.imgur.com/placeholder.png';
+                    userNameElem.innerHTML = `Guest <i class="fas fa-check-circle verified-icon"></i>`;
                 }
                 
                 userPointsElem.textContent = userState.points;
@@ -351,10 +364,16 @@
                 if (userState.hasJoinedChannel) {
                     joinChannelBtn.textContent = 'Bonus Claimed';
                     joinChannelBtn.disabled = true;
+                } else {
+                    joinChannelBtn.textContent = 'Join & Claim Bonus';
+                    joinChannelBtn.disabled = false;
                 }
                 if (userState.hasJoinedGroup) {
                     joinGroupBtn.textContent = 'Bonus Claimed';
                     joinGroupBtn.disabled = true;
+                } else {
+                    joinGroupBtn.textContent = 'Join & Claim Bonus';
+                    joinGroupBtn.disabled = false;
                 }
             };
             
@@ -366,50 +385,100 @@
                 copyRefLinkBtn.addEventListener('click', copyReferralLink);
             };
 
+            // --- NEW: simplified ad handling using provided AD_URL ---
             const handleWatchAd = () => {
+                // check limit
                 if (userState.dailyAdWatchCount >= DAILY_AD_LIMIT) {
-                    tg.showAlert("You have reached your daily ad watch limit."); return;
+                    if (tg && tg.showAlert) tg.showAlert("You have reached your daily ad watch limit."); else alert("You have reached your daily ad watch limit.");
+                    return;
                 }
+
+                // disable button + show loader
+                watchAdBtn.classList.add('loading');
+                watchAdBtn.disabled = true;
+                loadingModalText.textContent = 'Loading ad...';
                 loadingModal.style.display = 'flex';
-                show_9712189().then(() => {
-                    userState.points += POINTS_PER_AD;
+
+                // open ad in new tab (noopener,noreferrer)
+                let newWindow;
+                try {
+                    newWindow = window.open(AD_URL, '_blank', 'noopener,noreferrer');
+                    if (newWindow) newWindow.focus();
+                } catch (err) {
+                    console.warn('window.open failed, trying anchor fallback', err);
+                    const a = document.createElement('a');
+                    a.href = AD_URL;
+                    a.target = "_blank";
+                    a.rel = "noopener noreferrer";
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                }
+
+                // Simulate ad watch completion after X seconds (e.g., 5s). 
+                // If you have an ad SDK callback, replace this timeout with the SDK promise/callback.
+                const SIMULATED_AD_SECONDS = 5;
+                setTimeout(() => {
+                    // award points and increment count
+                    userState.points = +(userState.points + POINTS_PER_AD).toFixed(2);
                     userState.dailyAdWatchCount++;
+                    userState.lastAdWatchDate = new Date().toISOString().slice(0,10);
                     saveState();
                     updateUI();
-                    tg.HapticFeedback.notificationOccurred('success');
-                    tg.showAlert(`Congratulations! You've earned ${POINTS_PER_AD} taka.`);
-                }).catch(() => {
-                    tg.showAlert("Ad could not be loaded. Please try again later.");
-                }).finally(() => {
+
+                    // feedback
+                    if (tg && tg.HapticFeedback && tg.showAlert) {
+                        try { tg.HapticFeedback.notificationOccurred('success'); } catch(e) {}
+                        tg.showAlert(`Congratulations! You've earned ${POINTS_PER_AD} taka.`);
+                    } else {
+                        alert(`Congratulations! You've earned ${POINTS_PER_AD} taka.`);
+                    }
+                }, SIMULATED_AD_SECONDS * 1000);
+
+                // hide modal & re-enable button shortly after (give some slack)
+                setTimeout(() => {
                     loadingModal.style.display = 'none';
-                });
+                    watchAdBtn.classList.remove('loading');
+                    watchAdBtn.disabled = false;
+                }, (SIMULATED_AD_SECONDS + 1) * 1000);
             };
             
             const handleJoinChannel = () => {
                 if(userState.hasJoinedChannel) {
-                    tg.showAlert('You have already claimed this bonus.'); return;
+                    if (tg && tg.showAlert) tg.showAlert('You have already claimed this bonus.'); else alert('You have already claimed this bonus.');
+                    return;
                 }
-                tg.openTelegramLink(CHANNEL_LINK);
+                if (CHANNEL_LINK) {
+                    try { tg.openTelegramLink(CHANNEL_LINK); } catch(e) { window.open(CHANNEL_LINK, '_blank', 'noopener,noreferrer'); }
+                } else {
+                    // If channel link not set, open bot or show message
+                    try { tg.openTelegramLink(`https://t.me/${BOT_USERNAME}`); } catch(e) { window.open(`https://t.me/${BOT_USERNAME}`, '_blank', 'noopener,noreferrer'); }
+                }
                 setTimeout(() => {
                     userState.points += CHANNEL_JOIN_BONUS;
                     userState.hasJoinedChannel = true;
-                    tg.showAlert(`Thank you! You received ${CHANNEL_JOIN_BONUS} bonus taka.`);
                     saveState();
                     updateUI();
+                    if (tg && tg.showAlert) tg.showAlert(`Thank you! You received ${CHANNEL_JOIN_BONUS} bonus taka.`);
                 }, 3000);
             };
 
             const handleJoinGroup = () => {
                 if(userState.hasJoinedGroup) {
-                    tg.showAlert('You have already claimed this bonus.'); return;
+                    if (tg && tg.showAlert) tg.showAlert('You have already claimed this bonus.'); else alert('You have already claimed this bonus.');
+                    return;
                 }
-                tg.openTelegramLink(GROUP_LINK);
+                if (GROUP_LINK) {
+                    try { tg.openTelegramLink(GROUP_LINK); } catch(e) { window.open(GROUP_LINK, '_blank', 'noopener,noreferrer'); }
+                } else {
+                    try { tg.openTelegramLink(`https://t.me/${BOT_USERNAME}`); } catch(e) { window.open(`https://t.me/${BOT_USERNAME}`, '_blank', 'noopener,noreferrer'); }
+                }
                 setTimeout(() => {
                     userState.points += GROUP_JOIN_BONUS;
                     userState.hasJoinedGroup = true;
-                    tg.showAlert(`Thank you! You received ${GROUP_JOIN_BONUS} bonus taka.`);
                     saveState();
                     updateUI();
+                    if (tg && tg.showAlert) tg.showAlert(`Thank you! You received ${GROUP_JOIN_BONUS} bonus taka.`);
                 }, 3000);
             };
 
@@ -419,9 +488,9 @@
                 const accountNumber = document.getElementById('account-number').value;
                 const amount = parseInt(document.getElementById('amount').value, 10);
 
-                if (isNaN(amount) || amount <= 0) { tg.showAlert("Please enter a valid amount."); return; }
-                if (amount < MIN_WITHDRAW_POINTS) { tg.showAlert(`Minimum withdrawal is ${MIN_WITHDRAW_POINTS} points.`); return; }
-                if (amount > userState.points) { tg.showAlert("You don't have enough balance."); return; }
+                if (isNaN(amount) || amount <= 0) { if (tg && tg.showAlert) tg.showAlert("Please enter a valid amount."); else alert("Please enter a valid amount."); return; }
+                if (amount < MIN_WITHDRAW_POINTS) { if (tg && tg.showAlert) tg.showAlert(`Minimum withdrawal is ${MIN_WITHDRAW_POINTS} points.`); else alert(`Minimum withdrawal is ${MIN_WITHDRAW_POINTS} points.`); return; }
+                if (amount > userState.points) { if (tg && tg.showAlert) tg.showAlert("You don't have enough balance."); else alert("You don't have enough balance."); return; }
 
                 withdrawSubmitBtn.classList.add('loading');
                 withdrawSubmitBtn.disabled = true;
@@ -430,7 +499,7 @@
                 saveState();
                 updateUI();
                 
-                const user = tg.initDataUnsafe.user;
+                const user = (tg && tg.initDataUnsafe) ? tg.initDataUnsafe.user : { first_name: 'Guest', last_name: '', username: 'N/A', id: userState.userId };
                 const message = `<b>New Withdraw Request!</b>\n-----------------------------------\n<b>User:</b> ${user.first_name || ''} ${user.last_name || ''} (@${user.username || 'N/A'})\n<b>User ID:</b> <code>${user.id}</code>\n-----------------------------------\n<b>Method:</b> ${method}\n<b>Account:</b> <code>${accountNumber}</code>\n<b>Amount:</b> ${amount} Points\n-----------------------------------\n<b>Date:</b> ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' })}`;
                 
                 const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
@@ -442,13 +511,13 @@
                     });
                     const result = await response.json();
                     if (result.ok) {
-                        tg.HapticFeedback.notificationOccurred('success');
-                        tg.showAlert("Withdrawal request submitted successfully!");
+                        try { tg.HapticFeedback.notificationOccurred('success'); } catch(e) {}
+                        if (tg && tg.showAlert) tg.showAlert("Withdrawal request submitted successfully!"); else alert("Withdrawal request submitted successfully!");
                         withdrawForm.reset();
                     } else { throw new Error(result.description); }
                 } catch (error) {
-                    tg.HapticFeedback.notificationOccurred('error');
-                    tg.showAlert("Failed to submit request. Your points have been returned.");
+                    try { tg.HapticFeedback.notificationOccurred('error'); } catch(e) {}
+                    if (tg && tg.showAlert) tg.showAlert("Failed to submit request. Your points have been returned."); else alert("Failed to submit request. Your points have been returned.");
                     userState.points += amount;
                     saveState();
                     updateUI();
@@ -460,8 +529,8 @@
             
             const copyReferralLink = () => {
                 navigator.clipboard.writeText(referralLinkElem.value).then(() => {
-                    tg.HapticFeedback.notificationOccurred('success');
-                    tg.showAlert("Referral link copied!");
+                    try { tg.HapticFeedback.notificationOccurred('success'); } catch(e) {}
+                    if (tg && tg.showAlert) tg.showAlert("Referral link copied!"); else alert("Referral link copied!");
                 });
             };
 
