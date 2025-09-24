@@ -13,9 +13,6 @@
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 
-    <!-- QR Code Library -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-
     <!-- Internal CSS -->
     <style>
         /* Google Font Import */
@@ -24,21 +21,25 @@
         /* CSS Variables for Theming */
         :root {
             --font-family: 'Nunito', sans-serif;
-            --bg-color-light: #f7f8fa;
-            --secondary-bg-light: rgba(255, 255, 255, 0.1);
+            --bg-color-light: #f4f4f9;
+            --secondary-bg-light: #ffffff;
             --text-color-light: #1c1c1e;
             --subtle-text-light: #6d6d72;
             --primary-color-light: #007aff;
-            --border-color-light: rgba(255, 255, 255, 0.2);
+            --border-color-light: #e0e0e0;
             --bg-color-dark: #121212;
-            --secondary-bg-dark: rgba(0, 0, 0, 0.1);
+            --secondary-bg-dark: #1c1c1e;
             --text-color-dark: #ffffff;
             --subtle-text-dark: #8e8e93;
             --primary-color-dark: #0a84ff;
-            --border-color-dark: rgba(255, 255, 255, 0.2);
-            --glass-blur: blur(10px);
-            --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            --glow-color: rgba(0, 122, 255, 0.5);
+            --border-color-dark: #38383a;
+            --liquid-glass-bg: rgba(255, 255, 255, 0.2);
+            --liquid-glass-blur: blur(10px);
+            --liquid-glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            --liquid-glass-border: 1px solid rgba(255, 255, 255, 0.3);
+            --primary-palette: #f7f8fa;
+            --glow-gold: linear-gradient(45deg, #ffd700, #ff8c00);
+            --glow-purple: linear-gradient(45deg, #9370db, #4b0082);
         }
 
         /* Base Styles */
@@ -48,14 +49,7 @@
             transition: background-color 0.3s, color 0.3s;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            background: linear-gradient(270deg, #007aff, #6a1b9a, #009688, #303f9f);
-            background-size: 800% 800%;
-            animation: gradientAnimation 15s ease infinite;
-        }
-        @keyframes gradientAnimation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            background: var(--primary-palette); /* Primary color from suggestion */
         }
 
         /* Theme Styles */
@@ -63,29 +57,33 @@
         body.dark-theme { background-color: var(--bg-color-dark); color: var(--text-color-dark); }
         #app { max-width: 500px; margin: 0 auto; padding-bottom: 70px; }
 
-        /* Glassmorphism Effect */
-        .glass-card {
-            background: var(--secondary-bg-light);
-            backdrop-filter: var(--glass-blur);
-            border-radius: 12px;
-            border: 1px solid var(--border-color-light);
-            box-shadow: var(--glass-shadow);
-            transition: box-shadow 0.3s;
-            padding: 15px;
+        /* Liquid Glass UI */
+        .liquid-glass {
+            background: var(--liquid-glass-bg);
+            backdrop-filter: var(--liquid-glass-blur);
+            border-radius: 15px;
+            box-shadow: var(--liquid-glass-shadow);
+            border: var(--liquid-glass-border);
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
         }
-        .glass-card:hover { box-shadow: 0 8px 40px var(--glow-color); }
-        .dark-theme .glass-card {
-            background: var(--secondary-bg-dark);
-            border: 1px solid var(--border-color-dark);
+        .liquid-glass::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 100%);
+            animation: dynamic-bg 10s infinite linear;
         }
+        @keyframes dynamic-bg { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* Profile Header */
-        .profile-header { padding: 20px 15px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid; }
+        .profile-header { padding: 20px 15px; display: flex; align-items: center; border-bottom: 1px solid; }
         .light-theme .profile-header { border-bottom-color: var(--border-color-light); }
         .dark-theme .profile-header { border-bottom-color: var(--border-color-dark); }
         .profile-info { display: flex; align-items: center; gap: 15px; }
-        #user-photo { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid; box-shadow: 0 0 15px var(--glow-color); animation: glowRing 2s ease-in-out infinite; }
-        @keyframes glowRing { 0%, 100% { box-shadow: 0 0 10px var(--glow-color); } 50% { box-shadow: 0 0 20px var(--glow-color); } }
+        #user-photo { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid; }
         .light-theme #user-photo { border-color: var(--primary-color-light); }
         .dark-theme #user-photo { border-color: var(--primary-color-dark); }
         .user-details h1 { font-size: 1.2rem; font-weight: 700; }
@@ -96,16 +94,6 @@
         .light-theme .user-details p { color: var(--subtle-text-light); }
         .dark-theme .user-details p { color: var(--subtle-text-dark); }
 
-        /* Dark Mode Toggle */
-        .toggle-container { display: flex; align-items: center; }
-        .toggle-label { font-size: 0.8rem; margin-right: 10px; }
-        .toggle-switch { position: relative; width: 50px; height: 25px; background: var(--secondary-bg-light); border-radius: 25px; cursor: pointer; transition: background 0.3s; backdrop-filter: var(--glass-blur); box-shadow: var(--glass-shadow); }
-        .toggle-switch::before { content: ''; position: absolute; top: 2px; left: 2px; width: 21px; height: 21px; background: var(--primary-color-light); border-radius: 50%; transition: transform 0.3s; }
-        input[type="checkbox"]:checked + .toggle-switch { background: var(--primary-color-light); }
-        input[type="checkbox"]:checked + .toggle-switch::before { transform: translateX(25px); background: #fff; }
-        .dark-theme .toggle-switch::before { background: var(--primary-color-dark); }
-        .dark-theme input[type="checkbox"]:checked + .toggle-switch { background: var(--primary-color-dark); }
-
         /* Main Content & Pages */
         main { padding: 15px; }
         .page { display: none; }
@@ -113,16 +101,16 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         h2 { font-size: 1.5rem; margin-bottom: 15px; }
 
-        /* Date Time Box */
-        .date-time-box { display: flex; justify-content: space-between; margin-bottom: 20px; padding: 10px; border-radius: 8px; }
-        #date-display { font-size: 1rem; }
-        #time-display { font-size: 1rem; }
-
-        /* Task/Bonus Container */
-        .task-container { padding: 20px; text-align: center; margin-bottom: 20px; }
+        /* Home Page Stats & Tasks */
+        .date-time-box { text-align: center; margin-bottom: 20px; font-size: 1rem; }
+        .date-time-box span { display: inline-block; }
+        .date { font-weight: bold; }
+        .time { font-size: 0.8rem; margin-left: 10px; }
+        .task-container { padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
         .task-container:last-child { margin-bottom: 0; }
-        .task-icon { font-size: 3rem; margin-bottom: 15px; animation: glowIcon 2s ease infinite; }
-        @keyframes glowIcon { 0%, 100% { text-shadow: 0 0 5px var(--glow-color); } 50% { text-shadow: 0 0 15px var(--glow-color); } }
+        .light-theme .task-container { background-color: var(--secondary-bg-light); border: 1px solid var(--border-color-light); }
+        .dark-theme .task-container { background-color: var(--secondary-bg-dark); border: 1px solid var(--border-color-dark); }
+        .task-icon { font-size: 3rem; margin-bottom: 15px; }
         .light-theme .task-icon { color: var(--primary-color-light); }
         .dark-theme .task-icon { color: var(--primary-color-dark); }
         .task-container h3 { font-size: 1.2rem; margin-bottom: 5px; }
@@ -131,10 +119,9 @@
         .dark-theme .task-container p { color: var(--subtle-text-dark); }
 
         /* Action Button */
-        .action-btn { width: 100%; padding: 15px; font-size: 1rem; font-weight: 700; color: #fff; border: none; border-radius: 10px; cursor: pointer; transition: background-color 0.2s, opacity 0.2s, box-shadow 0.3s; position: relative; display: flex; justify-content: center; align-items: center; background: linear-gradient(45deg, var(--primary-color-light), #6a1b9a); }
+        .action-btn { width: 100%; padding: 15px; font-size: 1rem; font-weight: 700; color: #fff; border: none; border-radius: 10px; cursor: pointer; transition: background-color 0.2s, opacity 0.2s; position: relative; display: flex; justify-content: center; align-items: center; }
         .light-theme .action-btn { background-color: var(--primary-color-light); }
         .dark-theme .action-btn { background-color: var(--primary-color-dark); }
-        .action-btn:hover { box-shadow: 0 0 20px var(--glow-color); }
         .action-btn:disabled { opacity: 0.6; cursor: not-allowed; }
         .btn-loader { width: 20px; height: 20px; border: 3px solid rgba(255, 255, 255, 0.4); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; display: none; }
         .action-btn.loading .btn-text { visibility: hidden; }
@@ -142,92 +129,80 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* Form Styles */
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: 600; }
-        input, select { width: 100%; padding: 12px; border-radius: 8px; font-family: var(--font-family); font-size: 1rem; transition: border-color 0.2s, box-shadow 0.2s; background: var(--secondary-bg-light); backdrop-filter: var(--glass-blur); border: 1px solid var(--border-color-light); }
-        .light-theme input, .light-theme select { color: var(--text-color-light); }
-        .dark-theme input, .dark-theme select { background: var(--secondary-bg-dark); border: 1px solid var(--border-color-dark); color: var(--text-color-dark); }
-        input:focus, select:focus { border-color: var(--glow-color); box-shadow: 0 0 15px var(--glow-color); }
+        #withdraw-form .form-group { margin-bottom: 15px; }
+        #withdraw-form label { display: block; margin-bottom: 5px; font-weight: 600; }
+        #withdraw-form input, #withdraw-form select { width: 100%; padding: 12px; border-radius: 8px; font-family: var(--font-family); font-size: 1rem; transition: border-color 0.2s, box-shadow 0.2s; }
+        .light-theme #withdraw-form input, .light-theme #withdraw-form select { background-color: var(--bg-color-light); border: 1px solid var(--border-color-light); color: var(--text-color-light); }
+        .dark-theme #withdraw-form input, .dark-theme #withdraw-form select { background-color: var(--secondary-bg-dark); border: 1px solid var(--border-color-dark); color: var(--text-color-dark); }
+        .light-theme input:focus, .light-theme select:focus { outline: none; border-color: var(--primary-color-light); box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15); }
+        .dark-theme input:focus, .dark-theme select:focus { outline: none; border-color: var(--primary-color-dark); box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.2); }
 
-        /* Streak Progress */
-        .streak-progress { margin-bottom: 20px; }
-        .progress-bar { height: 10px; background: var(--border-color-light); border-radius: 5px; }
-        .progress-fill { height: 100%; background: var(--primary-color-light); width: 0%; transition: width 0.5s; }
-
-        /* Countdown Timer */
-        .countdown-timer { text-align: center; margin-bottom: 20px; }
-        #timer { font-size: 1.5rem; }
-
-        /* Coin History */
-        .coin-history { margin-top: 20px; }
-        .history-item { padding: 10px; border-bottom: 1px solid var(--border-color-light); }
-
-        /* Referral Animation */
-        .gift-box { animation: shake 1s infinite; font-size: 2rem; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-
-        /* Sharing Options */
-        .sharing-options { display: flex; justify-content: space-around; margin-top: 20px; }
-        .share-btn { font-size: 1.5rem; cursor: pointer; }
-
-        /* QR Code */
-        #qr-code { margin-top: 10px; display: none; }
-
-        /* Anti-Fraud */
-        .anti-fraud { font-size: 0.8rem; color: red; margin-top: 10px; }
-
-        /* Withdraw Status */
+        /* Withdraw Page Additions */
         .withdraw-status { margin-bottom: 20px; }
-        .status-item { padding: 10px; border-radius: 8px; margin-bottom: 10px; }
+        .status-item { padding: 10px; border-bottom: 1px solid var(--border-color-light); }
+        .animated-balance { animation: bounce 0.5s; }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-10px); } 60% { transform: translateY(-5px); } }
+        .withdraw-method-icons { display: flex; justify-content: space-around; margin-bottom: 20px; }
+        .method-icon { padding: 10px; cursor: pointer; }
+        .security-tips { margin-top: 20px; font-size: 0.8rem; color: var(--subtle-text-light); }
+        .withdraw-countdown { text-align: center; margin-bottom: 20px; }
+        .transaction-history { margin-top: 30px; }
+        .history-filters { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .success-animation { display: none; text-align: center; animation: fadeIn 1s; }
+        .success-animation i { font-size: 3rem; color: green; animation: spin 1s; }
 
-        /* Security Tips */
-        .security-tips { margin-top: 20px; font-size: 0.9rem; }
+        /* Refer Page */
+        .refer-section { text-align: center; }
+        .bonus-breakdown { margin: 20px 0; }
+        .share-options { display: flex; justify-content: center; gap: 15px; }
+        .share-icon { font-size: 1.5rem; cursor: pointer; }
+        #qr-code { display: none; margin-top: 10px; }
+        .anti-fraud { font-size: 0.8rem; color: red; margin-top: 20px; }
+        .gift-animation { animation: shake 1s infinite; display: inline-block; margin-left: 10px; }
+        @keyframes shake { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-5deg); } 75% { transform: rotate(5deg); } }
 
-        /* Withdrawal Limit */
-        .withdraw-limit { margin-top: 10px; }
+        /* Profile Page */
+        .profile-stats { margin-bottom: 20px; }
+        .membership-badge { margin-top: 20px; text-align: center; }
+        .badge { padding: 5px 10px; border-radius: 20px; }
+        .free-badge { background: green; }
+        .verified-badge { background: yellow; color: black; }
+        .premium-badge { background: blue; }
+        .diamond-badge { background: var(--glow-purple); }
+        .help-support { margin-top: 20px; text-align: center; }
+        .profile-picture-ring { box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); animation: glow 2s infinite; }
+        @keyframes glow { 0% { box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); } 50% { box-shadow: 0 0 20px rgba(255, 255, 255, 1); } 100% { box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); } }
+        .shimmer { animation: shimmer 1s infinite; }
+        @keyframes shimmer { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
 
-        /* History Filters */
-        .history-filters { margin-top: 20px; }
-        .filter-btn { padding: 5px 10px; margin-right: 5px; border-radius: 5px; }
-
-        /* Membership Badge */
-        .membership-badge { font-size: 1rem; margin-left: 10px; padding: 5px 10px; border-radius: 20px; }
-        .free { background: green; }
-        .verified { background: gold; }
-        .premium { background: blue; }
-        .diamond { background: purple; }
-
-        /* Help Support */
-        .help-support { margin-top: 20px; }
+        /* Additional UI Components */
+        .streak-bar { margin-bottom: 20px; background: #ddd; height: 10px; border-radius: 5px; }
+        .streak-progress { background: var(--primary-color-light); height: 100%; }
+        .task-progress { display: none; /* Not shown as per request */ }
+        .balance-history { margin-top: 20px; }
+        .history-log { list-style: none; }
+        .countdown-timer { text-align: center; margin-bottom: 20px; }
 
         /* Bottom Navigation */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 500px; margin: 0 auto; display: flex; justify-content: space-around; padding: 5px 0; border-top: 1px solid; z-index: 1000; backdrop-filter: var(--glass-blur); }
-        .light-theme .bottom-nav { background: var(--secondary-bg-light); border-top-color: var(--border-color-light); }
-        .dark-theme .bottom-nav { background: var(--secondary-bg-dark); border-top-color: var(--border-color-dark); }
-        .nav-btn { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; padding: 5px 10px; font-family: var(--font-family); font-size: 0.7rem; transition: color 0.2s, transform 0.2s; flex-grow: 1; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 500px; margin: 0 auto; display: flex; justify-content: space-around; padding: 5px 0; border-top: 1px solid; z-index: 1000; }
+        .light-theme .bottom-nav { background-color: var(--secondary-bg-light); border-top-color: var(--border-color-light); }
+        .dark-theme .bottom-nav { background-color: var(--secondary-bg-dark); border-top-color: var(--border-color-dark); }
+        .nav-btn { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; padding: 5px 10px; font-family: var(--font-family); font-size: 0.7rem; transition: color 0.2s; flex-grow: 1; }
         .light-theme .nav-btn { color: var(--subtle-text-light); }
         .dark-theme .nav-btn { color: var(--subtle-text-dark); }
-        .nav-btn i { font-size: 1.4rem; margin-bottom: 3px; transition: text-shadow 0.3s; }
+        .nav-btn i { font-size: 1.4rem; margin-bottom: 3px; }
         .nav-btn.active { font-weight: 700; }
         .light-theme .nav-btn.active { color: var(--primary-color-light); }
         .dark-theme .nav-btn.active { color: var(--primary-color-dark); }
-        .nav-btn.active i { text-shadow: 0 0 10px var(--glow-color); animation: pulse 1s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 
         /* Modal Styles */
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); justify-content: center; align-items: center; backdrop-filter: var(--glass-blur); }
-        .modal-content { padding: 30px; border-radius: 15px; text-align: center; background: var(--secondary-bg-light); backdrop-filter: var(--glass-blur); border: 1px solid var(--border-color-light); box-shadow: var(--glass-shadow); }
-        .dark-theme .modal-content { background: var(--secondary-bg-dark); border: 1px solid var(--border-color-dark); }
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); justify-content: center; align-items: center; }
+        .modal-content { padding: 30px; border-radius: 15px; text-align: center; }
+        .light-theme .modal-content { background-color: var(--secondary-bg-light); }
+        .dark-theme .modal-content { background-color: var(--secondary-bg-dark); }
         .loader { border: 5px solid #f3f3f3; border-radius: 50%; border-top: 5px solid; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px; }
         .light-theme .loader { border-top-color: var(--primary-color-light); }
         .dark-theme .loader { border-top-color: var(--primary-color-dark); }
-
-        /* Success Animation */
-        .success-modal { font-size: 2rem; animation: bounce 1s; }
-        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-30px); } 60% { transform: translateY(-15px); } }
-
-        /* Coin Bounce */
-        #user-points { animation: bounce 0.5s when changed; }
     </style>
 </head>
 <body>
@@ -235,167 +210,140 @@
     <div id="app">
         <header class="profile-header">
             <div class="profile-info">
-                <img id="user-photo" src="" alt="User Photo">
+                <img id="user-photo" src="" alt="User Photo" class="profile-picture-ring">
                 <div class="user-details">
                     <h1 id="user-name">Loading... <i class="fas fa-check-circle verified-icon"></i></h1>
-                    <p> Balance: ৳<span id="user-points">0</span>TK</p>
+                    <p> Balance: ৳<span id="user-points" class="animated-balance shimmer">0</span>TK</p>
                 </div>
-            </div>
-            <div class="toggle-container">
-                <label class="toggle-label">Dark Mode</label>
-                <input type="checkbox" id="dark-mode-toggle" style="display: none;">
-                <label for="dark-mode-toggle" class="toggle-switch"></label>
             </div>
         </header>
 
         <main id="main-content">
             <!-- Home Page -->
-            <div id="home-page" class="page active glass-card">
+            <div id="home-page" class="page active liquid-glass">
                 <h2>Dashboard</h2>
-                <div class="date-time-box glass-card">
-                    <span id="date-display"></span>
-                    <span id="time-display"></span>
+                <div class="date-time-box liquid-glass">
+                    <span class="date" id="current-date"></span>
+                    <span class="time" id="current-time"></span>
                 </div>
-                <div class="task-container glass-card">
+                <div class="task-container liquid-glass">
                     <i class="fas fa-video task-icon"></i>
-                    <h3>Watch Ad & Earn</h3>
+                    <h3>✅ Watch Ad & Earn</h3>
                     <p>Earn 0.25 TK (15 sec wait required)</p>
                     <button id="watch-ad-btn" class="action-btn">Watch Ad</button>
                 </div>
-                <div class="task-container glass-card">
+                <div class="task-container liquid-glass">
                     <i class="fas fa-camera task-icon"></i>
-                    <h3>Watch Product Review Ad</h3>
+                    <h3>📸 Watch Product Review Ad</h3>
                     <p>Earn 0.25 TK (15 sec wait required)</p>
-                    <button id="product-review-btn" class="action-btn">Watch Review</button>
+                    <button id="watch-product-ad-btn" class="action-btn">Watch Ad</button>
                 </div>
-                <div class="task-container glass-card">
+                <div class="task-container liquid-glass">
                     <i class="fas fa-film task-icon"></i>
-                    <h3>Watch 3 Ads in a Row</h3>
-                    <p>Earn 0.75 TK Bonus (15 sec wait per ad)</p>
-                    <button id="watch-three-btn" class="action-btn">Start Watching</button>
+                    <h3>🎥 Watch Ads in a Row (0.75tk Bonus)</h3>
+                    <p>Earn Bonus (15 sec wait required)</p>
+                    <button id="watch-row-ad-btn" class="action-btn">Watch Ads</button>
                 </div>
+                <div class="streak-bar"><div class="streak-progress" id="streak-progress"></div></div>
+                <div class="countdown-timer" id="bonus-timer">Next bonus in: 1:00:00</div>
             </div>
 
             <!-- Tasks Page -->
-            <div id="tasks-page" class="page glass-card">
+            <div id="tasks-page" class="page liquid-glass">
                 <h2>Complete Tasks</h2>
-                <div class="streak-progress glass-card">
-                    <h3>Streak Progress</h3>
-                    <div class="progress-bar"><div class="progress-fill" id="streak-fill"></div></div>
+                <!-- Hidden but working tasks -->
+                <div style="display: none;">
+                    <button id="hidden-watch-ad-btn"></button>
+                    <button id="hidden-product-ad-btn"></button>
+                    <button id="hidden-row-ad-btn"></button>
                 </div>
-                <div class="countdown-timer glass-card">
-                    <h3>Next Bonus in</h3>
-                    <span id="timer">60:00</span>
-                    <button id="claim-bonus-btn" class="action-btn" disabled>Claim Bonus</button>
-                </div>
-                <!-- 10+ Tasks (examples) -->
-                <div class="task-container glass-card">
-                    <i class="fas fa-video task-icon"></i>
-                    <h3>Watch Ad & Earn</h3>
-                    <p>Earn 0.25 TK (15 sec wait)</p>
-                    <button class="action-btn watch-ad-task">Watch</button>
-                </div>
-                <div class="task-container glass-card">
-                    <i class="fas fa-camera task-icon"></i>
-                    <h3>Watch Product Review Ad</h3>
-                    <p>Earn 0.25 TK (15 sec wait)</p>
-                    <button class="action-btn product-review-task">Watch</button>
-                </div>
-                <div class="task-container glass-card">
-                    <i class="fas fa-film task-icon"></i>
-                    <h3>Watch 3 Ads in a Row</h3>
-                    <p>30 TK Bonus (30 sec wait)</p>
-                    <button class="action-btn watch-three-task">Start</button>
-                </div>
-                <!-- Additional tasks -->
-                <div class="task-container glass-card">
-                    <i class="fas fa-check task-icon"></i>
-                    <h3>Daily Check-in</h3>
-                    <p>Earn 1 TK</p>
-                    <button class="action-btn daily-checkin">Check-in</button>
-                </div>
-                <div class="task-container glass-card">
+                <!-- Visible 10+ Tasks (Example user-friendly tasks) -->
+                <div class="task-container liquid-glass">
                     <i class="fas fa-share task-icon"></i>
-                    <h3>Share App</h3>
+                    <h3>Share App on Social Media</h3>
+                    <p>Earn 1 TK</p>
+                    <button class="action-btn">Share Now</button>
+                </div>
+                <div class="task-container liquid-glass">
+                    <i class="fas fa-pencil task-icon"></i>
+                    <h3>Complete Daily Survey</h3>
                     <p>Earn 2 TK</p>
-                    <button class="action-btn share-app">Share</button>
+                    <button class="action-btn">Start Survey</button>
                 </div>
-                <div class="task-container glass-card">
-                    <i class="fas fa-star task-icon"></i>
-                    <h3>Rate App</h3>
-                    <p>Earn 5 TK</p>
-                    <button class="action-btn rate-app">Rate</button>
-                </div>
-                <div class="task-container glass-card">
-                    <i class="fas fa-puzzle-piece task-icon"></i>
-                    <h3>Complete Survey</h3>
-                    <p>Earn 3 TK</p>
-                    <button class="action-btn complete-survey">Start Survey</button>
-                </div>
-                <div class="task-container glass-card">
+                <div class="task-container liquid-glass">
                     <i class="fas fa-gamepad task-icon"></i>
                     <h3>Play Mini Game</h3>
-                    <p>Earn 4 TK</p>
-                    <button class="action-btn play-game">Play</button>
+                    <p>Earn 0.5 TK</p>
+                    <button class="action-btn">Play</button>
                 </div>
-                <div class="task-container glass-card">
-                    <i class="fas fa-book task-icon"></i>
-                    <h3>Read Article</h3>
-                    <p>Earn 2 TK</p>
-                    <button class="action-btn read-article">Read</button>
+                <div class="task-container liquid-glass">
+                    <i class="fas fa-star task-icon"></i>
+                    <h3>Rate the App</h3>
+                    <p>Earn 3 TK</p>
+                    <button class="action-btn">Rate Now</button>
                 </div>
-                <div class="task-container glass-card">
-                    <i class="fas fa-video task-icon"></i>
-                    <h3>Watch Tutorial</h3>
+                <div class="task-container liquid-glass">
+                    <i class="fas fa-bell task-icon"></i>
+                    <h3>Enable Notifications</h3>
                     <p>Earn 1 TK</p>
-                    <button class="action-btn watch-tutorial">Watch</button>
+                    <button class="action-btn">Enable</button>
                 </div>
-                <div class="coin-history glass-card">
-                    <h3>Coin History</h3>
-                    <div id="history-list"></div>
+                <div class="task-container liquid-glass">
+                    <i class="fas fa-friends task-icon"></i>
+                    <h3>Invite 5 Friends</h3>
+                    <p>Earn 5 TK</p>
+                    <button class="action-btn">Invite</button>
+                </div>
+                <div class="task-container liquid-glass">
+                    <i class="fas fa-check task-icon"></i>
+                    <h3>Daily Check-in</h3>
+                    <p>Earn 0.5 TK</p>
+                    <button class="action-btn">Check-in</button>
+                </div>
+                <div class="task-container liquid-glass">
+                    <i class="fas fa-video task-icon"></i>
+                    <h3>Watch Tutorial Video</h3>
+                    <p>Earn 1 TK</p>
+                    <button class="action-btn">Watch</button>
+                </div>
+                <div class="task-container liquid-glass">
+                    <i class="fas fa-download task-icon"></i>
+                    <h3>Download Partner App</h3>
+                    <p>Earn 4 TK</p>
+                    <button class="action-btn">Download</button>
+                </div>
+                <div class="task-container liquid-glass">
+                    <i class="fas fa-comment task-icon"></i>
+                    <h3>Leave Feedback</h3>
+                    <p>Earn 2 TK</p>
+                    <button class="action-btn">Feedback</button>
+                </div>
+                <div class="task-container liquid-glass">
+                    <i class="fas fa-trophy task-icon"></i>
+                    <h3>Achieve Milestone</h3>
+                    <p>Earn 10 TK</p>
+                    <button class="action-btn">Claim</button>
+                </div>
+                <div class="balance-history">
+                    <h3>Balance History</h3>
+                    <ul id="history-log" class="history-log"></ul>
                 </div>
             </div>
-
-            <!-- Refer Page -->
-            <div id="refer-page" class="page glass-card">
-                <h2>Refer & Earn</h2>
-                <div class="referral-section glass-card">
-                    <h3>Refer & Earn More!</h3>
-                    <p class="gift-box">🎁</p>
-                    <p>Share your link to get bonus points.</p>
-                    <input type="text" id="referral-link" readonly>
-                    <div class="sharing-options">
-                        <i class="fas fa-copy share-btn" id="copy-ref"></i>
-                        <i class="fas fa-qrcode share-btn" id="qr-btn"></i>
-                    </div>
-                    <canvas id="qr-code"></canvas>
-                    <div class="anti-fraud">Fake or duplicate referrals may result in reward removal.</div>
-                </div>
-                <div class="bonus-breakdown glass-card">
-                    <h3>Referral Bonus Breakdown</h3>
-                    <p>✅ You will earn: 10 TK</p>
-                    <p>👥 Your friend will get: 5 TK</p>
-                </div>
-            </div>
-
+            
             <!-- Withdraw Page -->
-            <div id="withdraw-page" class="page glass-card">
+            <div id="withdraw-page" class="page liquid-glass">
                 <h2>Withdraw</h2>
                 <p>Minimum 50 TK required to withdraw.</p>
-                <div class="withdraw-status glass-card">
+                <div class="withdraw-status">
                     <h3>Withdrawal Status</h3>
                     <div id="status-list"></div>
                 </div>
+                <div class="withdraw-method-icons">
+                    <div class="method-icon" data-method="Bkash"><i class="fas fa-square" style="color: #00aaff;"></i> Bkash</div>
+                    <div class="method-icon" data-method="Nagad"><i class="fas fa-square" style="color: #008000;"></i> Nagad</div>
+                    <div class="method-icon" data-method="Binance"><i class="fas fa-square" style="color: #ffd700;"></i> Binance</div>
+                </div>
                 <form id="withdraw-form">
-                    <div class="form-group">
-                        <label for="withdraw-method">Method:</label>
-                        <select id="withdraw-method" required>
-                            <option value="Bkash">🟦 Bkash</option>
-                            <option value="Nagad">🟩 Nagad</option>
-                            <option value="Mobile Recharge">🟨 Mobile Recharge</option>
-                            <option value="Binance">Binance</option>
-                        </select>
-                    </div>
                     <div class="form-group">
                         <label for="account-number">Account Number/ID:</label>
                         <input type="text" id="account-number" placeholder="e.g., 012345..." required>
@@ -409,35 +357,63 @@
                         <span class="btn-loader"></span>
                     </button>
                 </form>
-                <div class="security-tips glass-card">
+                <div class="security-tips">
                     <p>🔒 আপনার একাউন্ট নিরাপদ রাখতে সঠিক নাম্বার ব্যবহার করুন। ভুল নাম্বারে টাকা ফেরত পাওয়া যাবে না।</p>
                     <p>🔒 উইথড্র পেন্ডিং থাকা অবস্থায় উইথড্র দিতে পারবেন না তাহলে টাকা পাবেন না</p>
                 </div>
-                <div class="withdraw-limit glass-card">
-                    <p>📅 Next eligible withdrawal: In 2 days</p>
-                    <p>🔁 You can withdraw every days</p>
-                </div>
-                <div class="history-filters glass-card">
+                <div class="withdraw-countdown">Next withdrawal in: 2 days</div>
+                <div class="transaction-history">
                     <h3>Transaction History</h3>
-                    <button class="filter-btn action-btn">Approved</button>
-                    <button class="filter-btn action-btn">Rejected</button>
-                    <button class="filter-btn action-btn">Pending</button>
-                    <input type="text" placeholder="Search by date, amount, method">
-                    <div id="history-list-withdraw"></div>
+                    <div class="history-filters">
+                        <select id="filter-status">
+                            <option>Approved</option>
+                            <option>Rejected</option>
+                            <option>Pending</option>
+                        </select>
+                        <input type="text" id="search-date" placeholder="Date">
+                        <input type="text" id="search-amount" placeholder="Amount">
+                        <input type="text" id="search-method" placeholder="Method">
+                    </div>
+                    <ul id="transaction-list"></ul>
+                </div>
+                <div id="success-animation" class="success-animation">
+                    <i class="fas fa-check-circle"></i>
+                    <p>Your request is being processed!</p>
+                </div>
+            </div>
+
+            <!-- Refer and Earn Page -->
+            <div id="refer-page" class="page liquid-glass">
+                <h2>Refer & Earn</h2>
+                <div class="refer-section">
+                    <h3>Share Your Link <span class="gift-animation">🎁</span></h3>
+                    <input type="text" id="referral-link" readonly>
+                    <div class="bonus-breakdown">
+                        <p>✅ You will earn: 10 tk</p>
+                        <p>👥 Your friend will get: 5tk</p>
+                    </div>
+                    <div class="share-options">
+                        <i class="fas fa-copy share-icon" id="copy-icon"></i>
+                        <i class="fas fa-qrcode share-icon" id="qr-icon"></i>
+                    </div>
+                    <img id="qr-code" src="" alt="QR Code">
+                    <p class="anti-fraud">🛡️ Fake or duplicate referrals may result in reward removal.</p>
                 </div>
             </div>
 
             <!-- Profile Page -->
-            <div id="profile-page" class="page glass-card">
+            <div id="profile-page" class="page liquid-glass">
                 <h2>Profile</h2>
-                <div class="user-stats glass-card">
-                    <p>Total Earnings: <span id="total-earnings">0 TK</span></p>
-                    <p>Total Referrals: <span id="total-referrals">0</span></p>
-                    <p>Tasks Completed: <span id="tasks-completed">0</span></p>
+                <div class="profile-stats">
+                    <p>Total Earnings: ৳<span id="total-earnings">0</span>TK</p>
+                    <p>Total Withdrawals: ৳<span id="total-withdrawals">0</span>TK</p>
+                    <p>Referrals: <span id="profile-referral-count">0</span></p>
                 </div>
-                <div class="membership-badge free">🟢 Free Member</div>
-                <div class="help-support glass-card">
-                    <button class="action-btn"><i class="fas fa-question-circle"></i> Need Help? Contact Us</button>
+                <div class="membership-badge">
+                    <span id="badge" class="badge free-badge">🟢 Free Member</span>
+                </div>
+                <div class="help-support">
+                    <button class="action-btn"><i class="fas fa-question-circle"></i> Need Help? Contact Us on Telegram</button>
                 </div>
             </div>
         </main>
@@ -445,8 +421,8 @@
         <nav class="bottom-nav">
             <button class="nav-btn active" data-page="home-page"><i class="fas fa-home"></i><span>Home</span></button>
             <button class="nav-btn" data-page="tasks-page"><i class="fas fa-tasks"></i><span>Tasks</span></button>
-            <button class="nav-btn" data-page="refer-page"><i class="fas fa-user-friends"></i><span>Refer</span></button>
             <button class="nav-btn" data-page="withdraw-page"><i class="fas fa-wallet"></i><span>Withdraw</span></button>
+            <button class="nav-btn" data-page="refer-page"><i class="fas fa-user-plus"></i><span>Refer</span></button>
             <button class="nav-btn" data-page="profile-page"><i class="fas fa-user"></i><span>Profile</span></button>
         </nav>
     </div>
@@ -455,86 +431,81 @@
         <div class="modal-content"><div class="loader"></div><p>Loading Ad...</p></div>
     </div>
     
-    <div id="timer-modal" class="modal">
-        <div class="modal-content"><p>Wait 15 seconds...</p><span id="ad-timer">15</span></div>
-    </div>
-    
-    <div id="success-modal" class="modal">
-        <div class="modal-content success-modal">🎉 Request Processed!</div>
-    </div>
-    
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src='//libtl.com/sdk.js' data-zone='9712189' data-sdk=''></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const tg = window.Telegram.WebApp;
 
-            // Configuration
+            // --- Configuration ---
             const BOT_TOKEN = "7962156961:AAHZ5oI8JPLA3eVQVemgtif6MsZy7sD7QMQ";
             const BOT_USERNAME = "democash00_bot";
             const ADMIN_CHAT_ID = "6453637469";
-            const DAILY_AD_LIMIT = 300;
+            const CHANNEL_LINK = "";
+            const GROUP_LINK = "";
+            const DAILY_AD_LIMIT = 300; // Updated for task progress
             const POINTS_PER_AD = 0.25;
-            const BONUS_3_ADS = 0.75;
+            const CHANNEL_JOIN_BONUS = 10;
+            const GROUP_JOIN_BONUS = 0;
             const MIN_WITHDRAW_POINTS = 50;
-            const HOURLY_BONUS_MIN = 0.01;
-            const HOURLY_BONUS_MAX = 5;
-            const WAIT_TIME = 15; // seconds
-            const ANTI_FRAUD_MESSAGE = "Fake or duplicate referrals may result in reward removal.";
-            const SUPPORT_LINK = "https://t.me/dailyearningsupport";
+            const ROW_AD_BONUS = 0.75;
+            const WAIT_TIME_AD = 15000; // 15 sec
+            const WAIT_TIME_ROW = 30000; // 30 sec
 
-            // DOM Elements
+            // --- DOM Elements ---
             const userPhotoElem = document.getElementById('user-photo');
             const userNameElem = document.getElementById('user-name');
             const userPointsElem = document.getElementById('user-points');
-            const dateDisplay = document.getElementById('date-display');
-            const timeDisplay = document.getElementById('time-display');
+            const currentDateElem = document.getElementById('current-date');
+            const currentTimeElem = document.getElementById('current-time');
             const watchAdBtn = document.getElementById('watch-ad-btn');
-            const productReviewBtn = document.getElementById('product-review-btn');
-            const watchThreeBtn = document.getElementById('watch-three-btn');
+            const watchProductAdBtn = document.getElementById('watch-product-ad-btn');
+            const watchRowAdBtn = document.getElementById('watch-row-ad-btn');
+            const hiddenWatchAdBtn = document.getElementById('hidden-watch-ad-btn');
+            const hiddenProductAdBtn = document.getElementById('hidden-product-ad-btn');
+            const hiddenRowAdBtn = document.getElementById('hidden-row-ad-btn');
             const withdrawForm = document.getElementById('withdraw-form');
             const withdrawSubmitBtn = document.getElementById('withdraw-submit-btn');
             const referralLinkElem = document.getElementById('referral-link');
-            const copyRef = document.getElementById('copy-ref');
-            const qrBtn = document.getElementById('qr-btn');
-            const qrCode = document.getElementById('qr-code');
+            const copyIcon = document.getElementById('copy-icon');
+            const qrIcon = document.getElementById('qr-icon');
+            const qrCodeElem = document.getElementById('qr-code');
             const loadingModal = document.getElementById('loading-modal');
-            const timerModal = document.getElementById('timer-modal');
-            const adTimer = document.getElementById('ad-timer');
-            const successModal = document.getElementById('success-modal');
-            const darkModeToggle = document.getElementById('dark-mode-toggle');
-            const streakFill = document.getElementById('streak-fill');
-            const timerElem = document.getElementById('timer');
-            const claimBonusBtn = document.getElementById('claim-bonus-btn');
-            const historyList = document.getElementById('history-list');
+            const streakProgress = document.getElementById('streak-progress');
+            const bonusTimer = document.getElementById('bonus-timer');
+            const historyLog = document.getElementById('history-log');
             const statusList = document.getElementById('status-list');
-            const historyListWithdraw = document.getElementById('history-list-withdraw');
+            const transactionList = document.getElementById('transaction-list');
+            const filterStatus = document.getElementById('filter-status');
+            const searchDate = document.getElementById('search-date');
+            const searchAmount = document.getElementById('search-amount');
+            const searchMethod = document.getElementById('search-method');
+            const successAnimation = document.getElementById('success-animation');
             const totalEarnings = document.getElementById('total-earnings');
-            const totalReferrals = document.getElementById('total-referrals');
-            const tasksCompleted = document.getElementById('tasks-completed');
-            const helpButton = document.querySelector('.help-support button');
+            const totalWithdrawals = document.getElementById('total-withdrawals');
+            const profileReferralCount = document.getElementById('profile-referral-count');
+            const badge = document.getElementById('badge');
 
-            // State Management
+            // --- State Management ---
             let userState = {
                 points: 0,
                 dailyAdWatchCount: 0,
                 lastAdWatchDate: null,
                 referrals: [],
+                hasJoinedChannel: false,
+                hasJoinedGroup: false,
                 userId: null,
                 streak: 0,
-                lastLoginDate: null,
-                consecutiveAds: 0,
-                tasksCompleted: 0,
-                totalEarnings: 0,
-                withdrawalHistory: [],
-                coinHistory: [],
-                lastBonusTime: null,
+                lastLogin: null,
+                balanceHistory: [],
+                withdrawals: [], // For status and history
                 membership: 'free' // free, verified, premium, diamond
             };
 
             const saveState = () => {
-                if (userState.userId) {
+                if(userState.userId) {
                     localStorage.setItem(`userState_${userState.userId}`, JSON.stringify(userState));
                 }
             };
@@ -545,14 +516,8 @@
                     userState = JSON.parse(savedState);
                 }
             };
-
-            const addCoinHistory = (type, amount) => {
-                userState.coinHistory.push({ type, amount, date: new Date().toLocaleString() });
-                if (type === 'earn') userState.totalEarnings += amount;
-                saveState();
-                updateUI();
-            };
-
+            
+            // --- Core Functions ---
             const initApp = () => {
                 tg.ready();
                 tg.expand();
@@ -563,220 +528,247 @@
                     tg.showAlert("Could not verify user. Please open this app through Telegram.", () => tg.close());
                     return;
                 }
-
+                
                 userState.userId = user.id;
                 loadState(user.id);
-
-                handleStreak();
-                updateDateTime();
-                setInterval(updateDateTime, 1000);
-                startHourlyTimer();
-
+                
+                const today = new Date().toISOString().slice(0, 10);
+                if (userState.lastAdWatchDate !== today) {
+                    userState.dailyAdWatchCount = 0;
+                    userState.lastAdWatchDate = today;
+                }
+                checkStreak(today);
+                
                 updateUI();
                 setupNavigation();
                 setupEventListeners();
+                updateDateTime();
+                startBonusTimer();
                 saveState();
             };
 
-            const handleStreak = () => {
-                const today = new Date().toISOString().slice(0, 10);
-                if (userState.lastLoginDate !== today) {
-                    if (userState.lastLoginDate === new Date(Date.now() - 86400000).toISOString().slice(0, 10)) {
+            const checkStreak = (today) => {
+                if (userState.lastLogin !== today) {
+                    if (new Date(userState.lastLogin).getTime() + 86400000 === new Date(today).getTime()) {
                         userState.streak++;
                     } else {
                         userState.streak = 1;
                     }
-                    userState.lastLoginDate = today;
-                    addCoinHistory('earn', 1); // Daily check-in bonus
+                    userState.lastLogin = today;
                 }
             };
-
-            const updateDateTime = () => {
-                const now = new Date();
-                dateDisplay.textContent = now.toLocaleDateString('bn-BD');
-                timeDisplay.textContent = now.toLocaleTimeString('bn-BD');
-            };
-
-            const startHourlyTimer = () => {
-                const now = Date.now();
-                if (!userState.lastBonusTime || now - userState.lastBonusTime >= 3600000) {
-                    claimBonusBtn.disabled = false;
-                } else {
-                    const remaining = 3600000 - (now - userState.lastBonusTime);
-                    updateTimer(remaining / 1000);
-                    setTimeout(startHourlyTimer, 1000);
-                }
-            };
-
-            const updateTimer = (seconds) => {
-                const min = Math.floor(seconds / 60);
-                const sec = Math.floor(seconds % 60);
-                timerElem.textContent = `${min}:${sec < 10 ? '0' : ''}${sec}`;
-                if (seconds > 0) {
-                    setTimeout(() => updateTimer(seconds - 1), 1000);
-                } else {
-                    claimBonusBtn.disabled = false;
-                }
-            };
-
-            const claimHourlyBonus = () => {
-                const bonus = Math.random() * (HOURLY_BONUS_MAX - HOURLY_BONUS_MIN) + HOURLY_BONUS_MIN;
-                userState.points += bonus;
-                addCoinHistory('earn', bonus);
-                userState.lastBonusTime = Date.now();
-                claimBonusBtn.disabled = true;
-                startHourlyTimer();
-            };
-
-            const showWaitTimer = (duration, callback) => {
-                timerModal.style.display = 'flex';
-                adTimer.textContent = duration;
-                const interval = setInterval(() => {
-                    duration--;
-                    adTimer.textContent = duration;
-                    if (duration <= 0) {
-                        clearInterval(interval);
-                        timerModal.style.display = 'none';
-                        callback();
-                    }
-                }, 1000);
-            };
-
-            const handleAdWatch = (bonus = POINTS_PER_AD, isThree = false) => {
-                loadingModal.style.display = 'flex';
-                show_9712189().then(() => {
-                    loadingModal.style.display = 'none';
-                    showWaitTimer(WAIT_TIME, () => {
-                        userState.points += bonus;
-                        userState.dailyAdWatchCount++;
-                        userState.tasksCompleted++;
-                        userState.consecutiveAds = isThree ? userState.consecutiveAds + 1 : 1;
-                        if (userState.consecutiveAds === 3) {
-                            userState.points += BONUS_3_ADS;
-                            userState.consecutiveAds = 0;
-                            addCoinHistory('earn', BONUS_3_ADS);
-                        }
-                        addCoinHistory('earn', bonus);
-                        tg.HapticFeedback.notificationOccurred('success');
-                        tg.showAlert(`Earned ${bonus} TK!`);
-                        saveState();
-                        updateUI();
-                    });
-                }).catch(() => {
-                    tg.showAlert("Ad failed.");
-                    loadingModal.style.display = 'none';
-                });
-            };
-
-            const handleThreeAds = () => {
-                handleAdWatch(POINTS_PER_AD, true);
-                setTimeout(() => handleAdWatch(POINTS_PER_AD, true), WAIT_TIME * 1000 + 1000);
-                setTimeout(() => handleAdWatch(POINTS_PER_AD, true), 2 * (WAIT_TIME * 1000 + 1000));
-            };
-
+            
             const updateUI = () => {
                 const user = tg.initDataUnsafe.user;
                 if (user) {
                     userPhotoElem.src = user.photo_url || 'https://i.imgur.com/placeholder.png';
                     userNameElem.innerHTML = `${user.first_name || ''} ${user.last_name || ''} <i class="fas fa-check-circle verified-icon"></i>`;
                 }
-
-                userPointsElem.textContent = userState.points.toFixed(2);
+                
+                userPointsElem.textContent = userState.points;
+                userPointsElem.classList.add('animated-balance'); // Trigger animation
+                setTimeout(() => userPointsElem.classList.remove('animated-balance'), 500);
                 referralLinkElem.value = `https://t.me/${BOT_USERNAME}?start=ref_${userState.userId}`;
-                streakFill.style.width = `${(userState.streak / 7) * 100}%`; // Assume weekly streak max 7
+                streakProgress.style.width = `${Math.min(userState.streak * 10, 100)}%`; // Example progress
+                updateBalanceHistory();
+                updateWithdrawalStatus();
+                updateTransactionHistory();
+                totalEarnings.textContent = userState.points + userState.withdrawals.reduce((a, b) => a + (b.amount || 0), 0);
+                totalWithdrawals.textContent = userState.withdrawals.reduce((a, b) => a + (b.amount || 0), 0);
+                profileReferralCount.textContent = userState.referrals.length;
+                updateBadge();
+            };
 
-                // Update history
-                historyList.innerHTML = userState.coinHistory.map(item => `<div class="history-item glass-card">${item.date}: ${item.type} ${item.amount} TK</div>`).join('');
-                statusList.innerHTML = userState.withdrawalHistory.map(item => `<div class="status-item glass-card ${item.status}">${item.amount} TK — ${item.status} (${item.date})</div>`).join('');
-                historyListWithdraw.innerHTML = statusList.innerHTML;
+            const updateDateTime = () => {
+                const now = new Date();
+                currentDateElem.textContent = now.toLocaleDateString();
+                currentTimeElem.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                setTimeout(updateDateTime, 1000);
+            };
 
-                totalEarnings.textContent = `${userState.totalEarnings} TK`;
-                totalReferrals.textContent = userState.referrals.length;
-                tasksCompleted.textContent = userState.tasksCompleted;
+            const startBonusTimer = () => {
+                let time = 3600; // 1 hour
+                const interval = setInterval(() => {
+                    time--;
+                    const hours = Math.floor(time / 3600);
+                    const mins = Math.floor((time % 3600) / 60);
+                    const secs = time % 60;
+                    bonusTimer.textContent = `Next bonus in: ${hours}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                    if (time <= 0) {
+                        clearInterval(interval);
+                        const bonus = Math.random() * (5 - 0.01) + 0.01;
+                        userState.points += bonus;
+                        addToHistory(`Bonus: +${bonus.toFixed(2)} TK`);
+                        updateUI();
+                        tg.showAlert(`You earned ${bonus.toFixed(2)} TK bonus!`);
+                        startBonusTimer();
+                    }
+                }, 1000);
+            };
 
-                // Membership badge
-                const badge = document.querySelector('.membership-badge');
-                badge.className = `membership-badge ${userState.membership}`;
-                badge.textContent = userState.membership.charAt(0).toUpperCase() + userState.membership.slice(1) + ' Member';
+            const addToHistory = (entry) => {
+                userState.balanceHistory.push({ date: new Date().toLocaleString(), entry });
+                saveState();
+            };
 
-                document.body.classList.toggle('dark-theme', darkModeToggle.checked);
+            const updateBalanceHistory = () => {
+                historyLog.innerHTML = '';
+                userState.balanceHistory.forEach(log => {
+                    const li = document.createElement('li');
+                    li.textContent = `${log.date}: ${log.entry}`;
+                    historyLog.appendChild(li);
+                });
+            };
+
+            const updateWithdrawalStatus = () => {
+                statusList.innerHTML = '';
+                userState.withdrawals.forEach(w => {
+                    const div = document.createElement('div');
+                    div.className = 'status-item';
+                    let icon = '🔄';
+                    if (w.status === 'approved') icon = '✅';
+                    if (w.status === 'rejected') icon = '❌';
+                    div.textContent = `${icon} ${w.amount} tk — ${w.status} (${w.date})`;
+                    statusList.appendChild(div);
+                });
+            };
+
+            const updateTransactionHistory = () => {
+                // Filter logic (simplified)
+                transactionList.innerHTML = '';
+                let filtered = userState.withdrawals;
+                if (filterStatus.value) filtered = filtered.filter(w => w.status === filterStatus.value.toLowerCase());
+                if (searchDate.value) filtered = filtered.filter(w => w.date.includes(searchDate.value));
+                if (searchAmount.value) filtered = filtered.filter(w => w.amount == searchAmount.value);
+                if (searchMethod.value) filtered = filtered.filter(w => w.method.includes(searchMethod.value));
+                filtered.forEach(w => {
+                    const li = document.createElement('li');
+                    li.textContent = `${w.status} - ${w.amount} TK via ${w.method} on ${w.date}`;
+                    transactionList.appendChild(li);
+                });
+            };
+
+            const updateBadge = () => {
+                badge.textContent = userState.membership === 'free' ? '🟢 Free Member' :
+                                    userState.membership === 'verified' ? '🟡 Verified Earner' :
+                                    userState.membership === 'premium' ? '🔵 Premium User' :
+                                    '💎 Diamond User';
+                badge.className = `badge ${userState.membership}-badge`;
             };
 
             const setupEventListeners = () => {
-                watchAdBtn.addEventListener('click', () => handleAdWatch(POINTS_PER_AD));
-                productReviewBtn.addEventListener('click', () => handleAdWatch(POINTS_PER_AD));
-                watchThreeBtn.addEventListener('click', handleThreeAds);
-                document.querySelectorAll('.watch-ad-task').forEach(btn => btn.addEventListener('click', () => handleAdWatch(POINTS_PER_AD)));
-                document.querySelectorAll('.product-review-task').forEach(btn => btn.addEventListener('click', () => handleAdWatch(POINTS_PER_AD)));
-                document.querySelectorAll('.watch-three-task').forEach(btn => btn.addEventListener('click', handleThreeAds));
+                watchAdBtn.addEventListener('click', () => handleAdWatch(POINTS_PER_AD, WAIT_TIME_AD));
+                watchProductAdBtn.addEventListener('click', () => handleAdWatch(POINTS_PER_AD, WAIT_TIME_AD));
+                watchRowAdBtn.addEventListener('click', () => handleAdWatch(ROW_AD_BONUS, WAIT_TIME_AD));
+                hiddenWatchAdBtn.addEventListener('click', () => handleAdWatch(POINTS_PER_AD, WAIT_TIME_AD)); // Hidden
+                hiddenProductAdBtn.addEventListener('click', () => handleAdWatch(POINTS_PER_AD, WAIT_TIME_AD));
+                hiddenRowAdBtn.addEventListener('click', () => handleAdWatch(0.25, WAIT_TIME_ROW));
                 withdrawForm.addEventListener('submit', handleWithdraw);
-                copyRef.addEventListener('click', copyReferralLink);
-                qrBtn.addEventListener('click', () => {
-                    qrCode.style.display = 'block';
-                    QRCode.toCanvas(qrCode, referralLinkElem.value);
+                copyIcon.addEventListener('click', copyReferralLink);
+                qrIcon.addEventListener('click', generateQR);
+                document.querySelector('.help-support button').addEventListener('click', () => tg.openTelegramLink('https://t.me/dailyearningsupport'));
+                // Add listeners for other task buttons as needed
+                filterStatus.addEventListener('change', updateTransactionHistory);
+                searchDate.addEventListener('input', updateTransactionHistory);
+                searchAmount.addEventListener('input', updateTransactionHistory);
+                searchMethod.addEventListener('input', updateTransactionHistory);
+                document.querySelectorAll('.method-icon').forEach(icon => {
+                    icon.addEventListener('click', (e) => {
+                        document.querySelectorAll('.method-icon').forEach(i => i.style.border = '');
+                        e.target.style.border = '2px solid var(--primary-color-light)';
+                        withdrawForm.dataset.method = e.target.dataset.method;
+                    });
                 });
-                darkModeToggle.addEventListener('change', updateUI);
-                claimBonusBtn.addEventListener('click', claimHourlyBonus);
-                helpButton.addEventListener('click', () => tg.openTelegramLink(SUPPORT_LINK));
-                // Placeholder for other task buttons
-                document.querySelectorAll('.daily-checkin').forEach(btn => btn.addEventListener('click', () => addCoinHistory('earn', 1)));
-                document.querySelectorAll('.share-app').forEach(btn => btn.addEventListener('click', () => addCoinHistory('earn', 2)));
-                document.querySelectorAll('.rate-app').forEach(btn => btn.addEventListener('click', () => addCoinHistory('earn', 5)));
-                document.querySelectorAll('.complete-survey').forEach(btn => btn.addEventListener('click', () => addCoinHistory('earn', 3)));
-                document.querySelectorAll('.play-game').forEach(btn => btn.addEventListener('click', () => addCoinHistory('earn', 4)));
-                document.querySelectorAll('.read-article').forEach(btn => btn.addEventListener('click', () => addCoinHistory('earn', 2)));
-                document.querySelectorAll('.watch-tutorial').forEach(btn => btn.addEventListener('click', () => addCoinHistory('earn', 1)));
+            };
+
+            const handleAdWatch = (points, waitTime) => {
+                if (userState.dailyAdWatchCount >= DAILY_AD_LIMIT) {
+                    tg.showAlert("You have reached your daily ad watch limit."); return;
+                }
+                loadingModal.style.display = 'flex';
+                show_9712189().then(() => {
+                    setTimeout(() => {
+                        loadingModal.style.display = 'none';
+                        userState.points += points;
+                        userState.dailyAdWatchCount++;
+                        addToHistory(`Ad Watch: +${points} TK`);
+                        saveState();
+                        updateUI();
+                        tg.HapticFeedback.notificationOccurred('success');
+                        tg.showAlert(`Congratulations! You've earned ${points} taka.`);
+                    }, waitTime); // Wait before awarding
+                }).catch(() => {
+                    tg.showAlert("Ad could not be loaded. Please try again later.");
+                    loadingModal.style.display = 'none';
+                });
             };
 
             const handleWithdraw = async (e) => {
                 e.preventDefault();
-                const method = document.getElementById('withdraw-method').value;
+                const method = withdrawForm.dataset.method || 'Bkash';
                 const accountNumber = document.getElementById('account-number').value;
-                const amount = parseFloat(document.getElementById('amount').value);
+                const amount = parseInt(document.getElementById('amount').value, 10);
 
-                if (isNaN(amount) || amount <= 0 || amount < MIN_WITHDRAW_POINTS || amount > userState.points) {
-                    tg.showAlert("Invalid amount.");
-                    return;
-                }
+                if (isNaN(amount) || amount <= 0) { tg.showAlert("Please enter a valid amount."); return; }
+                if (amount < MIN_WITHDRAW_POINTS) { tg.showAlert(`Minimum withdrawal is ${MIN_WITHDRAW_POINTS} points.`); return; }
+                if (amount > userState.points) { tg.showAlert("You don't have enough balance."); return; }
 
                 withdrawSubmitBtn.classList.add('loading');
                 withdrawSubmitBtn.disabled = true;
 
                 userState.points -= amount;
-                addCoinHistory('spend', amount);
-                const withdrawItem = { amount, status: 'Processing', date: new Date().toLocaleDateString(), method };
-                userState.withdrawalHistory.push(withdrawItem);
+                const withdrawEntry = { amount, method, accountNumber, status: 'processing', date: new Date().toLocaleDateString() };
+                userState.withdrawals.push(withdrawEntry);
+                addToHistory(`Withdraw: -${amount} TK`);
                 saveState();
                 updateUI();
-
+                
                 const user = tg.initDataUnsafe.user;
-                const message = `<b>New Withdraw Request!</b>\nUser: ${user.first_name} (@${user.username})\nID: ${user.id}\nMethod: ${method}\nAccount: ${accountNumber}\nAmount: ${amount} TK`;
-
+                const message = `<b>New Withdraw Request!</b>\n-----------------------------------\n<b>User:</b> ${user.first_name || ''} ${user.last_name || ''} (@${user.username || 'N/A'})\n<b>User ID:</b> <code>${user.id}</code>\n-----------------------------------\n<b>Method:</b> ${method}\n<b>Account:</b> <code>${accountNumber}</code>\n<b>Amount:</b> ${amount} Points\n-----------------------------------\n<b>Date:</b> ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' })}`;
+                
                 const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
                 try {
                     const response = await fetch(url, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ chat_id: ADMIN_CHAT_ID, text: message, parse_mode: 'HTML' })
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ chat_id: ADMIN_CHAT_ID, text: message, parse_mode: 'HTML'})
                     });
-                    if (response.ok) {
-                        successModal.style.display = 'flex';
-                        setTimeout(() => successModal.style.display = 'none', 2000);
-                        tg.showAlert("Request submitted!");
+                    const result = await response.json();
+                    if (result.ok) {
+                        tg.HapticFeedback.notificationOccurred('success');
+                        successAnimation.style.display = 'block';
+                        setTimeout(() => successAnimation.style.display = 'none', 2000);
+                        tg.showAlert("Withdrawal request submitted successfully!");
+                        // Play success chime (browser audio)
+                        new Audio('https://www.soundjay.com/buttons/sounds/button-3.mp3').play();
                         withdrawForm.reset();
-                    }
-                } catch {
-                    tg.showAlert("Failed. Points returned.");
+                    } else { throw new Error(result.description); }
+                } catch (error) {
+                    tg.HapticFeedback.notificationOccurred('error');
+                    tg.showAlert("Failed to submit request. Your points have been returned.");
                     userState.points += amount;
+                    userState.withdrawals.pop();
+                    saveState();
+                    updateUI();
                 } finally {
                     withdrawSubmitBtn.classList.remove('loading');
                     withdrawSubmitBtn.disabled = false;
-                    updateUI();
                 }
             };
-
+            
             const copyReferralLink = () => {
-                navigator.clipboard.writeText(referralLinkElem.value).then(() => tg.showAlert("Copied!"));
+                navigator.clipboard.writeText(referralLinkElem.value).then(() => {
+                    tg.HapticFeedback.notificationOccurred('success');
+                    tg.showAlert("Referral link copied!");
+                });
+            };
+
+            const generateQR = () => {
+                qrCodeElem.style.display = 'block';
+                QRCode.toDataUrl(referralLinkElem.value, (err, url) => {
+                    if (err) console.error(err);
+                    qrCodeElem.src = url;
+                });
             };
 
             const setupNavigation = () => {
