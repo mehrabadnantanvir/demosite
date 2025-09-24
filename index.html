@@ -679,6 +679,28 @@
                         withdrawForm.dataset.method = e.target.dataset.method;
                     });
                 });
+
+                // Fix: Add functionality to task buttons in tasks-page
+                const taskButtons = document.querySelectorAll('#tasks-page .action-btn');
+                taskButtons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const taskContainer = btn.closest('.task-container');
+                        const p = taskContainer.querySelector('p');
+                        const earnText = p.textContent;
+                        const pointsMatch = earnText.match(/Earn (\d+(\.\d+)?) TK/);
+                        if (pointsMatch) {
+                            const points = parseFloat(pointsMatch[1]);
+                            userState.points += points;
+                            addToHistory(`${taskContainer.querySelector('h3').textContent}: +${points} TK`);
+                            saveState();
+                            updateUI();
+                            tg.showAlert(`Task completed! Earned ${points} TK`);
+                            btn.disabled = true; // Disable after completion (one-time per session)
+                        } else {
+                            tg.showAlert('Error: Could not parse points for this task.');
+                        }
+                    });
+                });
             };
 
             const handleAdWatch = (points, waitTime) => {
