@@ -4,19 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Earn & Reward App</title>
-    
+   
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-    
+   
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-    
+   
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator/qrcode.js"></script>
-
     <style>
         /* Google Font Import */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
-
         /* CSS Variables for Theming */
         :root {
             --font-family: 'Nunito', sans-serif;
@@ -25,14 +23,14 @@
             --success-color: #34c759;
             --warning-color: #ff9500;
             --danger-color: #ff3b30;
-            
+           
             /* Light Theme */
             --bg-blur-light: rgba(255, 255, 255, 0.5);
             --border-color-light: rgba(0, 0, 0, 0.1);
             --text-color-light: #1c1c1e;
             --subtle-text-light: #6d6d72;
             --shadow-light: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-            
+           
             /* Dark Theme */
             --bg-blur-dark: rgba(28, 28, 30, 0.7);
             --border-color-dark: rgba(255, 255, 255, 0.15);
@@ -40,7 +38,6 @@
             --subtle-text-dark: #8e8e93;
             --shadow-dark: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
         }
-
         /* Base Styles */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -50,11 +47,11 @@
             -moz-osx-font-smoothing: grayscale;
             overflow: hidden; /* Prevent scrolling issues */
         }
-        
+       
         /* Theme & Background Styles */
         body.light-theme { background-color: #f2f2f7; color: var(--text-color-light); }
         body.dark-theme { background-color: #000000; color: var(--text-color-dark); }
-        
+       
         #app {
             max-width: 500px;
             margin: 0 auto;
@@ -63,7 +60,6 @@
             height: 100vh;
             overflow-y: auto;
         }
-
         /* Dynamic Background */
         .background-orb {
             position: fixed;
@@ -81,11 +77,10 @@
             0% { transform: translate(0, 0); }
             100% { transform: translate(100px, 150px); }
         }
-
         /* General UI Elements */
         h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 20px; }
         p { line-height: 1.6; }
-        
+       
         /* Liquid Glass Card Style */
         .glass-card {
             border-radius: 20px;
@@ -105,13 +100,12 @@
             border-color: var(--border-color-dark);
             box-shadow: var(--shadow-dark);
         }
-        
+       
         /* Page Styles */
         main { padding: 15px; }
         .page { display: none; }
         .page.active { display: block; animation: fadeIn 0.5s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
         /* Header */
         .profile-header {
             padding: 20px 15px;
@@ -138,7 +132,7 @@
         .user-details p { font-size: 1rem; font-weight: 600; }
         .light-theme .user-details p { color: var(--subtle-text-light); }
         .dark-theme .user-details p { color: var(--subtle-text-dark); }
-        
+       
         /* Balance Shimmer Animation */
         #user-points { animation: balance-shimmer 1.5s infinite; }
         @keyframes balance-shimmer {
@@ -147,7 +141,6 @@
         .dark-theme @keyframes balance-shimmer {
             50% { text-shadow: 0 0 5px var(--primary-color-dark); }
         }
-
         /* Home Page */
         .time-date-card { text-align: center; }
         #date-display { font-size: 1.1rem; font-weight: 700; }
@@ -164,7 +157,7 @@
         .home-task-list .task-info { flex-grow: 1; }
         .home-task-list h4 { font-size: 1rem; }
         .home-task-list p { font-size: 0.8rem; }
-        
+       
         /* Tasks Page */
         .progress-bar-container {
             width: 100%; height: 10px; border-radius: 5px; margin-bottom: 20px;
@@ -176,15 +169,13 @@
         }
         .light-theme #task-progress-bar { background-color: var(--primary-color-light); }
         .dark-theme #task-progress-bar { background-color: var(--primary-color-dark); }
-
         .streak-container { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px; }
         .streak-container i { font-size: 2rem; color: var(--warning-color); }
         #streak-days { font-weight: 700; font-size: 1.1rem; }
-
         .countdown-timer { text-align: center; }
         .countdown-timer p { margin-bottom: 5px; }
         #bonus-timer { font-size: 1.5rem; font-weight: 700; }
-        
+       
         /* Refer Page */
         .refer-header { text-align: center; }
         #gift-animation { width: 80px; margin-bottom: 10px; }
@@ -199,14 +190,12 @@
         .breakdown-card p { font-size: 1.3rem; font-weight: 800; }
         .light-theme .breakdown-card p { color: var(--primary-color-light); }
         .dark-theme .breakdown-card p { color: var(--primary-color-dark); }
-
         #referral-link-input {
             width: 100%; padding: 12px; text-align: center; border: 1px dashed;
             border-radius: 8px; margin-bottom: 15px; font-size: 1rem;
         }
         .light-theme #referral-link-input { border-color: var(--primary-color-light); background-color: transparent; }
         .dark-theme #referral-link-input { border-color: var(--primary-color-dark); background-color: transparent; }
-
         .share-options { display: flex; justify-content: center; gap: 15px; margin-top: 15px; }
         .share-btn {
             background: none; border: 1px solid; border-radius: 50%;
@@ -216,13 +205,13 @@
         .dark-theme .share-btn { border-color: var(--border-color-dark); color: var(--text-color-dark); }
         .light-theme .share-btn:hover { background-color: var(--primary-color-light); color: white; }
         .dark-theme .share-btn:hover { background-color: var(--primary-color-dark); color: white; }
-        
+       
         #fraud-message {
             font-size: 0.8rem; text-align: center; margin-top: 20px;
         }
         .light-theme #fraud-message { color: var(--subtle-text-light); }
         .dark-theme #fraud-message { color: var(--subtle-text-dark); }
-        
+       
         /* Withdraw Page */
         .animated-balance { text-align: center; margin-bottom: 20px; }
         .animated-balance h3 { font-size: 1.2rem; margin-bottom: 5px; }
@@ -233,7 +222,7 @@
         #animated-balance-value.bounce { transform: scale(1.1); }
         .light-theme #animated-balance-value { color: var(--primary-color-light); }
         .dark-theme #animated-balance-value { color: var(--primary-color-dark); }
-        
+       
         .withdraw-methods { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
         .method-btn {
             display: flex; flex-direction: column; align-items: center; gap: 8px;
@@ -248,7 +237,7 @@
             transform: translateY(-5px);
         }
         .dark-theme .method-btn.selected { border-color: var(--primary-color-dark); }
-        
+       
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
         .form-group input {
@@ -259,11 +248,9 @@
         .dark-theme .form-group input { border-color: var(--border-color-dark); background: transparent; }
         .light-theme input:focus { outline: none; border-color: var(--primary-color-light); }
         .dark-theme input:focus { outline: none; border-color: var(--primary-color-dark); }
-
         .security-tips { font-size: 0.8rem; padding: 10px; border-radius: 8px; margin-top: 20px; }
         .light-theme .security-tips { background: rgba(255, 149, 0, 0.1); color: #c27600; }
         .dark-theme .security-tips { background: rgba(255, 159, 10, 0.15); color: #ff9f0a; }
-
         /* Profile Page */
         .profile-stats {
             display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;
@@ -275,7 +262,6 @@
         .stat-card p { font-size: 1.5rem; font-weight: 700; }
         .light-theme .stat-card p { color: var(--primary-color-light); }
         .dark-theme .stat-card p { color: var(--primary-color-dark); }
-
         /* Action Buttons */
         .action-btn {
             width: 100%; padding: 15px; font-size: 1rem; font-weight: 700; color: #fff;
@@ -289,7 +275,6 @@
         .action-btn.loading .btn-text { visibility: hidden; }
         .action-btn.loading .btn-loader { display: block; position: absolute; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
         /* Bottom Navigation */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0; max-width: 500px; margin: 0 auto;
@@ -310,7 +295,6 @@
         .nav-btn.active { font-weight: 700; transform: translateY(-3px); }
         .light-theme .nav-btn.active { color: var(--primary-color-light); }
         .dark-theme .nav-btn.active { color: var(--primary-color-dark); }
-
         /* Modal Styles */
         .modal {
             display: none; position: fixed; z-index: 2000; left: 0; top: 0;
@@ -330,7 +314,6 @@
         .dark-theme .modal-content { background-color: var(--bg-blur-dark); }
         .light-theme .loader { border-top-color: var(--primary-color-light); }
         .dark-theme .loader { border-top-color: var(--primary-color-dark); }
-
         #qr-code-container { padding: 20px; }
         #qr-code-canvas { width: 100% !important; height: auto !important; }
         .modal-close-btn {
@@ -342,10 +325,9 @@
     </style>
 </head>
 <body>
-
     <div class="background-orb" id="orb1"></div>
     <div class="background-orb" id="orb2"></div>
-    
+   
     <div id="app">
         <header class="profile-header">
             <div class="user-details" style="display: flex; align-items: center; gap: 15px;">
@@ -356,13 +338,15 @@
                 </div>
             </div>
         </header>
-
         <main id="main-content">
             <div id="home-page" class="page active">
                 <h2>Dashboard</h2>
                 <div class="glass-card time-date-card">
                     <h3 id="date-display">September 24, 2025</h3>
                     <h1 id="time-display">11:07 PM</h1>
+                </div>
+                <div class="glass-card joined-card" style="text-align: center; padding: 10px;">
+                    <p>You have been joined for <span id="joined-days">1</span> days.</p>
                 </div>
                 <div class="glass-card home-task-list">
                     <h3>Today's Tasks</h3>
@@ -392,7 +376,6 @@
                     </div>
                 </div>
             </div>
-
             <div id="tasks-page" class="page">
                 <h2>Complete Tasks</h2>
                  <div class="glass-card">
@@ -410,24 +393,49 @@
                      <h3 id="bonus-timer">01:00:00</h3>
                      <button id="claim-hourly-bonus-btn" class="action-btn" style="margin-top: 15px;" disabled>Claim ৳0.01</button>
                  </div>
+                 <div class="glass-card home-task-list">
+                    <h3>Additional Tasks</h3>
+                    <div class="task-item">
+                        <i class="fas fa-video task-icon"></i>
+                        <div class="task-info">
+                            <h4>Watch Entertainment Ad</h4>
+                            <p>Watch entertaining ads to earn rewards.</p>
+                        </div>
+                        <button class="action-btn" id="watch-entertainment-btn" style="width: auto; padding: 10px 20px;">Go</button>
+                    </div>
+                    <div class="task-item">
+                        <i class="fas fa-laptop task-icon"></i>
+                        <div class="task-info">
+                            <h4>Watch Tech Ad</h4>
+                            <p>Watch tech-related ads for bonus.</p>
+                        </div>
+                        <button class="action-btn" id="watch-tech-btn" style="width: auto; padding: 10px 20px;">Go</button>
+                    </div>
+                    <div class="task-item">
+                        <i class="fas fa-gamepad task-icon"></i>
+                        <div class="task-info">
+                            <h4>Watch Gaming Ad</h4>
+                            <p>Watch gaming ads and earn.</p>
+                        </div>
+                        <button class="action-btn" id="watch-gaming-btn" style="width: auto; padding: 10px 20px;">Go</button>
+                    </div>
+                    <div class="task-item">
+                        <i class="fas fa-newspaper task-icon"></i>
+                        <div class="task-info">
+                            <h4>Watch News Ad</h4>
+                            <p>Watch news ads for rewards.</p>
+                        </div>
+                        <button class="action-btn" id="watch-news-btn" style="width: auto; padding: 10px 20px;">Go</button>
+                    </div>
+                </div>
                  </div>
-            
+           
             <div id="refer-page" class="page">
                 <h2>Refer & Earn</h2>
                 <div class="glass-card refer-header">
                     <img id="gift-animation" src="https://i.imgur.com/2gif5yB.gif" alt="Shaking Gift Box">
                     <h3>Share Your Link & Earn!</h3>
                     <p>Invite friends and you both get a bonus.</p>
-                </div>
-                <div class="bonus-breakdown">
-                     <div class="breakdown-card">
-                         <h4>You Will Earn</h4>
-                         <p>৳10</p>
-                     </div>
-                     <div class="breakdown-card">
-                         <h4>Friend Gets</h4>
-                         <p>৳5</p>
-                     </div>
                 </div>
                 <div class="glass-card">
                      <input type="text" id="referral-link-input" readonly>
@@ -438,7 +446,7 @@
                 </div>
                  <p id="fraud-message">🛡️ Fake or duplicate referrals may result in reward removal.</p>
             </div>
-            
+           
             <div id="withdraw-page" class="page">
                 <h2>Withdraw</h2>
                  <div class="glass-card animated-balance">
@@ -469,9 +477,12 @@
                              <label for="account-number">Account Number:</label>
                              <input type="text" id="account-number" placeholder="e.g., 01700000000" required>
                          </div>
+                         <div class="glass-card" style="text-align: center; margin-bottom: 15px; background: rgba(255, 215, 0, 0.3);">
+                             <p style="font-weight: bold; color: #ff9500;">Minimum Withdrawal: ৳50</p>
+                         </div>
                          <div class="form-group">
                              <label for="amount">Amount (TK):</label>
-                             <input type="number" id="amount" placeholder="Min 50" required>
+                             <input type="number" id="amount" placeholder="Enter amount" required>
                          </div>
                          <div class="security-tips">
                              <p>🔒 Use your correct number. Money sent to a wrong number cannot be refunded.</p>
@@ -484,7 +495,7 @@
                      </form>
                  </div>
             </div>
-            
+           
             <div id="profile-page" class="page">
                 <h2>Profile</h2>
                 <div class="glass-card">
@@ -514,9 +525,7 @@
                     </a>
                 </div>
             </div>
-
         </main>
-
         <nav class="bottom-nav">
             <button class="nav-btn active" data-page="home-page"><i class="fas fa-home"></i><span>Home</span></button>
             <button class="nav-btn" data-page="tasks-page"><i class="fas fa-tasks"></i><span>Tasks</span></button>
@@ -525,9 +534,8 @@
             <button class="nav-btn" data-page="profile-page"><i class="fas fa-user"></i><span>Profile</span></button>
         </nav>
     </div>
-
     <div id="loading-modal" class="modal glass-card">
-        <div class="modal-content"><div class="loader"></div><p>Loading Ad...</p></div>
+        <div class="modal-content"><div class="loader"></div><p id="modal-text">Loading Ad...</p><button id="close-modal-btn" class="modal-close-btn">Close</button></div>
     </div>
     <div id="qr-code-modal" class="modal">
         <div class="modal-content glass-card">
@@ -536,14 +544,13 @@
             <button class="modal-close-btn" id="close-qr-modal">Close</button>
         </div>
     </div>
-    
+   
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src='//libtl.com/sdk.js' data-zone='9712189' data-sdk=''></script>
-    
+   
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const tg = window.Telegram.WebApp;
-
             // --- Configuration ---
             const BOT_USERNAME = "democash00_bot";
             const ADMIN_CHAT_ID = "6453637469";
@@ -552,7 +559,6 @@
             const POINTS_PER_REVIEW_AD = 0.35;
             const ROW_AD_BONUS = 0.75;
             const MIN_WITHDRAW_POINTS = 50;
-
             // --- DOM Elements ---
             const allPages = document.querySelectorAll('.page');
             const navButtons = document.querySelectorAll('.nav-btn');
@@ -568,14 +574,13 @@
             const qrCodeModal = document.getElementById('qr-code-modal');
             const closeQrModalBtn = document.getElementById('close-qr-modal');
             const qrCodeContainer = document.getElementById('qr-code-container');
-            
+           
             // Withdraw Page Elements
             const withdrawForm = document.getElementById('withdraw-form');
             const withdrawSubmitBtn = document.getElementById('withdraw-submit-btn');
             const animatedBalanceValue = document.getElementById('animated-balance-value');
             const withdrawMethodBtns = document.querySelectorAll('.method-btn');
             const withdrawMethodInput = document.getElementById('withdraw-method-input');
-
             // --- State Management ---
             let userState = {
                 points: 0,
@@ -588,90 +593,99 @@
                 todaysEarnings: 0,
                 lastLoginDate: null,
                 loginStreak: 1,
+                firstJoinDate: null,
             };
-            
+           
             // Simulating an ad watch function with delay
-            const simulateAdWatch = (reward, delayInSeconds) => {
-                return new Promise((resolve, reject) => {
-                    loadingModal.style.display = 'flex';
-                    setTimeout(() => {
-                        try {
-                            // In a real scenario, you would show an ad here.
-                            // For now, we just simulate the delay.
-                            userState.points += reward;
-                            userState.dailyAdWatchCount++;
-                            userState.totalEarnings += reward;
-                            userState.todaysEarnings += reward;
-                            saveState();
-                            updateUI();
-                            tg.HapticFeedback.notificationOccurred('success');
-                            tg.showAlert(`Congratulations! You've earned ৳${reward.toFixed(2)}.`);
-                            loadingModal.style.display = 'none';
-                            resolve();
-                        } catch(e) {
-                             loadingModal.style.display = 'none';
-                             reject(e);
-                        }
-                    }, delayInSeconds * 1000);
-                });
-            };
-            
-            const handleWatchAd = (reward, delay) => {
-                 if (userState.dailyAdWatchCount >= DAILY_AD_LIMIT) {
+            const handleWatchAd = (reward) => {
+                if (userState.dailyAdWatchCount >= DAILY_AD_LIMIT) {
                     tg.showAlert("You have reached your daily ad watch limit."); return;
                 }
-                simulateAdWatch(reward, delay).catch(() => {
-                    tg.showAlert("Ad could not be loaded. Please try again later.");
-                });
+                let adTimer;
+                let canClaim = false;
+                let adScript = null;
+                loadingModal.style.display = 'flex';
+                document.getElementById('modal-text').textContent = 'Watching Ad... Please wait 15 seconds.';
+                const loader = document.querySelector('.loader');
+                loader.style.display = 'block';
+                const closeBtn = document.getElementById('close-modal-btn');
+                closeBtn.onclick = () => {
+                  if (canClaim) {
+                    userState.points += reward;
+                    userState.dailyAdWatchCount++;
+                    userState.totalEarnings += reward;
+                    userState.todaysEarnings += reward;
+                    saveState();
+                    updateUI();
+                    tg.HapticFeedback.notificationOccurred('success');
+                    tg.showAlert(`Congratulations! You've earned ৳${reward.toFixed(2)}.`);
+                  } else {
+                    tg.showAlert('Your task is incomplete.');
+                  }
+                  loadingModal.style.display = 'none';
+                  clearTimeout(adTimer);
+                  if (adScript) adScript.remove();
+                  canClaim = false;
+                };
+                // Dynamically add ad script
+                adScript = document.createElement('script');
+                adScript.src = '//libtl.com/sdk.js';
+                adScript.dataset.zone = '9925533';
+                adScript.dataset.sdk = 'show_9925533';
+                document.body.appendChild(adScript);
+                // Start timer for 15 seconds
+                adTimer = setTimeout(() => {
+                  canClaim = true;
+                  loader.style.display = 'none';
+                  document.getElementById('modal-text').textContent = 'Ad complete! Close to claim.';
+                }, 15000);
             };
-
             const saveState = () => {
                 if(userState.userId) {
                     localStorage.setItem(`userState_${userState.userId}`, JSON.stringify(userState));
                 }
             };
-
             const loadState = (userId) => {
                 const savedState = localStorage.getItem(`userState_${userId}`);
                 if (savedState) {
                     userState = {...userState, ...JSON.parse(savedState)};
                 }
             };
-            
+           
             // --- Core Functions ---
             const initApp = () => {
                 tg.ready();
                 tg.expand();
                 document.body.className = `${tg.colorScheme}-theme`;
-
                 const user = tg.initDataUnsafe.user;
                 if (!user || !user.id) {
                     tg.showAlert("Could not verify user. Please open this app through Telegram.", () => tg.close());
                     return;
                 }
-                
+               
                 userState.userId = user.id;
                 loadState(user.id);
-                
+               
                 const today = new Date().toISOString().slice(0, 10);
+                if (!userState.firstJoinDate) {
+                    userState.firstJoinDate = today;
+                }
                 if (userState.lastAdWatchDate !== today) {
                     userState.dailyAdWatchCount = 0;
                     userState.todaysEarnings = 0;
                     userState.lastAdWatchDate = today;
                 }
-
                 // Streak logic
                 const yesterday = new Date();
                 yesterday.setDate(yesterday.getDate() - 1);
                 const yesterdayStr = yesterday.toISOString().slice(0, 10);
-
                 if (userState.lastLoginDate === yesterdayStr) {
                     userState.loginStreak++;
                 } else if (userState.lastLoginDate !== today) {
                     userState.loginStreak = 1;
                 }
                 userState.lastLoginDate = today;
-                
+               
                 updateUI();
                 setupNavigation();
                 setupEventListeners();
@@ -679,34 +693,37 @@
                 setInterval(updateClock, 1000);
                 saveState();
             };
-            
+           
             const updateUI = () => {
                 const user = tg.initDataUnsafe.user;
                 if (user) {
                     userPhotoElem.src = user.photo_url || 'https://i.imgur.com/placeholder.png';
                     userNameElem.innerHTML = `${user.first_name || ''} ${user.last_name || ''} <i class="fas fa-check-circle verified-icon"></i>`;
                 }
-                
+               
                 // Animate balance update
                 const balanceValue = parseFloat(userState.points).toFixed(2);
                 userPointsElem.textContent = balanceValue;
                 animatedBalanceValue.textContent = `৳${balanceValue}`;
                 animatedBalanceValue.classList.add('bounce');
                 setTimeout(() => animatedBalanceValue.classList.remove('bounce'), 300);
-
                 // Update various stats
                 dailyAdsWatchedElem.textContent = userState.dailyAdWatchCount;
                 referralCountElem.textContent = userState.referrals.length;
                 referralLinkInput.value = `https://t.me/${BOT_USERNAME}?start=ref_${userState.userId}`;
                 document.getElementById('task-progress-bar').style.width = `${(userState.dailyAdWatchCount / DAILY_AD_LIMIT) * 100}%`;
                 document.getElementById('streak-days').textContent = `Daily Login Streak: ${userState.loginStreak} Day(s)`;
-                
+               
                 // Profile page stats
                 document.getElementById('total-earnings').textContent = userState.totalEarnings.toFixed(2);
                 document.getElementById('today-earnings').textContent = userState.todaysEarnings.toFixed(2);
                 document.getElementById('total-withdrawn').textContent = userState.totalWithdrawn.toFixed(2);
+                // Joined days
+                const firstDate = new Date(userState.firstJoinDate);
+                const now = new Date();
+                const joinedDays = Math.floor((now - firstDate) / (1000 * 60 * 60 * 24)) + 1;
+                document.getElementById('joined-days').textContent = joinedDays;
             };
-
             const updateClock = () => {
                 const now = new Date();
                 const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -714,17 +731,20 @@
                 document.getElementById('date-display').textContent = now.toLocaleDateString('en-US', dateOptions);
                 document.getElementById('time-display').textContent = now.toLocaleTimeString('en-US', timeOptions);
             };
-            
+           
             const setupEventListeners = () => {
-                document.getElementById('watch-ad-btn-home').addEventListener('click', () => handleWatchAd(POINTS_PER_AD, 15));
-                document.getElementById('watch-review-ad-btn-home').addEventListener('click', () => handleWatchAd(POINTS_PER_REVIEW_AD, 15));
-                document.getElementById('watch-row-ad-btn-home').addEventListener('click', () => handleWatchAd(ROW_AD_BONUS, 30));
-
+                document.getElementById('watch-ad-btn-home').addEventListener('click', () => handleWatchAd(POINTS_PER_AD));
+                document.getElementById('watch-review-ad-btn-home').addEventListener('click', () => handleWatchAd(POINTS_PER_REVIEW_AD));
+                document.getElementById('watch-row-ad-btn-home').addEventListener('click', () => handleWatchAd(ROW_AD_BONUS));
+                document.getElementById('watch-entertainment-btn').addEventListener('click', () => handleWatchAd(POINTS_PER_AD));
+                document.getElementById('watch-tech-btn').addEventListener('click', () => handleWatchAd(POINTS_PER_AD));
+                document.getElementById('watch-gaming-btn').addEventListener('click', () => handleWatchAd(POINTS_PER_AD));
+                document.getElementById('watch-news-btn').addEventListener('click', () => handleWatchAd(POINTS_PER_AD));
                 withdrawForm.addEventListener('submit', handleWithdraw);
                 copyRefLinkBtn.addEventListener('click', copyReferralLink);
                 qrRefLinkBtn.addEventListener('click', generateAndShowQR);
                 closeQrModalBtn.addEventListener('click', () => qrCodeModal.style.display = 'none');
-                
+               
                 withdrawMethodBtns.forEach(btn => {
                     btn.addEventListener('click', () => {
                         withdrawMethodBtns.forEach(b => b.classList.remove('selected'));
@@ -733,33 +753,28 @@
                     });
                 });
             };
-
             const handleWithdraw = async (e) => {
                 e.preventDefault();
                 const method = withdrawMethodInput.value;
                 const accountNumber = document.getElementById('account-number').value;
                 const amount = parseFloat(document.getElementById('amount').value);
-
                 if (!method) { tg.showAlert("Please select a withdrawal method."); return; }
                 if (isNaN(amount) || amount <= 0) { tg.showAlert("Please enter a valid amount."); return; }
                 if (amount < MIN_WITHDRAW_POINTS) { tg.showAlert(`Minimum withdrawal is ৳${MIN_WITHDRAW_POINTS}.`); return; }
                 if (amount > userState.points) { tg.showAlert("You don't have enough balance."); return; }
-
                 withdrawSubmitBtn.classList.add('loading');
                 withdrawSubmitBtn.disabled = true;
-
                 const originalPoints = userState.points;
                 userState.points -= amount;
                 userState.totalWithdrawn += amount;
                 saveState();
                 updateUI();
-                
+               
                 // Play success sound
                 new Audio('https://www.myinstants.com/media/sounds/success-chime.mp3').play();
                 tg.showAlert("🎉 Your request is being processed!");
                 withdrawForm.reset();
                 withdrawMethodBtns.forEach(b => b.classList.remove('selected'));
-
                 // Here you would send the data to your backend/admin panel
                 // For now, we'll just simulate the end of the loading
                 setTimeout(() => {
@@ -767,14 +782,13 @@
                     withdrawSubmitBtn.disabled = false;
                 }, 1500);
             };
-            
+           
             const copyReferralLink = () => {
                 navigator.clipboard.writeText(referralLinkInput.value).then(() => {
                     tg.HapticFeedback.notificationOccurred('success');
                     tg.showAlert("Referral link copied!");
                 });
             };
-
             const generateAndShowQR = () => {
                 qrCodeContainer.innerHTML = '';
                 const typeNumber = 4;
@@ -785,7 +799,6 @@
                 qrCodeContainer.innerHTML = qr.createImgTag();
                 qrCodeModal.style.display = 'flex';
             };
-
             const setupNavigation = () => {
                 navButtons.forEach(button => {
                     button.addEventListener('click', () => {
@@ -803,7 +816,6 @@
                     });
                 });
             };
-
             initApp();
         });
     </script>
