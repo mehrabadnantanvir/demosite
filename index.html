@@ -49,8 +49,16 @@
         }
        
         /* Theme & Background Styles */
-        body.light-theme { background-color: #f2f2f7; color: var(--text-color-light); }
-        body.dark-theme { background-color: #000000; color: var(--text-color-dark); }
+        body.light-theme { 
+            background-color: #f2f2f7; 
+            color: var(--text-color-light); 
+            --primary-color: var(--primary-color-light);
+        }
+        body.dark-theme { 
+            background-color: #000000; 
+            color: var(--text-color-dark); 
+            --primary-color: var(--primary-color-dark);
+        }
        
         #app {
             max-width: 500px;
@@ -120,12 +128,8 @@
         .light-theme #user-photo { border-color: var(--primary-color-light); }
         .dark-theme #user-photo { border-color: var(--primary-color-dark); }
         @keyframes glow {
-            from { box-shadow: 0 0 5px -2px var(--primary-color-light); }
-            to { box-shadow: 0 0 10px 2px var(--primary-color-light); }
-        }
-        .dark-theme @keyframes glow {
-            from { box-shadow: 0 0 5px -2px var(--primary-color-dark); }
-            to { box-shadow: 0 0 10px 2px var(--primary-color-dark); }
+            from { box-shadow: 0 0 5px -2px var(--primary-color); }
+            to { box-shadow: 0 0 10px 2px var(--primary-color); }
         }
         .user-details h1 { font-size: 1.3rem; font-weight: 700; display: flex; align-items: center; }
         .verified-icon { color: var(--success-color); font-size: 1.1rem; margin-left: 8px; }
@@ -136,10 +140,7 @@
         /* Balance Shimmer Animation */
         #user-points { animation: balance-shimmer 1.5s infinite; }
         @keyframes balance-shimmer {
-            0% { opacity: 0.7; } 50% { opacity: 1; text-shadow: 0 0 5px var(--primary-color-light); } 100% { opacity: 0.7; }
-        }
-        .dark-theme @keyframes balance-shimmer {
-            50% { text-shadow: 0 0 5px var(--primary-color-dark); }
+            0% { opacity: 0.7; } 50% { opacity: 1; text-shadow: 0 0 5px var(--primary-color); } 100% { opacity: 0.7; }
         }
         /* Home Page */
         .time-date-card { text-align: center; }
