@@ -9,8 +9,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-   
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" >
+      <!--Ads Script-->
+    <script src='//libtl.com/sdk.js' data-zone='9925533' data-sdk='show_9925533'></script>
+
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator/qrcode.js"></script>
     <style>
         /* Google Font Import */
@@ -18,7 +20,7 @@
         /* CSS Variables for Theming */
         :root {
             --font-family: 'Nunito', sans-serif;
-            --primary-color-light: #007aff;
+            --primary-color-light: #007bffb7;
             --primary-color-dark: #0a84ff;
             --success-color: #34c759;
             --warning-color: #ff9500;
@@ -363,7 +365,7 @@
                             <h4>Watch Ad & Earn</h4>
                             <p>Watch short ads to earn rewards.</p>
                         </div>
-                        <button class="action-btn" id="watch-ad-btn-home" style="width: auto; padding: 10px 20px;">Go</button>
+                        <button class="action-btn" id="watch-ad-btn-home" style="width: auto; padding: 10px 20px;"onclick="claimReward('interstitial')">Go</button>
                     </div>
                      <div class="task-item">
                         <i class="fas fa-camera-retro task-icon"></i>
@@ -371,7 +373,7 @@
                             <h4>Watch Product Review Ad</h4>
                             <p>Get bonus for watching reviews.</p>
                         </div>
-                        <button class="action-btn" id="watch-review-ad-btn-home" style="width: auto; padding: 10px 20px;">Go</button>
+                        <button class="action-btn" id="watch-review-ad-btn-home" style="width: auto; padding: 10px 20px;"onclick="claimReward('productReview')">Go</button>
                     </div>
                      <div class="task-item">
                         <i class="fas fa-fast-forward task-icon"></i>
@@ -379,14 +381,14 @@
                             <h4>Watch 3 Ads in a Row</h4>
                             <p>Earn a 0.75 TK bonus!</p>
                         </div>
-                        <button class="action-btn" id="watch-row-ad-btn-home" style="width: auto; padding: 10px 20px;">Go</button>
+                        <button class="action-btn" id="watch-row-ad-btn-home" style="width: auto; padding: 10px 20px;"onclick="claimReward('alternativeAd')">Go</button>
                     </div>
                 </div>
             </div>
             <div id="tasks-page" class="page">
                 <h2>Complete Tasks</h2>
                  <div class="glass-card">
-                     <h4>Daily Task Progress (<span id="daily-ads-watched">0</span>/300)</h4>
+                     <h4>Daily Task Progress (<span id="daily-ads-watched">0</span>/100)</h4>
                      <div class="progress-bar-container">
                         <div id="task-progress-bar"></div>
                      </div>
@@ -408,7 +410,7 @@
                             <h4>Watch Entertainment Ad</h4>
                             <p>Watch entertaining ads to earn rewards.</p>
                         </div>
-                        <button class="action-btn" id="watch-entertainment-btn" style="width: auto; padding: 10px 20px;">Go</button>
+                        <button class="action-btn" id="watch-entertainment-btn" style="width: auto; padding: 10px 20px;" onclick="claimReward('popup')">Go</button>
                     </div>
                     <div class="task-item">
                         <i class="fas fa-laptop task-icon"></i>
@@ -416,7 +418,7 @@
                             <h4>Watch Tech Ad</h4>
                             <p>Watch tech-related ads for bonus.</p>
                         </div>
-                        <button class="action-btn" id="watch-tech-btn" style="width: auto; padding: 10px 20px;">Go</button>
+                        <button class="action-btn" id="watch-tech-btn" style="width: auto; padding: 10px 20px;" onclick="claimReward('inApp')">Go</button>
                     </div>
                     <div class="task-item">
                         <i class="fas fa-gamepad task-icon"></i>
@@ -424,7 +426,7 @@
                             <h4>Watch Gaming Ad</h4>
                             <p>Watch gaming ads and earn.</p>
                         </div>
-                        <button class="action-btn" id="watch-gaming-btn" style="width: auto; padding: 10px 20px;">Go</button>
+                        <button class="action-btn" id="watch-gaming-btn" style="width: auto; padding: 10px 20px;" onclick="claimReward('productReview')">Go</button>
                     </div>
                     <div class="task-item">
                         <i class="fas fa-newspaper task-icon"></i>
@@ -432,7 +434,7 @@
                             <h4>Watch News Ad</h4>
                             <p>Watch news ads for rewards.</p>
                         </div>
-                        <button class="action-btn" id="watch-news-btn" style="width: auto; padding: 10px 20px;">Go</button>
+                        <button class="action-btn" id="watch-news-btn" style="width: auto; padding: 10px 20px;" onclick="claimReward('productReview')">Go</button>
                     </div>
                 </div>
                  </div>
@@ -553,15 +555,16 @@
     </div>
    
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src='//libtl.com/sdk.js' data-zone='9712189' data-sdk=''></script>
+    <script src='//libtl.com/sdk.js' data-zone='9925533' data-sdk=''></script>
    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const tg = window.Telegram.WebApp;
             // --- Configuration ---
+            const BOT_TOKEN = "7962156961:AAHZ5oI8JPLA3eVQVemgtif6MsZy7sD7QMQ";
             const BOT_USERNAME = "democash00_bot";
             const ADMIN_CHAT_ID = "6453637469";
-            const DAILY_AD_LIMIT = 300;
+            const DAILY_AD_LIMIT = 100;
             const POINTS_PER_AD = 0.25;
             const POINTS_PER_REVIEW_AD = 0.35;
             const ROW_AD_BONUS = 0.75;
@@ -603,6 +606,32 @@
                 firstJoinDate: null,
                 lastBonusClaimTime: null,
             };
+
+            async function claimReward(taskType) {
+                try {
+                    let waitTime = 0;
+                    if (taskType === 'interstitial' || taskType === 'productReview') waitTime = 1000;
+                    await new Promise(resolve => setTimeout(resolve, waitTime));
+                    const newCount = (userState.dailyAdWatchCount || 0) + 1;
+                  
+                    let rewardAmount = 0.25;
+                    if (taskType === 'miniApp') rewardAmount = 0.25;
+                    else if (taskType === 'productReview') rewardAmount = 0.35;
+                    else if (taskType === 'alternativeAd') rewardAmount = 0.75;
+                    else if (taskType === 'popup') rewardAmount = 0.25;
+                    else if (taskType === 'inApp') rewardAmount = 0.25;
+                    
+                    userState.dailyAdWatchCount = newCount;
+                    userState.points += rewardAmount;
+                    userState.totalEarnings += rewardAmount;
+                    userState.todaysEarnings += rewardAmount;
+                    saveState();
+                    updateUI();
+                } catch(e) {
+                    console.error("Ad error:", e);
+                    tg.showAlert('Could not show ad. Please try again later.');
+                }
+            }
            
             // Simulating an ad watch function with delay
             const handleWatchAd = (reward) => {
