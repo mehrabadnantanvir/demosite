@@ -297,21 +297,27 @@
         .dark-theme .nav-btn.active { color: var(--primary-color-dark); }
         /* Modal Styles */
         .modal {
-            display: none; position: fixed; z-index: 2000; left: 0; top: 0;
-            width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6);
-            justify-content: center; align-items: center; animation: fadeInModal 0.3s;
+            display: none; position: fixed; z-index: 2000; top: 20px; left: 50%; transform: translateX(-50%);
+            width: auto; background-color: transparent;
+            justify-content: center; align-items: center;
         }
         .modal-content {
-            padding: 30px; border-radius: 15px; text-align: center;
-            width: 90%; max-width: 350px;
+            padding: 15px; border-radius: 15px; text-align: center;
+            width: 250px;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--border-color-light);
+            box-shadow: var(--shadow-light);
+            transition: background-color 1s linear;
         }
-        @keyframes fadeInModal { from { opacity: 0; } to { opacity: 1; } }
+        .dark-theme .modal-content {
+            border: 1px solid var(--border-color-dark);
+            box-shadow: var(--shadow-dark);
+        }
         .loader {
             border: 5px solid #f3f3f3; border-radius: 50%; border-top: 5px solid;
             width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px;
         }
-        .light-theme .modal-content { background-color: #ffffff; }
-        .dark-theme .modal-content { background-color: var(--bg-blur-dark); }
         .light-theme .loader { border-top-color: var(--primary-color-light); }
         .dark-theme .loader { border-top-color: var(--primary-color-dark); }
         #qr-code-container { padding: 20px; }
@@ -453,6 +459,9 @@
                     <h3>Current Balance</h3>
                     <h2 id="animated-balance-value">৳0.00</h2>
                  </div>
+                 <div class="glass-card" style="text-align: center; margin-bottom: 15px; background: rgba(255, 215, 0, 0.3);">
+                     <p style="font-weight: bold; color: #ff9500;">Minimum Withdrawal: ৳50</p>
+                 </div>
                  <div class="glass-card">
                      <form id="withdraw-form">
                          <div class="form-group">
@@ -476,9 +485,6 @@
                          <div class="form-group">
                              <label for="account-number">Account Number:</label>
                              <input type="text" id="account-number" placeholder="e.g., 01700000000" required>
-                         </div>
-                         <div class="glass-card" style="text-align: center; margin-bottom: 15px; background: rgba(255, 215, 0, 0.3);">
-                             <p style="font-weight: bold; color: #ff9500;">Minimum Withdrawal: ৳50</p>
                          </div>
                          <div class="form-group">
                              <label for="amount">Amount (TK):</label>
@@ -534,8 +540,8 @@
             <button class="nav-btn" data-page="profile-page"><i class="fas fa-user"></i><span>Profile</span></button>
         </nav>
     </div>
-    <div id="loading-modal" class="modal glass-card">
-        <div class="modal-content"><div class="loader"></div><p id="modal-text">Loading Ad...</p><button id="close-modal-btn" class="modal-close-btn">Close</button></div>
+    <div id="loading-modal" class="modal">
+        <div class="modal-content"><p id="modal-text">Watching Ad... Remaining: 15 seconds</p><button id="close-modal-btn" class="modal-close-btn">Close</button></div>
     </div>
     <div id="qr-code-modal" class="modal">
         <div class="modal-content glass-card">
@@ -594,6 +600,7 @@
                 lastLoginDate: null,
                 loginStreak: 1,
                 firstJoinDate: null,
+                lastBonusClaimTime: null,
             };
            
             // Simulating an ad watch function with delay
@@ -601,13 +608,15 @@
                 if (userState.dailyAdWatchCount >= DAILY_AD_LIMIT) {
                     tg.showAlert("You have reached your daily ad watch limit."); return;
                 }
-                let adTimer;
+                let remaining = 15;
                 let canClaim = false;
                 let adScript = null;
+                let countdownInterval = null;
                 loadingModal.style.display = 'flex';
-                document.getElementById('modal-text').textContent = 'Watching Ad... Please wait 15 seconds.';
-                const loader = document.querySelector('.loader');
-                loader.style.display = 'block';
+                const modalText = document.getElementById('modal-text');
+                const modalContent = document.querySelector('#loading-modal .modal-content');
+                modalContent.style.backgroundColor = 'hsla(0, 100%, 50%, 0.5)'; // red
+                modalText.textContent = `Watching Ad... Remaining: ${remaining} seconds`;
                 const closeBtn = document.getElementById('close-modal-btn');
                 closeBtn.onclick = () => {
                   if (canClaim) {
@@ -623,7 +632,7 @@
                     tg.showAlert('Your task is incomplete.');
                   }
                   loadingModal.style.display = 'none';
-                  clearTimeout(adTimer);
+                  clearInterval(countdownInterval);
                   if (adScript) adScript.remove();
                   canClaim = false;
                 };
@@ -633,12 +642,20 @@
                 adScript.dataset.zone = '9925533';
                 adScript.dataset.sdk = 'show_9925533';
                 document.body.appendChild(adScript);
-                // Start timer for 15 seconds
-                adTimer = setTimeout(() => {
-                  canClaim = true;
-                  loader.style.display = 'none';
-                  document.getElementById('modal-text').textContent = 'Ad complete! Close to claim.';
-                }, 15000);
+                // Start countdown
+                countdownInterval = setInterval(() => {
+                  remaining--;
+                  modalText.textContent = `Watching Ad... Remaining: ${remaining} seconds`;
+                  const progress = (15 - remaining) / 15;
+                  const hue = progress * 120; // 0 red to 120 green
+                  modalContent.style.backgroundColor = `hsla(${hue}, 100%, 50%, 0.5)`;
+                  if (remaining <= 0) {
+                    clearInterval(countdownInterval);
+                    canClaim = true;
+                    modalText.textContent = 'Ad complete! Close to claim.';
+                    modalContent.style.backgroundColor = 'hsla(120, 100%, 50%, 0.5)'; // green
+                  }
+                }, 1000);
             };
             const saveState = () => {
                 if(userState.userId) {
@@ -686,11 +703,17 @@
                 }
                 userState.lastLoginDate = today;
                
+                if (userState.lastBonusClaimTime === null) {
+                    userState.lastBonusClaimTime = 0;
+                }
+               
                 updateUI();
                 setupNavigation();
                 setupEventListeners();
                 updateClock();
                 setInterval(updateClock, 1000);
+                updateBonusTimer();
+                setInterval(updateBonusTimer, 1000);
                 saveState();
             };
            
@@ -732,6 +755,24 @@
                 document.getElementById('time-display').textContent = now.toLocaleTimeString('en-US', timeOptions);
             };
            
+            const updateBonusTimer = () => {
+                const now = Date.now();
+                const nextClaim = userState.lastBonusClaimTime + 3600000; // 1 hour
+                const remaining = nextClaim - now;
+                const bonusTimerElem = document.getElementById('bonus-timer');
+                const claimBtn = document.getElementById('claim-hourly-bonus-btn');
+                if (remaining <= 0) {
+                    bonusTimerElem.textContent = '00:00:00';
+                    claimBtn.disabled = false;
+                } else {
+                    const hours = Math.floor(remaining / 3600000);
+                    const mins = Math.floor((remaining % 3600000) / 60000);
+                    const secs = Math.floor((remaining % 60000) / 1000);
+                    bonusTimerElem.textContent = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                    claimBtn.disabled = true;
+                }
+            };
+           
             const setupEventListeners = () => {
                 document.getElementById('watch-ad-btn-home').addEventListener('click', () => handleWatchAd(POINTS_PER_AD));
                 document.getElementById('watch-review-ad-btn-home').addEventListener('click', () => handleWatchAd(POINTS_PER_REVIEW_AD));
@@ -744,6 +785,20 @@
                 copyRefLinkBtn.addEventListener('click', copyReferralLink);
                 qrRefLinkBtn.addEventListener('click', generateAndShowQR);
                 closeQrModalBtn.addEventListener('click', () => qrCodeModal.style.display = 'none');
+               
+                document.getElementById('claim-hourly-bonus-btn').addEventListener('click', () => {
+                    const claimBtn = document.getElementById('claim-hourly-bonus-btn');
+                    if (!claimBtn.disabled) {
+                        userState.points += 0.01;
+                        userState.totalEarnings += 0.01;
+                        userState.todaysEarnings += 0.01;
+                        userState.lastBonusClaimTime = Date.now();
+                        saveState();
+                        updateUI();
+                        updateBonusTimer();
+                        tg.showAlert('Claimed ৳0.01!');
+                    }
+                });
                
                 withdrawMethodBtns.forEach(btn => {
                     btn.addEventListener('click', () => {
