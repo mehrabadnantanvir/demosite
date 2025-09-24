@@ -193,6 +193,60 @@
                     <button id="watch-ad-btn" class="action-btn">Watch Ad</button>
                 </div>
                 <div class="task-container">
+                    <i class="fas fa-eye task-icon"></i>
+                    <h3>View Ad</h3>
+                    <p>Earn 0.20 TK per view.</p>
+                    <button id="view-ad-btn" class="action-btn">View Ad</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-poll task-icon"></i>
+                    <h3>Start Survey</h3>
+                    <p>Earn 1 TK per survey.</p>
+                    <button id="start-survey-btn" class="action-btn">Start Survey</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-user-plus task-icon"></i>
+                    <h3>Invite Now</h3>
+                    <p>Earn 5 TK per invite.</p>
+                    <button id="invite-now-btn" class="action-btn">Invite Now</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-star task-icon"></i>
+                    <h3>Rate Now</h3>
+                    <p>Earn 2 TK for rating.</p>
+                    <button id="rate-now-btn" class="action-btn">Rate Now</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-share-alt task-icon"></i>
+                    <h3>Share Now</h3>
+                    <p>Earn 1 TK per share.</p>
+                    <button id="share-now-btn" class="action-btn">Share Now</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-gamepad task-icon"></i>
+                    <h3>Play Mini Game</h3>
+                    <p>Earn 3 TK per game.</p>
+                    <button id="play-mini-game-btn" class="action-btn">Play Mini Game</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-pen task-icon"></i>
+                    <h3>Post Now</h3>
+                    <p>Earn 2 TK per post.</p>
+                    <button id="post-now-btn" class="action-btn">Post Now</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-download task-icon"></i>
+                    <h3>Download Now</h3>
+                    <p>Earn 5 TK per download.</p>
+                    <button id="download-now-btn" class="action-btn">Download Now</button>
+                </div>
+                <div class="task-container">
+                    <i class="fas fa-question-circle task-icon"></i>
+                    <h3>Answer Quiz</h3>
+                    <p>Earn 1.5 TK per quiz.</p>
+                    <button id="answer-quiz-btn" class="action-btn">Answer Quiz</button>
+                </div>
+                <div class="task-container">
                     <i class="fab fa-telegram task-icon"></i>
                     <h3>Join Our Channel</h3>
                     <p>Get ৳10 bonus.</p>
@@ -216,7 +270,6 @@
                         <select id="withdraw-method" required>
                             <option value="Bkash">Bkash</option>
                             <option value="Nagad">Nagad</option>
-                
                             <option value="Binance">Binance</option>
                         </select>
                     </div>
@@ -256,7 +309,7 @@
 
             // --- Configuration ---
             const BOT_TOKEN = "7962156961:AAHZ5oI8JPLA3eVQVemgtif6MsZy7sD7QMQ";
-            const BOT_USERNAME = "democash00_bot"; // Your bot's username
+            const BOT_USERNAME = "democash00_bot";
             const ADMIN_CHAT_ID = "6453637469";
             const CHANNEL_LINK = "";
             const GROUP_LINK = "";
@@ -265,6 +318,15 @@
             const CHANNEL_JOIN_BONUS = 10;
             const GROUP_JOIN_BONUS = 0;
             const MIN_WITHDRAW_POINTS = 50;
+            const POINTS_PER_VIEW_AD = 0.20;
+            const POINTS_PER_SURVEY = 1;
+            const POINTS_PER_INVITE = 5;
+            const POINTS_PER_RATE = 2;
+            const POINTS_PER_SHARE = 1;
+            const POINTS_PER_MINI_GAME = 3;
+            const POINTS_PER_POST = 2;
+            const POINTS_PER_DOWNLOAD = 5;
+            const POINTS_PER_QUIZ = 1.5;
 
             // --- DOM Elements ---
             const userPhotoElem = document.getElementById('user-photo');
@@ -273,6 +335,15 @@
             const dailyAdsWatchedElem = document.getElementById('daily-ads-watched');
             const referralCountElem = document.getElementById('referral-count');
             const watchAdBtn = document.getElementById('watch-ad-btn');
+            const viewAdBtn = document.getElementById('view-ad-btn');
+            const startSurveyBtn = document.getElementById('start-survey-btn');
+            const inviteNowBtn = document.getElementById('invite-now-btn');
+            const rateNowBtn = document.getElementById('rate-now-btn');
+            const shareNowBtn = document.getElementById('share-now-btn');
+            const playMiniGameBtn = document.getElementById('play-mini-game-btn');
+            const postNowBtn = document.getElementById('post-now-btn');
+            const downloadNowBtn = document.getElementById('download-now-btn');
+            const answerQuizBtn = document.getElementById('answer-quiz-btn');
             const joinChannelBtn = document.getElementById('join-channel-btn');
             const joinGroupBtn = document.getElementById('join-group-btn');
             const withdrawForm = document.getElementById('withdraw-form');
@@ -288,7 +359,16 @@
                 lastAdWatchDate: null,
                 referrals: [],
                 hasJoinedChannel: false,
-                hasJoinedGroup: false, // New state for group join
+                hasJoinedGroup: false,
+                hasViewedAd: false,
+                hasCompletedSurvey: false,
+                hasInvited: false,
+                hasRated: false,
+                hasShared: false,
+                hasPlayedMiniGame: false,
+                hasPosted: false,
+                hasDownloaded: false,
+                hasAnsweredQuiz: false,
                 userId: null
             };
 
@@ -304,6 +384,15 @@
                     userState = JSON.parse(savedState);
                     // Ensure new state properties exist
                     if (userState.hasJoinedGroup === undefined) userState.hasJoinedGroup = false;
+                    if (userState.hasViewedAd === undefined) userState.hasViewedAd = false;
+                    if (userState.hasCompletedSurvey === undefined) userState.hasCompletedSurvey = false;
+                    if (userState.hasInvited === undefined) userState.hasInvited = false;
+                    if (userState.hasRated === undefined) userState.hasRated = false;
+                    if (userState.hasShared === undefined) userState.hasShared = false;
+                    if (userState.hasPlayedMiniGame === undefined) userState.hasPlayedMiniGame = false;
+                    if (userState.hasPosted === undefined) userState.hasPosted = false;
+                    if (userState.hasDownloaded === undefined) userState.hasDownloaded = false;
+                    if (userState.hasAnsweredQuiz === undefined) userState.hasAnsweredQuiz = false;
                 }
             };
             
@@ -356,12 +445,57 @@
                     joinGroupBtn.textContent = 'Bonus Claimed';
                     joinGroupBtn.disabled = true;
                 }
+                if (userState.hasViewedAd) {
+                    viewAdBtn.textContent = 'Bonus Claimed';
+                    viewAdBtn.disabled = true;
+                }
+                if (userState.hasCompletedSurvey) {
+                    startSurveyBtn.textContent = 'Bonus Claimed';
+                    startSurveyBtn.disabled = true;
+                }
+                if (userState.hasInvited) {
+                    inviteNowBtn.textContent = 'Bonus Claimed';
+                    inviteNowBtn.disabled = true;
+                }
+                if (userState.hasRated) {
+                    rateNowBtn.textContent = 'Bonus Claimed';
+                    rateNowBtn.disabled = true;
+                }
+                if (userState.hasShared) {
+                    shareNowBtn.textContent = 'Bonus Claimed';
+                    shareNowBtn.disabled = true;
+                }
+                if (userState.hasPlayedMiniGame) {
+                    playMiniGameBtn.textContent = 'Bonus Claimed';
+                    playMiniGameBtn.disabled = true;
+                }
+                if (userState.hasPosted) {
+                    postNowBtn.textContent = 'Bonus Claimed';
+                    postNowBtn.disabled = true;
+                }
+                if (userState.hasDownloaded) {
+                    downloadNowBtn.textContent = 'Bonus Claimed';
+                    downloadNowBtn.disabled = true;
+                }
+                if (userState.hasAnsweredQuiz) {
+                    answerQuizBtn.textContent = 'Bonus Claimed';
+                    answerQuizBtn.disabled = true;
+                }
             };
             
             const setupEventListeners = () => {
                 watchAdBtn.addEventListener('click', handleWatchAd);
+                viewAdBtn.addEventListener('click', handleViewAd);
+                startSurveyBtn.addEventListener('click', handleStartSurvey);
+                inviteNowBtn.addEventListener('click', handleInviteNow);
+                rateNowBtn.addEventListener('click', handleRateNow);
+                shareNowBtn.addEventListener('click', handleShareNow);
+                playMiniGameBtn.addEventListener('click', handlePlayMiniGame);
+                postNowBtn.addEventListener('click', handlePostNow);
+                downloadNowBtn.addEventListener('click', handleDownloadNow);
+                answerQuizBtn.addEventListener('click', handleAnswerQuiz);
                 joinChannelBtn.addEventListener('click', handleJoinChannel);
-                joinGroupBtn.addEventListener('click', handleJoinGroup); // New listener
+                joinGroupBtn.addEventListener('click', handleJoinGroup);
                 withdrawForm.addEventListener('submit', handleWithdraw);
                 copyRefLinkBtn.addEventListener('click', copyReferralLink);
             };
@@ -384,7 +518,149 @@
                     loadingModal.style.display = 'none';
                 });
             };
-            
+
+            const handleViewAd = () => {
+                if (userState.hasViewedAd) {
+                    tg.showAlert('You have already claimed this bonus.'); return;
+                }
+                loadingModal.style.display = 'flex';
+                setTimeout(() => {
+                    userState.points += POINTS_PER_VIEW_AD;
+                    userState.hasViewedAd = true;
+                    saveState();
+                    updateUI();
+                    tg.HapticFeedback.notificationOccurred('success');
+                    tg.showAlert(`Thank you! You received ${POINTS_PER_VIEW_AD} bonus taka.`);
+                    loadingModal.style.display = 'none';
+                }, 3000);
+            };
+
+            const handleStartSurvey = () => {
+                if (userState.hasCompletedSurvey) {
+                    tg.showAlert('You have already claimed this bonus.'); return;
+                }
+                loadingModal.style.display = 'flex';
+                setTimeout(() => {
+                    userState.points += POINTS_PER_SURVEY;
+                    userState.hasCompletedSurvey = true;
+                    saveState();
+                    updateUI();
+                    tg.HapticFeedback.notificationOccurred('success');
+                    tg.showAlert(`Thank you! You received ${POINTS_PER_SURVEY} bonus taka.`);
+                    loadingModal.style.display = 'none';
+                }, 3000);
+            };
+
+            const handleInviteNow = () => {
+                if (userState.hasInvited) {
+                    tg.showAlert('You have already claimed this bonus.'); return;
+                }
+                tg.openTelegramLink(referralLinkElem.value);
+                setTimeout(() => {
+                    userState.points += POINTS_PER_INVITE;
+                    userState.hasInvited = true;
+                    saveState();
+                    updateUI();
+                    tg.HapticFeedback.notificationOccurred('success');
+                    tg.showAlert(`Thank you! You received ${POINTS_PER_INVITE} bonus taka.`);
+                }, 3000);
+            };
+
+            const handleRateNow = () => {
+                if (userState.hasRated) {
+                    tg.showAlert('You have already claimed this bonus.'); return;
+                }
+                loadingModal.style.display = 'flex';
+                setTimeout(() => {
+                    userState.points += POINTS_PER_RATE;
+                    userState.hasRated = true;
+                    saveState();
+                    updateUI();
+                    tg.HapticFeedback.notificationOccurred('success');
+                    tg.showAlert(`Thank you! You received ${POINTS_PER_RATE} bonus taka.`);
+                    loadingModal.style.display = 'none';
+                }, 3000);
+            };
+
+            const handleShareNow = () => {
+                if (userState.hasShared) {
+                    tg.showAlert('You have already claimed this bonus.'); return;
+                }
+                tg.openTelegramLink(referralLinkElem.value);
+                setTimeout(() => {
+                    userState.points += POINTS_PER_SHARE;
+                    userState.hasShared = true;
+                    saveState();
+                    updateUI();
+                    tg.HapticFeedback.notificationOccurred('success');
+                    tg.showAlert(`Thank you! You received ${POINTS_PER_SHARE} bonus taka.`);
+                }, 3000);
+            };
+
+            const handlePlayMiniGame = () => {
+                if (userState.hasPlayedMiniGame) {
+                    tg.showAlert('You have already claimed this bonus.'); return;
+                }
+                loadingModal.style.display = 'flex';
+                setTimeout(() => {
+                    userState.points += POINTS_PER_MINI_GAME;
+                    userState.hasPlayedMiniGame = true;
+                    saveState();
+                    updateUI();
+                    tg.HapticFeedback.notificationOccurred('success');
+                    tg.showAlert(`Thank you! You received ${POINTS_PER_MINI_GAME} bonus taka.`);
+                    loadingModal.style.display = 'none';
+                }, 3000);
+            };
+
+            const handlePostNow = () => {
+                if (userState.hasPosted) {
+                    tg.showAlert('You have already claimed this bonus.'); return;
+                }
+                loadingModal.style.display = 'flex';
+                setTimeout(() => {
+                    userState.points += POINTS_PER_POST;
+                    userState.hasPosted = true;
+                    saveState();
+                    updateUI();
+                    tg.HapticFeedback.notificationOccurred('success');
+                    tg.showAlert(`Thank you! You received ${POINTS_PER_POST} bonus taka.`);
+                    loadingModal.style.display = 'none';
+                }, 3000);
+            };
+
+            const handleDownloadNow = () => {
+                if (userState.hasDownloaded) {
+                    tg.showAlert('You have already claimed this bonus.'); return;
+                }
+                loadingModal.style.display = 'flex';
+                setTimeout(() => {
+                    userState.points += POINTS_PER_DOWNLOAD;
+                    userState.hasDownloaded = true;
+                    saveState();
+                    updateUI();
+                    tg.HapticFeedback.notificationOccurred('success');
+                    tg.showAlert(`Thank you! You received ${POINTS_PER_DOWNLOAD} bonus taka.`);
+                    loadingModal.style.display = 'none';
+                }, 3000);
+            };
+
+            const handleAnswerQuiz = () => {
+                if (userState.hasAnsweredQuiz) {
+                    tg.showAlert('You have already claimed this bonus.'); return;
+                }
+                loadingModal.style.display = 'flex';
+                setTimeout(() => {
+                    userState.points += POINTS_PER_QUIZ;
+                    userState.hasAnsweredQuiz = true;
+                    saveState();
+                    updateUI();
+                    tg.HapticFeedback.notificationOccurred('success');
+                    tg.showAlert(`Thank you! You received ${POINTS_PER_QUIZ} bonus taka.`);
+                    loadingModal.style.display = 'none';
+                }, 3000);
+            };
+
             const handleJoinChannel = () => {
                 if(userState.hasJoinedChannel) {
                     tg.showAlert('You have already claimed this bonus.'); return;
