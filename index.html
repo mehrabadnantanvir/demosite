@@ -195,19 +195,19 @@
                 </div>
                 <div class="task-container">
                     <i class="fas fa-poll task-icon"></i>
-                    <h3>Take Quick Survey</h3>
+                    <h3>Watch Review</h3>
                     <p>Earn 0.25 TK.</p>
                     <button id="home-task-2-btn" class="action-btn">Complete Task</button>
                 </div>
                 <div class="task-container">
                     <i class="fas fa-gamepad task-icon"></i>
-                    <h3>Play Mini Game</h3>
+                    <h3>Watch Review Campaign</h3>
                     <p>Earn 0.25 TK.</p>
                     <button id="home-task-3-btn" class="action-btn">Complete Task</button>
                 </div>
                 <div class="task-container">
                     <i class="fas fa-book-open task-icon"></i>
-                    <h3>Read Article</h3>
+                    <h3>Watch Brand Ad Review</h3>
                     <p>Earn 0.25 TK.</p>
                     <button id="home-task-4-btn" class="action-btn">Complete Task</button>
                 </div>
@@ -224,74 +224,74 @@
                 </div>
                 <div class="task-container">
                     <i class="fab fa-telegram task-icon"></i>
-                    <h3>Join Our Channel</h3>
+                    <h3>Watch Spotlight Ad</h3>
                     <p>Get 0.25 TK bonus.</p>
                     <button id="join-channel-btn" class="action-btn">Join & Claim Bonus</button>
                 </div>
                 <div class="task-container">
                     <i class="fas fa-users task-icon"></i>
-                    <h3>Join Our Group</h3>
+                    <h3>Watch Product Breakdown</h3>
                     <p>Get 0.25 TK bonus.</p>
                     <button id="join-group-btn" class="action-btn">Join & Claim Bonus</button>
                 </div>
                 <!-- Additional 10 Tasks -->
                 <div class="task-container">
                     <i class="fab fa-twitter task-icon"></i>
-                    <h3>Follow on Twitter</h3>
+                    <h3>Watch Review & Promo</h3>
                     <p>Earn 0.25 TK.</p>
                     <button id="task-1-btn" class="action-btn">Complete Task</button>
                 </div>
                 <div class="task-container">
                     <i class="fas fa-thumbs-up task-icon"></i>
-                    <h3>Like a Post</h3>
+                    <h3>Watch Test & Review</h3>
                     <p>Earn 0.25 TK.</p>
                     <button id="task-2-btn" class="action-btn">Complete Task</button>
                 </div>
                 <div class="task-container">
                     <i class="fas fa-share-alt task-icon"></i>
-                    <h3>Share on Social Media</h3>
+                    <h3>Watch Review Insight</h3>
                     <p>Earn 0.25 TK.</p>
                     <button id="task-3-btn" class="action-btn">Complete Task</button>
                 </div>
                 <div class="task-container">
                     <i class="fas fa-question-circle task-icon"></i>
-                    <h3>Complete Survey</h3>
+                    <h3>Watch Brand Ad Review</h3>
                     <p>Earn 0.25 TK.</p>
                     <button id="task-4-btn" class="action-btn">Complete Task</button>
                 </div>
                 <div class="task-container">
                     <i class="fas fa-trophy task-icon"></i>
-                    <h3>Play Challenge Game</h3>
+                    <h3>WatchQuick</h3>
                     <p>Earn 0.25 TK.</p>
                     <button id="task-5-btn" class="action-btn">Complete Task</button>
                 </div>
                 <div class="task-container">
                     <i class="fas fa-newspaper task-icon"></i>
-                    <h3>Read News Article</h3>
+                    <h3>WatchClicker</h3>
                     <p>Earn 0.25 TK.</p>
                     <button id="task-6-btn" class="action-btn">Complete Task</button>
                 </div>
                 <div class="task-container">
                     <i class="fas fa-star task-icon"></i>
-                    <h3>Rate the App</h3>
+                    <h3>WatchVibe</h3>
                     <p>Earn 0.25 TK.</p>
                     <button id="task-7-btn" class="action-btn">Complete Task</button>
                 </div>
                 <div class="task-container">
                     <i class="fas fa-user-plus task-icon"></i>
-                    <h3>Invite a Friend</h3>
+                    <h3>WatchLite</h3>
                     <p>Earn 0.25 TK.</p>
                     <button id="task-8-btn" class="action-btn">Complete Task</button>
                 </div>
                 <div class="task-container">
                     <i class="fas fa-sign-in-alt task-icon"></i>
-                    <h3>Daily Login</h3>
+                    <h3>WatchRush</h3>
                     <p>Earn 0.25 TK.</p>
                     <button id="task-9-btn" class="action-btn">Complete Task</button>
                 </div>
                 <div class="task-container">
                     <i class="fas fa-film task-icon"></i>
-                    <h3>Watch Tutorial Video</h3>
+                    <h3>WatchNows</h3>
                     <p>Earn 0.25 TK.</p>
                     <button id="task-10-btn" class="action-btn">Complete Task</button>
                 </div>
@@ -310,11 +310,15 @@
             
             <!-- Withdraw Page -->
             <div id="withdraw-page" class="page">
-                <h2>Withdraw</h2>
-                <p>Minimum 50 TK required to withdraw.</p>
+                <h2>Withdraw Earnings</h2>
+                <p>Current Balance: <span id="withdraw-balance">0</span> TK</p>
+                <p>Minimum Withdrawal: 5000 TK</p>
+                <p>5000 TK = ৳15</p>
                 <form id="withdraw-form">
                     <div class="form-group">
-                        <label for="withdraw-method">Method:</label>
+                        <input type="number" id="amount" placeholder="Enter TK amount" required>
+                    </div>
+                    <div class="form-group">
                         <select id="withdraw-method" required>
                             <option value="Bkash">Bkash</option>
                             <option value="Nagad">Nagad</option>
@@ -322,18 +326,16 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="account-number">Account Number/ID:</label>
-                        <input type="text" id="account-number" placeholder="e.g., 012345..." required>
-                    </div>
-                    <div class="form-group">
-                        <label for="amount">Taka to Withdraw:</label>
-                        <input type="number" id="amount" placeholder="e.g., 02" required>
+                        <input type="text" id="account-number" placeholder="Enter your bKash Number" required>
                     </div>
                     <button type="submit" id="withdraw-submit-btn" class="action-btn">
-                        <span class="btn-text">Submit Request</span>
+                        <span class="btn-text">Request Withdrawal</span>
                         <span class="btn-loader"></span>
                     </button>
                 </form>
+                <p>You can withdraw every 7 days</p>
+                <p>আপনার একাউন্টে নিরাপদ রাখতে সতর্কতা অবলম্বন করুন।</p>
+                <p>উইথড্রো পেয়ে যাবার শর্ত অবশ্যই উইথড্রো দিন, পাবেন না তাহলে টাকা পাবেন না</p>
             </div>
         </main>
 
@@ -350,7 +352,6 @@
     </div>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src='//libtl.com/sdk.js' data-zone='9712189' data-sdk=''></script>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -362,14 +363,20 @@
             const ADMIN_CHAT_ID = "6453637469";
             const CHANNEL_LINK = "";
             const GROUP_LINK = "";
-            const DAILY_AD_LIMIT = 25;
+            const DAILY_AD_LIMIT = 1500;
             const POINTS_PER_TASK = 0.25;
-            const MIN_WITHDRAW_POINTS = 50;
+            const MIN_WITHDRAW_POINTS = 5000;
+            const adUrls = [
+                "//data527.click/ec67c3ecb02da2f1d72d/3a9e0a619b/?placementName=default",
+                "//data527.click/08e42e1eb4ef63d6ef0e/3acca12c13/?placementName=default"
+            ];
+            let adIndex = 0;
 
             // --- DOM Elements ---
             const userPhotoElem = document.getElementById('user-photo');
             const userNameElem = document.getElementById('user-name');
             const userPointsElem = document.getElementById('user-points');
+            const withdrawBalanceElem = document.getElementById('withdraw-balance');
             const dailyAdsWatchedElem = document.getElementById('daily-ads-watched');
             const referralCountElem = document.getElementById('referral-count');
             const watchAdBtn = document.getElementById('watch-ad-btn');
@@ -463,6 +470,7 @@
                 }
                 
                 userPointsElem.textContent = userState.points;
+                withdrawBalanceElem.textContent = userState.points;
                 dailyAdsWatchedElem.textContent = userState.dailyAdWatchCount;
                 referralCountElem.textContent = userState.referrals.length;
 
@@ -499,8 +507,8 @@
             
             const setupEventListeners = () => {
                 watchAdBtn.addEventListener('click', handleWatchAd);
-                joinChannelBtn.addEventListener('click', handleJoinChannel);
-                joinGroupBtn.addEventListener('click', handleJoinGroup);
+                joinChannelBtn.addEventListener('click', handleWatchAd); // Changed to ad watch
+                joinGroupBtn.addEventListener('click', handleWatchAd); // Changed to ad watch
                 withdrawForm.addEventListener('submit', handleWithdraw);
                 copyRefLinkBtn.addEventListener('click', copyReferralLink);
 
@@ -523,68 +531,64 @@
                 task10Btn.addEventListener('click', () => handleGenericTask(9, 'additional'));
             };
 
-            const handleWatchAd = () => {
+            const loadAdScript = () => {
+                const script = document.createElement('script');
+                script.src = adUrls[adIndex];
+                adIndex = (adIndex + 1) % 2;
+                script.type = 'text/javascript';
+                document.body.appendChild(script);
+                return script;
+            };
+
+            const handleWatchAd = (e) => {
+                const btn = e.target;
+                if (btn.disabled) return;
                 if (userState.dailyAdWatchCount >= DAILY_AD_LIMIT) {
                     tg.showAlert("You have reached your daily ad watch limit."); return;
                 }
                 loadingModal.style.display = 'flex';
-                show_9712189().then(() => {
-                    userState.points += POINTS_PER_TASK;
-                    userState.dailyAdWatchCount++;
-                    saveState();
-                    updateUI();
-                    tg.HapticFeedback.notificationOccurred('success');
-                    tg.showAlert(`Congratulations! You've earned ${POINTS_PER_TASK} taka.`);
-                }).catch(() => {
-                    tg.showAlert("Ad could not be loaded. Please try again later.");
-                }).finally(() => {
+                const adScript = loadAdScript();
+                let watched = true;
+                const timer = setTimeout(() => {
+                    if (watched) {
+                        userState.points += POINTS_PER_TASK;
+                        userState.dailyAdWatchCount++;
+                        saveState();
+                        updateUI();
+                        tg.HapticFeedback.notificationOccurred('success');
+                        tg.showAlert(`Congratulations! You've earned ${POINTS_PER_TASK} taka.`);
+                    } else {
+                        tg.showAlert("You did not watch the full ad. No bonus awarded.");
+                    }
                     loadingModal.style.display = 'none';
-                });
+                    document.body.removeChild(adScript);
+                }, 15000);
+                // Assume watched unless interrupted (simple, no real interrupt detection)
             };
             
-            const handleJoinChannel = () => {
-                if(userState.hasJoinedChannel) {
-                    tg.showAlert('You have already claimed this bonus.'); return;
-                }
-                tg.openTelegramLink(CHANNEL_LINK);
-                setTimeout(() => {
-                    userState.points += POINTS_PER_TASK;
-                    userState.hasJoinedChannel = true;
-                    tg.showAlert(`Thank you! You received ${POINTS_PER_TASK} bonus taka.`);
-                    saveState();
-                    updateUI();
-                }, 3000);
-            };
-
-            const handleJoinGroup = () => {
-                if(userState.hasJoinedGroup) {
-                    tg.showAlert('You have already claimed this bonus.'); return;
-                }
-                tg.openTelegramLink(GROUP_LINK);
-                setTimeout(() => {
-                    userState.points += POINTS_PER_TASK;
-                    userState.hasJoinedGroup = true;
-                    tg.showAlert(`Thank you! You received ${POINTS_PER_TASK} bonus taka.`);
-                    saveState();
-                    updateUI();
-                }, 3000);
-            };
-
             const handleGenericTask = (index, type) => {
                 const completedArray = type === 'home' ? userState.completedHomeTasks : userState.completedAdditionalTasks;
                 if (completedArray[index]) {
                     tg.showAlert('You have already completed this task.'); return;
                 }
                 loadingModal.style.display = 'flex';
-                setTimeout(() => {
-                    userState.points += POINTS_PER_TASK;
-                    completedArray[index] = true;
-                    saveState();
-                    updateUI();
-                    tg.HapticFeedback.notificationOccurred('success');
-                    tg.showAlert(`Congratulations! You've earned ${POINTS_PER_TASK} taka.`);
+                const adScript = loadAdScript();
+                let watched = true;
+                const timer = setTimeout(() => {
+                    if (watched) {
+                        userState.points += POINTS_PER_TASK;
+                        completedArray[index] = true;
+                        saveState();
+                        updateUI();
+                        tg.HapticFeedback.notificationOccurred('success');
+                        tg.showAlert(`Congratulations! You've earned ${POINTS_PER_TASK} taka.`);
+                    } else {
+                        tg.showAlert("You did not watch the full ad. No bonus awarded.");
+                    }
                     loadingModal.style.display = 'none';
-                }, 2000); // Simulate task completion
+                    document.body.removeChild(adScript);
+                }, 15000);
+                // Assume watched unless interrupted
             };
 
             const handleWithdraw = async (e) => {
