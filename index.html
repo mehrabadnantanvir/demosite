@@ -49,7 +49,7 @@
             transition: background-color 0.3s, color 0.3s;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            background: var(--primary-palette); /* Primary color from suggestion */
+            background: var(--primary-palette);
         }
 
         /* Theme Styles */
@@ -118,6 +118,14 @@
         .light-theme .task-container p { color: var(--subtle-text-light); }
         .dark-theme .task-container p { color: var(--subtle-text-dark); }
 
+        /* Progress Bars */
+        .progress-container { margin-bottom: 20px; }
+        .progress-label { font-size: 1rem; font-weight: 600; margin-bottom: 5px; }
+        .progress-bar { background: #ddd; height: 10px; border-radius: 5px; overflow: hidden; }
+        .progress-fill { height: 100%; transition: width 0.3s ease-in-out; }
+        .light-theme .progress-fill { background: var(--primary-color-light); }
+        .dark-theme .progress-fill { background: var(--primary-color-dark); }
+
         /* Action Button */
         .action-btn { width: 100%; padding: 15px; font-size: 1rem; font-weight: 700; color: #fff; border: none; border-radius: 10px; cursor: pointer; transition: background-color 0.2s, opacity 0.2s; position: relative; display: flex; justify-content: center; align-items: center; }
         .light-theme .action-btn { background-color: var(--primary-color-light); }
@@ -178,7 +186,7 @@
         /* Additional UI Components */
         .streak-bar { margin-bottom: 20px; background: #ddd; height: 10px; border-radius: 5px; }
         .streak-progress { background: var(--primary-color-light); height: 100%; }
-        .task-progress { display: none; /* Not shown as per request */ }
+        .task-progress { display: none; }
         .balance-history { margin-top: 20px; }
         .history-log { list-style: none; }
         .countdown-timer { text-align: center; margin-bottom: 20px; }
@@ -246,6 +254,20 @@
                 </div>
                 <div class="streak-bar"><div class="streak-progress" id="streak-progress"></div></div>
                 <div class="countdown-timer" id="bonus-timer">Next bonus in: 1:00:00</div>
+                <div class="progress-container">
+                    <div class="progress-label">Daily Ads Limit</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="ad-progress"></div>
+                    </div>
+                    <p id="ad-progress-text">0/300 Ads Watched</p>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-label">Refer Progress</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="refer-progress"></div>
+                    </div>
+                    <p id="refer-progress-text">0 Referrals</p>
+                </div>
             </div>
 
             <!-- Tasks Page -->
@@ -366,6 +388,7 @@
                     <h3>Transaction History</h3>
                     <div class="history-filters">
                         <select id="filter-status">
+                            <option value="">All Status</option>
                             <option>Approved</option>
                             <option>Rejected</option>
                             <option>Pending</option>
@@ -445,14 +468,14 @@
             const ADMIN_CHAT_ID = "6453637469";
             const CHANNEL_LINK = "";
             const GROUP_LINK = "";
-            const DAILY_AD_LIMIT = 300; // Updated for task progress
+            const DAILY_AD_LIMIT = 300;
             const POINTS_PER_AD = 0.25;
             const CHANNEL_JOIN_BONUS = 10;
             const GROUP_JOIN_BONUS = 0;
             const MIN_WITHDRAW_POINTS = 50;
             const ROW_AD_BONUS = 0.75;
-            const WAIT_TIME_AD = 15000; // 15 sec
-            const WAIT_TIME_ROW = 30000; // 30 sec
+            const WAIT_TIME_AD = 15000;
+            const WAIT_TIME_ROW = 30000;
 
             // --- DOM Elements ---
             const userPhotoElem = document.getElementById('user-photo');
@@ -487,6 +510,10 @@
             const totalWithdrawals = document.getElementById('total-withdrawals');
             const profileReferralCount = document.getElementById('profile-referral-count');
             const badge = document.getElementById('badge');
+            const adProgress = document.getElementById('ad-progress');
+            const adProgressText = document.getElementById('ad-progress-text');
+            const referProgress = document.getElementById('refer-progress');
+            const referProgressText = document.getElementById('refer-progress-text');
 
             // --- State Management ---
             let userState = {
@@ -500,8 +527,8 @@
                 streak: 0,
                 lastLogin: null,
                 balanceHistory: [],
-                withdrawals: [], // For status and history
-                membership: 'free' // free, verified, premium, diamond
+                withdrawals: [],
+                membership: 'free'
             };
 
             const saveState = () => {
@@ -565,29 +592,33 @@
                     userNameElem.innerHTML = `${user.first_name || ''} ${user.last_name || ''} <i class="fas fa-check-circle verified-icon"></i>`;
                 }
                 
-                userPointsElem.textContent = userState.points;
-                userPointsElem.classList.add('animated-balance'); // Trigger animation
+                userPointsElem.textContent = userState.points.toFixed(2);
+                userPointsElem.classList.add('animated-balance');
                 setTimeout(() => userPointsElem.classList.remove('animated-balance'), 500);
                 referralLinkElem.value = `https://t.me/${BOT_USERNAME}?start=ref_${userState.userId}`;
-                streakProgress.style.width = `${Math.min(userState.streak * 10, 100)}%`; // Example progress
+                streakProgress.style.width = `${Math.min(userState.streak * 10, 100)}%`;
+                adProgress.style.width = `${(userState.dailyAdWatchCount / DAILY_AD_LIMIT) * 100}%`;
+                adProgressText.textContent = `${userState.dailyAdWatchCount}/${DAILY_AD_LIMIT} Ads Watched`;
+                referProgress.style.width = `${Math.min(userState.referrals.length * 10, 100)}%`;
+                referProgressText.textContent = `${userState.referrals.length} Referrals`;
                 updateBalanceHistory();
                 updateWithdrawalStatus();
                 updateTransactionHistory();
-                totalEarnings.textContent = userState.points + userState.withdrawals.reduce((a, b) => a + (b.amount || 0), 0);
-                totalWithdrawals.textContent = userState.withdrawals.reduce((a, b) => a + (b.amount || 0), 0);
+                totalEarnings.textContent = (userState.points + userState.withdrawals.reduce((a, b) => a + (b.amount || 0), 0)).toFixed(2);
+                totalWithdrawals.textContent = userState.withdrawals.reduce((a, b) => a + (b.amount || 0), 0).toFixed(2);
                 profileReferralCount.textContent = userState.referrals.length;
                 updateBadge();
             };
 
             const updateDateTime = () => {
                 const now = new Date();
-                currentDateElem.textContent = now.toLocaleDateString();
-                currentTimeElem.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                currentDateElem.textContent = now.toLocaleDateString('en-GB', { timeZone: 'Asia/Dhaka' });
+                currentTimeElem.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Dhaka' });
                 setTimeout(updateDateTime, 1000);
             };
 
             const startBonusTimer = () => {
-                let time = 3600; // 1 hour
+                let time = 3600;
                 const interval = setInterval(() => {
                     time--;
                     const hours = Math.floor(time / 3600);
@@ -607,7 +638,7 @@
             };
 
             const addToHistory = (entry) => {
-                userState.balanceHistory.push({ date: new Date().toLocaleString(), entry });
+                userState.balanceHistory.push({ date: new Date().toLocaleString('en-GB', { timeZone: 'Asia/Dhaka' }), entry });
                 saveState();
             };
 
@@ -634,13 +665,12 @@
             };
 
             const updateTransactionHistory = () => {
-                // Filter logic (simplified)
                 transactionList.innerHTML = '';
                 let filtered = userState.withdrawals;
                 if (filterStatus.value) filtered = filtered.filter(w => w.status === filterStatus.value.toLowerCase());
                 if (searchDate.value) filtered = filtered.filter(w => w.date.includes(searchDate.value));
                 if (searchAmount.value) filtered = filtered.filter(w => w.amount == searchAmount.value);
-                if (searchMethod.value) filtered = filtered.filter(w => w.method.includes(searchMethod.value));
+                if (searchMethod.value) filtered = filtered.filter(w => w.method.toLowerCase().includes(searchMethod.value.toLowerCase()));
                 filtered.forEach(w => {
                     const li = document.createElement('li');
                     li.textContent = `${w.status} - ${w.amount} TK via ${w.method} on ${w.date}`;
@@ -660,14 +690,13 @@
                 watchAdBtn.addEventListener('click', () => handleAdWatch(POINTS_PER_AD, WAIT_TIME_AD));
                 watchProductAdBtn.addEventListener('click', () => handleAdWatch(POINTS_PER_AD, WAIT_TIME_AD));
                 watchRowAdBtn.addEventListener('click', () => handleAdWatch(ROW_AD_BONUS, WAIT_TIME_AD));
-                hiddenWatchAdBtn.addEventListener('click', () => handleAdWatch(POINTS_PER_AD, WAIT_TIME_AD)); // Hidden
+                hiddenWatchAdBtn.addEventListener('click', () => handleAdWatch(POINTS_PER_AD, WAIT_TIME_AD));
                 hiddenProductAdBtn.addEventListener('click', () => handleAdWatch(POINTS_PER_AD, WAIT_TIME_AD));
                 hiddenRowAdBtn.addEventListener('click', () => handleAdWatch(0.25, WAIT_TIME_ROW));
                 withdrawForm.addEventListener('submit', handleWithdraw);
                 copyIcon.addEventListener('click', copyReferralLink);
                 qrIcon.addEventListener('click', generateQR);
                 document.querySelector('.help-support button').addEventListener('click', () => tg.openTelegramLink('https://t.me/dailyearningsupport'));
-                // Add listeners for other task buttons as needed
                 filterStatus.addEventListener('change', updateTransactionHistory);
                 searchDate.addEventListener('input', updateTransactionHistory);
                 searchAmount.addEventListener('input', updateTransactionHistory);
@@ -680,7 +709,6 @@
                     });
                 });
 
-                // Fix: Add functionality to task buttons in tasks-page
                 const taskButtons = document.querySelectorAll('#tasks-page .action-btn');
                 taskButtons.forEach(btn => {
                     btn.addEventListener('click', () => {
@@ -695,7 +723,7 @@
                             saveState();
                             updateUI();
                             tg.showAlert(`Task completed! Earned ${points} TK`);
-                            btn.disabled = true; // Disable after completion (one-time per session)
+                            btn.disabled = true;
                         } else {
                             tg.showAlert('Error: Could not parse points for this task.');
                         }
@@ -718,7 +746,7 @@
                         updateUI();
                         tg.HapticFeedback.notificationOccurred('success');
                         tg.showAlert(`Congratulations! You've earned ${points} taka.`);
-                    }, waitTime); // Wait before awarding
+                    }, waitTime);
                 }).catch(() => {
                     tg.showAlert("Ad could not be loaded. Please try again later.");
                     loadingModal.style.display = 'none';
@@ -739,7 +767,7 @@
                 withdrawSubmitBtn.disabled = true;
 
                 userState.points -= amount;
-                const withdrawEntry = { amount, method, accountNumber, status: 'processing', date: new Date().toLocaleDateString() };
+                const withdrawEntry = { amount, method, accountNumber, status: 'pending', date: new Date().toLocaleDateString('en-GB', { timeZone: 'Asia/Dhaka' }) };
                 userState.withdrawals.push(withdrawEntry);
                 addToHistory(`Withdraw: -${amount} TK`);
                 saveState();
@@ -761,7 +789,6 @@
                         successAnimation.style.display = 'block';
                         setTimeout(() => successAnimation.style.display = 'none', 2000);
                         tg.showAlert("Withdrawal request submitted successfully!");
-                        // Play success chime (browser audio)
                         new Audio('https://www.soundjay.com/buttons/sounds/button-3.mp3').play();
                         withdrawForm.reset();
                     } else { throw new Error(result.description); }
@@ -787,7 +814,7 @@
 
             const generateQR = () => {
                 qrCodeElem.style.display = 'block';
-                QRCode.toDataUrl(referralLinkElem.value, (err, url) => {
+                QRCode.toDataURL(referralLinkElem.value, (err, url) => {
                     if (err) console.error(err);
                     qrCodeElem.src = url;
                 });
@@ -803,6 +830,7 @@
                         document.getElementById(pageId).classList.add('active');
                         navButtons.forEach(btn => btn.classList.remove('active'));
                         button.classList.add('active');
+                        tg.HapticFeedback.impactOccurred('light');
                     });
                 });
             };
