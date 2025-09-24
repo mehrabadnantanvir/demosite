@@ -555,7 +555,7 @@
     </div>
    
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src='//libtl.com/sdk.js' data-zone='9925533' data-sdk=''></script>
+    <script src='//libtl.com/sdk.js' data-zone='9712189' data-sdk=''></script>
    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -608,18 +608,23 @@
             };
 
             async function claimReward(taskType) {
+                if (typeof window.show_9925533 !== 'function') {
+                    tg.showAlert("Ad service is currently unavailable. Please try again later.");
+                    return;
+                }
                 try {
+                    window.show_9925533();
                     let waitTime = 0;
                     if (taskType === 'interstitial' || taskType === 'productReview') waitTime = 1000;
                     await new Promise(resolve => setTimeout(resolve, waitTime));
                     const newCount = (userState.dailyAdWatchCount || 0) + 1;
                   
-                    let rewardAmount = 0.25;
-                    if (taskType === 'miniApp') rewardAmount = 0.25;
-                    else if (taskType === 'productReview') rewardAmount = 0.35;
-                    else if (taskType === 'alternativeAd') rewardAmount = 0.75;
-                    else if (taskType === 'popup') rewardAmount = 0.25;
-                    else if (taskType === 'inApp') rewardAmount = 0.25;
+                    let rewardAmount = POINTS_PER_AD;
+                    if (taskType === 'miniApp') rewardAmount = POINTS_PER_AD;
+                    else if (taskType === 'productReview') rewardAmount = POINTS_PER_REVIEW_AD;
+                    else if (taskType === 'alternativeAd') rewardAmount = ROW_AD_BONUS;
+                    else if (taskType === 'popup') rewardAmount = POINTS_PER_AD;
+                    else if (taskType === 'inApp') rewardAmount = POINTS_PER_AD;
                     
                     userState.dailyAdWatchCount = newCount;
                     userState.points += rewardAmount;
@@ -627,6 +632,7 @@
                     userState.todaysEarnings += rewardAmount;
                     saveState();
                     updateUI();
+                    tg.showAlert(`Congratulations! You've earned ৳${rewardAmount.toFixed(2)}.`);
                 } catch(e) {
                     console.error("Ad error:", e);
                     tg.showAlert('Could not show ad. Please try again later.');
