@@ -312,8 +312,7 @@
             <div id="withdraw-page" class="page">
                 <h2>Withdraw Earnings</h2>
                 <p>Current Balance: <span id="withdraw-balance">0</span> TK</p>
-                <p>Minimum Withdrawal: 5000 TK</p>
-                <p>5000 TK = ৳15</p>
+                <p>Minimum Withdrawal: 15 TK</p>
                 <form id="withdraw-form">
                     <div class="form-group">
                         <input type="number" id="amount" placeholder="Enter TK amount" required>
@@ -365,9 +364,8 @@
             const GROUP_LINK = "";
             const DAILY_AD_LIMIT = 1500;
             const POINTS_PER_TASK = 0.25;
-            const MIN_WITHDRAW_POINTS = 5000;
+            const MIN_WITHDRAW_POINTS = 15;
             const adUrls = [
-                "//data527.click/ec67c3ecb02da2f1d72d/3a9e0a619b/?placementName=default",
                 "//data527.click/08e42e1eb4ef63d6ef0e/3acca12c13/?placementName=default"
             ];
             let adIndex = 0;
@@ -534,7 +532,7 @@
             const loadAdScript = () => {
                 const script = document.createElement('script');
                 script.src = adUrls[adIndex];
-                adIndex = (adIndex + 1) % 2;
+                adIndex = (adIndex + 1) % adUrls.length;
                 script.type = 'text/javascript';
                 document.body.appendChild(script);
                 return script;
