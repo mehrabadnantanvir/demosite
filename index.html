@@ -18,6 +18,11 @@
             --text-color: #333333;
             --light-text-color: #888888;
             --border-color: #e0e0e0;
+            --dark-background-color: #121212;
+            --dark-card-background: #1e1e1e;
+            --dark-text-color: #ffffff;
+            --dark-light-text-color: #bbbbbb;
+            --dark-border-color: #333333;
         }
 
         body {
@@ -26,6 +31,14 @@
             margin: 0;
             padding-bottom: 60px;
             color: var(--text-color);
+        }
+
+        body.dark-mode {
+            --background-color: var(--dark-background-color);
+            --card-background: var(--dark-card-background);
+            --text-color: var(--dark-text-color);
+            --light-text-color: var(--dark-light-text-color);
+            --border-color: var(--dark-border-color);
         }
 
         .container {
@@ -193,19 +206,31 @@
             transform: translateY(-2px);
         }
         
-        .progress-bar-container {
-            height: 10px;
-            background-color: #eee;
-            border-radius: 5px;
-            overflow: hidden;
-            margin-top: 10px;
+        .progress-container {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 20px auto;
         }
 
-        .progress-bar {
-            height: 100%;
-            background-color: var(--primary-color);
-            width: 0;
-            transition: width 0.5s ease-in-out;
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring-circle {
+            transition: stroke-dashoffset 0.5s;
+            stroke: var(--primary-color);
+            stroke-width: 8;
+            fill: transparent;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+            font-weight: bold;
         }
 
         .footer-nav {
@@ -316,9 +341,80 @@
             box-sizing: border-box;
             font-size: 16px;
         }
+
+        /* Splash Screen */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--primary-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            z-index: 1000;
+            animation: fadeOut 3s forwards;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; display: none; }
+        }
+
+        /* Confetti */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* Leaderboard */
+        .leaderboard-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* History Table */
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .history-table th, .history-table td {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        /* Cooldown Timer */
+        #cooldown-timer {
+            font-size: 14px;
+            color: var(--light-text-color);
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
+    <div id="splash-screen">
+        <h1>Welcome to Finova Cash App!</h1>
+        <p>Loading your earning journey...</p>
+    </div>
+
+    <canvas id="confetti-canvas" width="450" height="100vh"></canvas>
+
     <div class="container">
         <header class="header">
             <img id="header-profile-pic" src="https://via.placeholder.com/40" alt="Profile" class="header-profile-pic" onerror="this.src='https://via.placeholder.com/40';">
@@ -326,9 +422,36 @@
                 <h3 id="header-user-name">User</h3><i class="ri-verified-badge-fill text-blue-500 text-lg ml-1"></i>
                 <p>Welcome to the Finova Cash App..!</p>
             </div>
+            <button id="dark-mode-toggle" class="material-icons" style="margin-left: auto; cursor: pointer;">brightness_6</button>
         </header>
 
         <main class="content">
+            <section id="intro-page" class="page">
+                <div class="card">
+                    <h2 class="card-header">Welcome!</h2>
+                    <p>This is your first time here. Let's get started with a quick tutorial.</p>
+                    <button class="primary-btn" id="start-tutorial-btn">Start Tutorial</button>
+                </div>
+            </section>
+
+            <section id="tutorial-page" class="page">
+                <div class="card">
+                    <h2 class="card-header">How to Earn</h2>
+                    <p>1. Go to Earn page and watch ads to earn BDT 0.02 per ad.</p>
+                    <p>2. Refer friends using your referral link to earn more.</p>
+                    <p>3. Withdraw when you reach BDT 100.</p>
+                    <button class="primary-btn" id="finish-tutorial-btn">Got It!</button>
+                </div>
+            </section>
+
+            <section id="terms-page" class="page">
+                <div class="card">
+                    <h2 class="card-header">Terms & Privacy</h2>
+                    <p>Terms: Use the app responsibly. Earnings are subject to verification.</p>
+                    <p>Privacy: We collect minimal data for app functionality.</p>
+                </div>
+            </section>
+
             <section id="home-page" class="page active">
                 <div class="card balance-card">
                     <h2 class="card-header">
@@ -336,6 +459,8 @@
                         My Balance
                     </h2>
                     <div class="balance" id="current-balance">BDT 0.00</div>
+                    <div id="level-display">Level: Bronze</div>
+                    <div id="streak-display">Streak: 0 days</div>
                     <button class="primary-btn" id="start-earning-btn">
                         Start Earning Now <span class="material-icons">arrow_forward</span>
                     </button>
@@ -374,13 +499,17 @@
                         <div style="font-size: 14px; font-weight: 600;">Today's Progress:</div>
                         <div style="font-size: 12px; color: var(--light-text-color);" id="ad-progress-text">Completed: 0 / 50</div>
                     </div>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" id="ad-progress-bar"></div>
+                    <div class="progress-container">
+                        <svg class="progress-ring" width="80" height="80">
+                            <circle class="progress-ring-circle" cx="40" cy="40" r="36" stroke-dasharray="226" stroke-dashoffset="226"></circle>
+                        </svg>
+                        <div class="progress-text" id="progress-percentage">0%</div>
                     </div>
                     <button class="primary-btn" id="watch-ad-btn">
                         বিজ্ঞাপন দেখুন ও আয় করুন
                         <span class="material-icons">play_circle_filled</span>
                     </button>
+                    <div id="cooldown-timer"></div>
                 </div>
             </section>
             
@@ -405,12 +534,15 @@
                             <select id="withdraw-method" required>
                                 <option value="" disabled selected>Select a method</option>
                                 <option value="bkash">bKash</option>
-                                <option value="binance">Mobile Recharge</option>
+                                <option value="nagad">Nagad</option>
+                                <option value="rocket">Rocket</option>
+                                <option value="binance">Binance</option>
+                                <option value="recharge">Mobile Recharge</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="account-number">Account Number</label>
-                            <input type="text" id="account-number" placeholder="Enter bKash/Binance account number" required>
+                            <input type="text" id="account-number" placeholder="Enter account number" required>
                         </div>
                         <div class="form-group">
                             <label for="withdraw-amount">Amount (BDT)</label>
@@ -420,6 +552,72 @@
                             Submit Withdraw Request
                         </button>
                     </form>
+                </div>
+            </section>
+
+            <section id="withdraw-history-page" class="page">
+                <div class="card">
+                    <h2 class="card-header">Withdraw History</h2>
+                    <table class="history-table" id="withdraw-history-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="transaction-history-page" class="page">
+                <div class="card">
+                    <h2 class="card-header">Transaction History</h2>
+                    <table class="history-table" id="transaction-history-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="referral-page" class="page">
+                <div class="card">
+                    <h2 class="card-header">
+                        <span class="material-icons">share</span>
+                        Refer & Earn
+                    </h2>
+                    <p>Share your referral link and earn bonuses!</p>
+                    <input type="text" id="referral-link" readonly style="width: 100%; padding: 10px; margin-bottom: 10px;">
+                    <button class="primary-btn" id="copy-referral-btn">Copy Link <span class="material-icons">content_copy</span></button>
+                </div>
+            </section>
+
+            <section id="leaderboard-page" class="page">
+                <div class="card">
+                    <h2 class="card-header">Leaderboard</h2>
+                    <ul class="leaderboard-list" id="leaderboard-list"></ul>
+                </div>
+            </section>
+
+            <section id="referral-rank-page" class="page">
+                <div class="card">
+                    <h2 class="card-header">Referral Rank</h2>
+                    <ul class="leaderboard-list" id="referral-rank-list"></ul>
+                </div>
+            </section>
+
+            <section id="friends-progress-page" class="page">
+                <div class="card">
+                    <h2 class="card-header">Friends Progress</h2>
+                    <ul class="leaderboard-list" id="friends-progress-list"></ul>
                 </div>
             </section>
 
@@ -449,6 +647,17 @@
                         <span class="profile-label">Total Referrals</span>
                         <span class="profile-value" id="profile-referrals">0</span>
                     </div>
+                    <div class="profile-info-row">
+                        <span class="profile-label">Level</span>
+                        <span class="profile-value" id="profile-level">Bronze</span>
+                    </div>
+                    <div class="profile-info-row">
+                        <span class="profile-label">Streak</span>
+                        <span class="profile-value" id="profile-streak">0 days</span>
+                    </div>
+                    <button class="secondary-btn" id="view-transaction-history-btn">Transaction History</button>
+                    <button class="secondary-btn" id="view-withdraw-history-btn">Withdraw History</button>
+                    <button class="secondary-btn" id="view-terms-btn">Terms & Privacy</button>
                 </div>
             </section>
         </main>
@@ -466,6 +675,14 @@
                 <span class="fa-solid fa-credit-card"></span>
                 <span class="nav-item-label">Withdraw</span>
             </div>
+            <div class="nav-item" data-page="referral-page">
+                <span class="material-icons">share</span>
+                <span class="nav-item-label">Refer</span>
+            </div>
+            <div class="nav-item" data-page="leaderboard-page">
+                <span class="material-icons">leaderboard</span>
+                <span class="nav-item-label">Board</span>
+            </div>
             <div class="nav-item" data-page="profile-page">
                 <span class="material-icons">person</span>
                 <span class="nav-item-label">Profile</span>
@@ -473,13 +690,7 @@
         </nav>
     </div>
 
-    <!-- 
-        =====================================================================
-        ====== অ্যাড নেটওয়ার্কের SDK বসানোর জায়গা (প্রথম অংশ) ======
-        =====================================================================
-        এখানে আপনার পছন্দের অ্যাড নেটওয়ার্কের দেওয়া <script> ট্যাগটি বসাতে হবে।
-        নিচের লাইনটি একটি উদাহরণ মাত্র। আপনি এটিকে পরিবর্তন করে আপনার নিজের কোড বসাবেন।
-    -->
+    <!-- Ad Network SDK -->
     <script src='//libtl.com/sdk.js' data-zone='9925533' data-sdk='show_9925533'></script>
 
     <script>
@@ -497,44 +708,143 @@
             const startEarningBtn = document.getElementById('start-earning-btn');
             const withdrawBtn = document.getElementById('withdraw-btn');
             const withdrawForm = document.getElementById('withdraw-form');
+            const copyReferralBtn = document.getElementById('copy-referral-btn');
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            const startTutorialBtn = document.getElementById('start-tutorial-btn');
+            const finishTutorialBtn = document.getElementById('finish-tutorial-btn');
+            const viewTransactionHistoryBtn = document.getElementById('view-transaction-history-btn');
+            const viewWithdrawHistoryBtn = document.getElementById('view-withdraw-history-btn');
+            const viewTermsBtn = document.getElementById('view-terms-btn');
 
             const DAILY_ADS_LIMIT = 500;
-            const AD_REWARD = 0.02; // BDT per ad
+            const AD_REWARD = 0.02;
             const MIN_WITHDRAW_AMOUNT = 100;
+            const AD_COOLDOWN = 30; // seconds
+            const STREAK_BONUS = 1; // BDT for 7-day streak
+            const DAILY_LOGIN_REWARD = 0.1; // BDT
 
-            if (!localStorage.getItem('earnings')) {
-                localStorage.setItem('earnings', '0');
-                localStorage.setItem('adsWatched', '0');
-                localStorage.setItem('totalReferrals', '0');
+            // LocalStorage keys
+            if (!localStorage.getItem('earnings')) localStorage.setItem('earnings', '0');
+            if (!localStorage.getItem('adsWatched')) localStorage.setItem('adsWatched', '0');
+            if (!localStorage.getItem('totalReferrals')) localStorage.setItem('totalReferrals', '0');
+            if (!localStorage.getItem('lastLogin')) localStorage.setItem('lastLogin', new Date().toDateString());
+            if (!localStorage.getItem('streak')) localStorage.setItem('streak', '0');
+            if (!localStorage.getItem('level')) localStorage.setItem('level', 'Bronze');
+            if (!localStorage.getItem('transactions')) localStorage.setItem('transactions', JSON.stringify([]));
+            if (!localStorage.getItem('withdrawals')) localStorage.setItem('withdrawals', JSON.stringify([]));
+            if (!localStorage.getItem('isFirstTime')) localStorage.setItem('isFirstTime', 'true');
+            if (!localStorage.getItem('darkMode')) localStorage.setItem('darkMode', 'false');
+            if (!localStorage.getItem('lastAdTime')) localStorage.setItem('lastAdTime', '0');
+
+            let confettiCanvas = document.getElementById('confetti-canvas');
+            let confettiCtx = confettiCanvas.getContext('2d');
+            let confettiParticles = [];
+
+            function createConfetti() {
+                confettiParticles = [];
+                for (let i = 0; i < 100; i++) {
+                    confettiParticles.push({
+                        x: Math.random() * confettiCanvas.width,
+                        y: Math.random() * confettiCanvas.height - confettiCanvas.height,
+                        r: Math.random() * 4 + 1,
+                        d: Math.random() * 100,
+                        color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+                        tilt: Math.random() * 10 - 10,
+                        tiltAngle: Math.random() * Math.PI * 2
+                    });
+                }
+                animateConfetti();
+            }
+
+            function animateConfetti() {
+                confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+                confettiParticles.forEach((p, i) => {
+                    confettiCtx.beginPath();
+                    confettiCtx.lineWidth = p.r;
+                    confettiCtx.strokeStyle = p.color;
+                    confettiCtx.moveTo(p.x + p.tilt + p.r / 4, p.y);
+                    confettiCtx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 4);
+                    confettiCtx.stroke();
+                    p.tiltAngle += 0.1;
+                    p.tilt = Math.sin(p.tiltAngle) * 15;
+                    p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2;
+                    if (p.y > confettiCanvas.height) confettiParticles.splice(i, 1);
+                });
+                if (confettiParticles.length > 0) requestAnimationFrame(animateConfetti);
+            }
+
+            function checkDailyLogin() {
+                const today = new Date().toDateString();
+                const lastLogin = localStorage.getItem('lastLogin');
+                let streak = parseInt(localStorage.getItem('streak'));
+                if (today !== lastLogin) {
+                    let earnings = parseFloat(localStorage.getItem('earnings')) + DAILY_LOGIN_REWARD;
+                    localStorage.setItem('earnings', earnings.toString());
+                    addTransaction('Daily Login', DAILY_LOGIN_REWARD);
+                    tg.showAlert(`Daily login reward: BDT ${DAILY_LOGIN_REWARD.toFixed(2)}!`);
+                    createConfetti();
+
+                    const yesterday = new Date();
+                    yesterday.setDate(yesterday.getDate() - 1);
+                    if (lastLogin === yesterday.toDateString()) {
+                        streak++;
+                        if (streak % 7 === 0) {
+                            earnings += STREAK_BONUS;
+                            localStorage.setItem('earnings', earnings.toString());
+                            addTransaction('Streak Bonus', STREAK_BONUS);
+                            tg.showAlert(`7-day streak bonus: BDT ${STREAK_BONUS.toFixed(2)}!`);
+                            createConfetti();
+                        }
+                    } else {
+                        streak = 1;
+                    }
+                    localStorage.setItem('streak', streak.toString());
+                    localStorage.setItem('lastLogin', today);
+                }
+            }
+
+            function updateLevel() {
+                const adsWatched = parseInt(localStorage.getItem('adsWatched'));
+                let level = 'Bronze';
+                if (adsWatched > 1000) level = 'Gold';
+                else if (adsWatched > 500) level = 'Silver';
+                localStorage.setItem('level', level);
+                return level;
+            }
+
+            function addTransaction(type, amount) {
+                let transactions = JSON.parse(localStorage.getItem('transactions'));
+                transactions.push({ date: new Date().toISOString(), type, amount });
+                localStorage.setItem('transactions', JSON.stringify(transactions));
+            }
+
+            function addWithdrawal(amount, method) {
+                let withdrawals = JSON.parse(localStorage.getItem('withdrawals'));
+                withdrawals.push({ date: new Date().toISOString(), amount, method, status: 'Pending' });
+                localStorage.setItem('withdrawals', JSON.stringify(withdrawals));
             }
 
             function updateUI() {
                 const earnings = parseFloat(localStorage.getItem('earnings'));
                 const adsWatched = parseInt(localStorage.getItem('adsWatched'));
                 const referrals = parseInt(localStorage.getItem('totalReferrals'));
+                const streak = parseInt(localStorage.getItem('streak'));
+                const level = updateLevel();
 
                 const formattedEarnings = earnings.toFixed(2);
 
-                if(userData) {
+                if (userData) {
                     const fullName = `${userData.first_name || ''} ${userData.last_name || ''}`.trim();
                     document.getElementById('header-user-name').textContent = fullName || 'User';
                     document.getElementById('profile-user-name').textContent = fullName || 'User';
                     document.getElementById('profile-user-username').textContent = userData.username ? `@${userData.username}` : 'No username';
-                    
-                    // ======================================================================
-                    // ====== প্রোফাইল ছবি দেখানোর কোড (CORS সমস্যার সমাধানসহ) ======
-                    // ======================================================================
-                    if (userData.photo_url) {
-                        // টেলিগ্রামের CORS পলিসি এড়ানোর জন্য একটি প্রক্সি ব্যবহার করা হয়েছে।
-                        const proxyUrl = 'https://api.allorigins.win/raw?url=';
-                        const proxiedPhotoUrl = `${proxyUrl}${encodeURIComponent(userData.photo_url)}`;
-                        
-                        document.getElementById('header-profile-pic').src = proxiedPhotoUrl;
-                        document.getElementById('profile-page-pic').src = proxiedPhotoUrl;
-                    } else {
-                        document.getElementById('header-profile-pic').src = defaultProfilePic40;
-                        document.getElementById('profile-page-pic').src = defaultProfilePic80;
-                    }
+
+                    const proxyUrl = 'https://api.allorigins.win/raw?url=';
+                    const proxiedPhotoUrl = userData.photo_url ? `${proxyUrl}${encodeURIComponent(userData.photo_url)}` : defaultProfilePic40;
+                    document.getElementById('header-profile-pic').src = proxiedPhotoUrl;
+                    document.getElementById('profile-page-pic').src = proxiedPhotoUrl || defaultProfilePic80;
+
+                    document.getElementById('referral-link').value = `https://t.me/finova_cash_bot?start=ref_${userData.id}`;
                 }
 
                 // Update Home Page
@@ -542,26 +852,95 @@
                 document.getElementById('total-earnings').textContent = `BDT ${formattedEarnings}`;
                 document.getElementById('ads-watched').textContent = adsWatched;
                 document.getElementById('total-referrals').textContent = referrals;
+                document.getElementById('level-display').textContent = `Level: ${level}`;
+                document.getElementById('streak-display').textContent = `Streak: ${streak} days`;
 
                 // Update Earn Page
                 document.getElementById('ad-progress-text').textContent = `Completed: ${adsWatched} / ${DAILY_ADS_LIMIT}`;
                 const progress = (adsWatched / DAILY_ADS_LIMIT) * 100;
-                document.getElementById('ad-progress-bar').style.width = `${progress}%`;
-                
-                watchAdBtn.disabled = adsWatched >= DAILY_ADS_LIMIT;
-                watchAdBtn.querySelector('span').textContent = adsWatched >= DAILY_ADS_LIMIT ? 'cancel' : 'play_circle_filled';
-                if(adsWatched >= DAILY_ADS_LIMIT) watchAdBtn.childNodes[0].nodeValue = "দৈনিক সীমা পৌঁছে গেছে ";
+                const circumference = 226; // 2 * pi * r (r=36)
+                const offset = circumference - (progress / 100) * circumference;
+                document.querySelector('.progress-ring-circle').style.strokeDashoffset = offset;
+                document.getElementById('progress-percentage').textContent = `${Math.round(progress)}%`;
+
+                watchAdBtn.disabled = adsWatched >= DAILY_ADS_LIMIT || (Date.now() - parseInt(localStorage.getItem('lastAdTime')) < AD_COOLDOWN * 1000);
+                if (adsWatched >= DAILY_ADS_LIMIT) {
+                    watchAdBtn.textContent = "দৈনিক সীমা পৌঁছে গেছে";
+                }
 
                 // Update Withdraw Page
                 document.getElementById('withdraw-balance-display').textContent = `BDT ${formattedEarnings}`;
                 document.getElementById('submit-withdraw-btn').disabled = earnings < MIN_WITHDRAW_AMOUNT;
-                if(earnings < MIN_WITHDRAW_AMOUNT) document.getElementById('submit-withdraw-btn').textContent = `ন্যূনতম BDT ${MIN_WITHDRAW_AMOUNT} প্রয়োজন`;
+                if (earnings < MIN_WITHDRAW_AMOUNT) document.getElementById('submit-withdraw-btn').textContent = `ন্যূনতম BDT ${MIN_WITHDRAW_AMOUNT} প্রয়োজন`;
 
                 // Update Profile Page
                 document.getElementById('profile-balance').textContent = `BDT ${formattedEarnings}`;
                 document.getElementById('profile-earnings').textContent = `BDT ${formattedEarnings}`;
                 document.getElementById('profile-ads-watched').textContent = adsWatched;
                 document.getElementById('profile-referrals').textContent = referrals;
+                document.getElementById('profile-level').textContent = level;
+                document.getElementById('profile-streak').textContent = `${streak} days`;
+
+                // Update Histories
+                const transactions = JSON.parse(localStorage.getItem('transactions'));
+                const transactionTbody = document.getElementById('transaction-history-table').querySelector('tbody');
+                transactionTbody.innerHTML = '';
+                transactions.forEach(t => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td>${new Date(t.date).toLocaleString()}</td><td>${t.type}</td><td>BDT ${t.amount.toFixed(2)}</td>`;
+                    transactionTbody.appendChild(row);
+                });
+
+                const withdrawals = JSON.parse(localStorage.getItem('withdrawals'));
+                const withdrawTbody = document.getElementById('withdraw-history-table').querySelector('tbody');
+                withdrawTbody.innerHTML = '';
+                withdrawals.forEach(w => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td>${new Date(w.date).toLocaleString()}</td><td>BDT ${w.amount.toFixed(2)}</td><td>${w.method}</td><td>${w.status}</td>`;
+                    withdrawTbody.appendChild(row);
+                });
+
+                // Fake Leaderboard (since no server)
+                const leaderboardList = document.getElementById('leaderboard-list');
+                leaderboardList.innerHTML = '';
+                ['User1: 1000 ads', 'User2: 800 ads', 'You: ' + adsWatched + ' ads'].forEach(item => {
+                    const li = document.createElement('li');
+                    li.classList.add('leaderboard-item');
+                    li.textContent = item;
+                    leaderboardList.appendChild(li);
+                });
+
+                const referralRankList = document.getElementById('referral-rank-list');
+                referralRankList.innerHTML = '';
+                ['User1: 50 refs', 'User2: 30 refs', 'You: ' + referrals + ' refs'].forEach(item => {
+                    const li = document.createElement('li');
+                    li.classList.add('leaderboard-item');
+                    li.textContent = item;
+                    referralRankList.appendChild(li);
+                });
+
+                const friendsProgressList = document.getElementById('friends-progress-list');
+                friendsProgressList.innerHTML = '';
+                ['Friend1: 200 ads', 'Friend2: 150 ads'].forEach(item => {
+                    const li = document.createElement('li');
+                    li.classList.add('leaderboard-item');
+                    li.textContent = item;
+                    friendsProgressList.appendChild(li);
+                });
+
+                // Dark Mode
+                if (localStorage.getItem('darkMode') === 'true') {
+                    document.body.classList.add('dark-mode');
+                }
+
+                // Cooldown Timer
+                const timeLeft = Math.max(0, AD_COOLDOWN - Math.floor((Date.now() - parseInt(localStorage.getItem('lastAdTime'))) / 1000));
+                document.getElementById('cooldown-timer').textContent = timeLeft > 0 ? `Wait ${timeLeft}s for next ad` : '';
+
+                // Notification if no ads today
+                if (adsWatched === 0) {
+                    tg.showAlert('You haven\'t watched any ads today! Start earning now.');
+                }
             }
 
             function showPage(targetPageId) {
@@ -581,20 +960,51 @@
 
             startEarningBtn.addEventListener('click', () => showPage('earn-page'));
             withdrawBtn.addEventListener('click', () => showPage('withdraw-page'));
-            
+
+            copyReferralBtn.addEventListener('click', () => {
+                const referralInput = document.getElementById('referral-link');
+                referralInput.select();
+                document.execCommand('copy');
+                tg.showAlert('Referral link copied!');
+            });
+
+            darkModeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+            });
+
+            if (localStorage.getItem('isFirstTime') === 'true') {
+                showPage('intro-page');
+                document.getElementById('splash-screen').style.display = 'flex';
+                setTimeout(() => {
+                    document.getElementById('splash-screen').style.display = 'none';
+                }, 3000);
+            } else {
+                showPage('home-page');
+            }
+
+            startTutorialBtn.addEventListener('click', () => showPage('tutorial-page'));
+            finishTutorialBtn.addEventListener('click', () => {
+                localStorage.setItem('isFirstTime', 'false');
+                showPage('home-page');
+            });
+
+            viewTransactionHistoryBtn.addEventListener('click', () => showPage('transaction-history-page'));
+            viewWithdrawHistoryBtn.addEventListener('click', () => showPage('withdraw-history-page'));
+            viewTermsBtn.addEventListener('click', () => showPage('terms-page'));
+
             watchAdBtn.addEventListener('click', () => {
                 if (parseInt(localStorage.getItem('adsWatched')) >= DAILY_ADS_LIMIT) {
                     tg.showAlert('আপনার দৈনিক বিজ্ঞাপনের সীমা পৌঁছে গেছে।');
                     return;
                 }
+                if (Date.now() - parseInt(localStorage.getItem('lastAdTime')) < AD_COOLDOWN * 1000) {
+                    tg.showAlert('Please wait for cooldown.');
+                    return;
+                }
 
                 watchAdBtn.disabled = true;
 
-                // --- অ্যাড নেটওয়ার্কের কোড কল করার জায়গা (দ্বিতীয় অংশ) ---
-                // ======================================================================
-                // এখানে আপনার অ্যাড নেটওয়ার্কের দেওয়া ফাংশনটি কল করতে হবে।
-                // নিচের 'show_9925533()' লাইনটি একটি উদাহরণ।
-                // ======================================================================
                 if (typeof show_9925533 === 'function') {
                     show_9925533().then(() => {
                         let earnings = parseFloat(localStorage.getItem('earnings')) + AD_REWARD;
@@ -602,37 +1012,48 @@
                         
                         localStorage.setItem('earnings', earnings.toString());
                         localStorage.setItem('adsWatched', currentAdsWatched.toString());
+                        localStorage.setItem('lastAdTime', Date.now().toString());
+                        addTransaction('Ad Watch', AD_REWARD);
                         
                         tg.showAlert(`বিজ্ঞাপনটি দেখার জন্য আপনি BDT ${AD_REWARD.toFixed(2)} পেয়েছেন!`);
+                        createConfetti();
                     }).catch(() => {
                         tg.showAlert('বিজ্ঞাপনটি দেখাতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
                     }).finally(() => {
                         updateUI();
+                        watchAdBtn.disabled = false;
                     });
                 } else {
-                    // Fallback for testing in browser without Telegram
+                    // Test mode
                     let earnings = parseFloat(localStorage.getItem('earnings')) + AD_REWARD;
                     let currentAdsWatched = parseInt(localStorage.getItem('adsWatched')) + 1;
                     localStorage.setItem('earnings', earnings.toString());
                     localStorage.setItem('adsWatched', currentAdsWatched.toString());
+                    localStorage.setItem('lastAdTime', Date.now().toString());
+                    addTransaction('Ad Watch', AD_REWARD);
                     alert(`(Test Mode) You earned BDT ${AD_REWARD.toFixed(2)}!`);
+                    createConfetti();
                     updateUI();
+                    watchAdBtn.disabled = false;
                 }
             });
 
             withdrawForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const amount = parseFloat(document.getElementById('withdraw-amount').value);
+                const method = document.getElementById('withdraw-method').value;
                 
                 tg.showConfirm(`আপনি কি আপনার উইথড্র অনুরোধ জমা দিতে চান?`, (confirmed) => {
                     if (confirmed) {
                         let newEarnings = parseFloat(localStorage.getItem('earnings')) - amount;
                         localStorage.setItem('earnings', newEarnings.toString());
+                        addWithdrawal(amount, method);
+                        addTransaction('Withdrawal', -amount);
                         
                         tg.sendData(JSON.stringify({ 
                             type: 'withdrawal', 
                             amount: amount, 
-                            method: document.getElementById('withdraw-method').value,
+                            method: method,
                             account: document.getElementById('account-number').value
                         }));
                         
@@ -643,6 +1064,7 @@
                 });
             });
 
+            checkDailyLogin();
             updateUI();
         });
     </script>
