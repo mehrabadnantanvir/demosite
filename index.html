@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Earnings App - Ad Viewer</title>
+    <title>Auto Ad Viewer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -489,8 +489,8 @@
             <h4 id="rewardsTitle">Rewards & Challenges</h4>
             <p>Level: <span class="level-badge" id="userLevel">1</span> | Streak: <span id="streakDays" class="streak-info">0 days</span></p>
             <ul class="challenge-list">
-                <li>View 5 ads today <span id="challenge1">0/5</span></li>
-                <li>Maintain 3-day streak <span id="challenge2">0/3</span></li>
+                <li>View 5 ads today <span id="challenge1">0/500</span></li>
+                <li>Maintain 3-day streak <span id="challenge2">0/300</span></li>
             </ul>
             <button id="referralBtn" aria-label="Share Referral">Share Referral Link</button>
         </div>
@@ -540,7 +540,7 @@
         const MONEYTAG_SHOW_AD_FUNCTION = 'show_9925533';
         const AD_SHOW_INTERVAL = 10000;
         const CHART_MAX_Y = 90;
-        const DAILY_GOAL = 10;
+        const DAILY_GOAL = 1000;
         const POINTS_PER_AD = 10;
         const LEVEL_THRESHOLDS = [0, 100, 500, 1000]; // Points for levels 1-4
 
@@ -806,7 +806,7 @@
 
         // Progress Bar
         function updateProgressBar() {
-            const progress = (getTodayAdCount() / DAILY_GOAL) * 100;
+            const progress = (getTodayAdCount() / DAILY_GOAL) * 10000;
             document.getElementById('progress').style.width = `${Math.min(progress, 100)}%`;
         }
 
@@ -836,7 +836,7 @@
         // Challenges
         function updateChallenges() {
             const todayCount = getTodayAdCount();
-            document.getElementById('challenge1').textContent = `${Math.min(todayCount, 5)}/5`;
+            document.getElementById('challenge1').textContent = `${Math.min(todayCount, 500)}/500`;
             if (todayCount >= 5) showToast('Challenge complete! +50 bonus points', 'success');
             // For streak challenge, see checkStreak
         }
@@ -867,7 +867,7 @@
             localStorage.setItem('streakDays', streak);
             localStorage.setItem('lastViewDate', today);
             document.getElementById('streakDays').textContent = `${streak} days`;
-            document.getElementById('challenge2').textContent = `${Math.min(streak, 3)}/3`;
+            document.getElementById('challenge2').textContent = `${Math.min(streak, 300)}/300a`;
             checkStreak();
         }
 
