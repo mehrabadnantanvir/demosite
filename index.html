@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Earnings App - Ad Viewer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <style>
         :root {
@@ -21,6 +21,9 @@
             --border-color: #eee;
             --shadow-color: rgba(0, 0, 0, 0.1);
             --gradient-bg: linear-gradient(135deg, #007bff, #00c6ff);
+            --accent-color: #ff6b6b;
+            --font-weight-normal: 400;
+            --font-weight-bold: 700;
         }
         [data-theme="dark"] {
             --primary-color: #0d6efd;
@@ -34,73 +37,86 @@
             --border-color: #333;
             --shadow-color: rgba(0, 0, 0, 0.5);
             --gradient-bg: linear-gradient(135deg, #0d6efd, #0dcaf0);
+            --accent-color: #ff8c8c; /* Vibrant accent for dark mode */
         }
         body {
             font-family: 'Poppins', sans-serif;
             margin: 0;
-            padding: 15px;
+            padding: 20px;
             background-color: var(--background-color);
             color: var(--text-color);
             transition: background-color 0.3s, color 0.3s;
+            background-image: var(--gradient-bg);
+            background-size: 200% 200%;
+            animation: gradientAnimation 15s ease infinite;
+        }
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         .container {
             max-width: 600px;
             margin: 0 auto;
             background-color: var(--container-bg);
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 4px 16px var(--shadow-color);
-            animation: fadeIn 0.5s ease-in;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 6px 20px var(--shadow-color);
+            animation: fadeIn 0.6s ease-in;
         }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
         .profile-area {
             display: flex;
             align-items: center;
-            padding: 10px;
+            padding: 12px;
             border-bottom: 1px solid var(--border-color);
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         .profile-image {
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
             background-color: #ddd;
             object-fit: cover;
-            margin-right: 15px;
+            margin-right: 18px;
         }
         .profile-info h3 {
             margin: 0;
-            font-size: 1.1em;
-            font-weight: 600;
+            font-size: 1.2em;
+            font-weight: var(--font-weight-bold);
             color: var(--text-color);
         }
         .profile-info p {
             margin: 0;
-            font-size: 0.9em;
+            font-size: 0.95em;
             color: #777;
         }
         .button-group {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 25px;
         }
         .button-group button {
             flex-grow: 1;
-            padding: 12px;
+            padding: 14px;
             border: none;
-            border-radius: 12px;
-            font-size: 1em;
+            border-radius: 14px;
+            font-size: 1.05em;
             cursor: pointer;
             transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
             background: var(--gradient-bg);
             color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         .button-group button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px var(--shadow-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px var(--shadow-color), 0 0 10px var(--accent-color);
         }
         #manualAddBtn {
             background: linear-gradient(135deg, #007bff, #00c6ff);
@@ -109,10 +125,10 @@
             background: linear-gradient(135deg, #28a745, #34d058);
         }
         .report-section {
-            padding: 0 0 15px;
+            padding: 0 0 18px;
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            margin-bottom: 20px;
+            border-radius: 14px;
+            margin-bottom: 25px;
             background-color: #f9f9f9;
             transition: background-color 0.3s;
         }
@@ -122,97 +138,114 @@
         .report-stats-boxes {
             display: flex;
             justify-content: space-between;
-            gap: 10px;
-            padding: 15px;
+            gap: 12px;
+            padding: 18px;
         }
         .stat-box {
             flex: 1;
             background-color: var(--container-bg);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 10px;
+            border-radius: 14px;
+            padding: 12px;
             text-align: center;
-            box-shadow: 0 2px 4px var(--shadow-color);
+            box-shadow: 0 3px 6px var(--shadow-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
         }
         .stat-box p {
-            margin: 0 0 5px 0;
-            font-size: 0.9em;
+            margin: 0 0 6px 0;
+            font-size: 0.95em;
             color: #555;
         }
         .stat-box span {
-            font-weight: bold;
-            font-size: 1.5em;
+            font-weight: var(--font-weight-bold);
+            font-size: 1.6em;
             color: var(--secondary-color);
         }
         .send-report-btn {
-            width: calc(100% - 30px);
-            padding: 10px;
+            width: calc(100% - 36px);
+            padding: 12px;
             background: linear-gradient(135deg, #ffc107, #ffda6a);
             border: none;
-            border-radius: 12px;
-            font-size: 1em;
+            border-radius: 14px;
+            font-size: 1.05em;
             cursor: pointer;
             transition: background-color 0.3s, transform 0.3s;
-            margin: 0 15px 10px 15px;
+            margin: 0 18px 12px 18px;
             display: block;
             color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         .send-report-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px var(--shadow-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px var(--shadow-color);
         }
         .support-link {
             display: block;
             text-align: center;
-            padding: 10px;
+            padding: 12px;
             background: linear-gradient(135deg, #17a2b8, #20c997);
             color: white;
             text-decoration: none;
-            border-radius: 12px;
+            border-radius: 14px;
             transition: background-color 0.3s, transform 0.3s;
-            margin: 0 15px 15px 15px;
+            margin: 0 18px 18px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         .support-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px var(--shadow-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px var(--shadow-color);
         }
         .chart-box {
-            margin-top: 20px;
-            padding: 15px 0;
+            margin-top: 25px;
+            padding: 18px 0;
             border: 1px solid var(--border-color);
-            border-radius: 12px;
+            border-radius: 14px;
             background-color: var(--container-bg);
+            animation: fadeInChart 1s ease-in;
+        }
+        @keyframes fadeInChart {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         .chart-box h4 {
             text-align: center;
             margin-top: 0;
-            padding: 0 15px 10px;
+            padding: 0 18px 12px;
             border-bottom: 1px solid var(--border-color);
             font-weight: 500;
         }
         .progress-bar {
-            height: 10px;
+            height: 12px;
             background: #ddd;
-            border-radius: 5px;
+            border-radius: 6px;
             overflow: hidden;
-            margin: 10px 15px;
+            margin: 12px 18px;
         }
         .progress-bar div {
             height: 100%;
             width: 0%;
             background: var(--secondary-color);
-            transition: width 0.3s;
+            transition: width 0.4s ease;
         }
         .loader {
             display: none;
             text-align: center;
         }
         .loader div {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--primary-color);
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
             border-radius: 50%;
-            width: 30px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
             animation: spin 1s linear infinite;
             margin: auto;
         }
@@ -222,56 +255,229 @@
         }
         .theme-toggle {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 25px;
+            right: 25px;
             cursor: pointer;
+            font-size: 1.2em;
         }
         .lang-switcher {
-            margin: 10px 0;
+            margin: 12px 0;
             text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
         }
         .lang-switcher button {
-            padding: 5px 10px;
+            padding: 6px 12px;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 10px;
             background: var(--container-bg);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .lang-switcher button:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        /* New Sections */
+        .rewards-section {
+            padding: 18px;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            margin-bottom: 25px;
+            background-color: #f9f9f9;
+            transition: background-color 0.3s;
+        }
+        [data-theme="dark"] .rewards-section {
+            background-color: #2c2c2c;
+        }
+        .rewards-section h4 {
+            margin-top: 0;
+            font-weight: 500;
+        }
+        .level-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+        .challenge-list {
+            list-style: none;
+            padding: 0;
+            margin: 12px 0;
+        }
+        .challenge-list li {
+            padding: 8px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+        }
+        .streak-info {
+            font-style: italic;
+            color: var(--info-color);
+        }
+        .leaderboard-section {
+            padding: 18px;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            margin-bottom: 25px;
+            background-color: #f9f9f9;
+        }
+        [data-theme="dark"] .leaderboard-section {
+            background-color: #2c2c2c;
+        }
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .leaderboard-table th, .leaderboard-table td {
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+        }
+        .history-section {
+            padding: 18px;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            margin-bottom: 25px;
+            background-color: #f9f9f9;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        [data-theme="dark"] .history-section {
+            background-color: #2c2c2c;
+        }
+        .history-list {
+            list-style: none;
+            padding: 0;
+        }
+        .history-list li {
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: var(--container-bg);
+            padding: 25px;
+            border-radius: 20px;
+            max-width: 80%;
+            text-align: center;
+            animation: fadeIn 0.5s;
+        }
+        .modal-close {
+            margin-top: 12px;
+            padding: 10px 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        /* Feedback Popup */
+        #feedbackBtn {
+            display: block;
+            margin: 20px auto;
+            padding: 12px;
+            background: var(--info-color);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+        }
+        #feedbackForm {
+            display: none;
+            margin-top: 20px;
+        }
+        #feedbackForm textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+        /* Referral */
+        #referralBtn {
+            display: block;
+            margin: 20px auto;
+            padding: 12px;
+            background: var(--warning-color);
+            color: #333;
+            border: none;
+            border-radius: 14px;
             cursor: pointer;
         }
         @media (max-width: 400px) {
-            .container { padding: 10px; }
-            .button-group button { font-size: 0.9em; padding: 8px; }
-            .chart-box { padding: 10px; }
+            .container { padding: 15px; }
+            .button-group { flex-direction: column; gap: 10px; }
+            .button-group button { font-size: 1em; padding: 10px; }
+            .report-stats-boxes { flex-direction: column; }
+            .chart-box { padding: 12px; }
+        }
+        .verified-badge {
+            vertical-align: middle;
+            margin-left: 5px;
         }
     </style>
 </head>
 <body>
     <div class="theme-toggle" id="themeToggle">🌙</div>
-    <div class="container">
+    <div class="container" role="main" aria-labelledby="appTitle">
+        <h1 id="appTitle" style="display: none;">Earnings App</h1>
         <div class="profile-area">
-            <img class="profile-image" id="userProfileImage" loading="lazy" src="" alt="User Profile">
+            <img class="profile-image" id="userProfileImage" loading="lazy" src="" alt="User Profile Image">
             <div class="profile-info">
                 <h3 id="userName">User Name (ID: 12345)</h3>
-                <p id="userStatus">Telegram Profile</p>
+                <p id="userStatus">Telegram Profile | Points: 0 | Level: 1</p>
             </div>
         </div>
         
-        <div class="lang-switcher">
+        <div class="lang-switcher" role="navigation" aria-label="Language Switcher">
             <button onclick="setLanguage('bn')">BN</button>
             <button onclick="setLanguage('en')">EN</button>
+            <button onclick="setLanguage('es')">ES</button> <!-- Expanded language support -->
         </div>
         
         <div class="button-group">
-            <button id="manualAddBtn" aria-label="Manual Add">Manual Add</button>
-            <button id="autoAdBtn" aria-label="Start Auto">Start Auto</button>
+            <button id="manualAddBtn" aria-label="Manual Add">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 4V20M4 12H20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Manual Add
+            </button>
+            <button id="autoAdBtn" aria-label="Start Auto">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 5L19 12L5 19V5Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Start Auto
+            </button>
         </div>
 
-        <div class="report-section">
+        <div class="report-section" role="region" aria-labelledby="reportTitle">
+            <h4 id="reportTitle" style="display: none;">Report Section</h4>
             <div class="report-stats-boxes">
                 <div class="stat-box">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2V22M2 12H22" stroke="var(--secondary-color)" stroke-width="2"/>
+                    </svg>
                     <p>Today Report</p>
                     <span id="todayAdsCount">0</span>
                 </div>
                 <div class="stat-box">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2V22M2 12H22" stroke="var(--secondary-color)" stroke-width="2"/>
+                    </svg>
                     <p>7 Days Total</p>
                     <span id="sevenDaysAdsCount">0</span>
                 </div>
@@ -281,18 +487,80 @@
                 <div id="progress"></div>
             </div>
             
-            <button class="send-report-btn" id="sendReportBtn" aria-label="Send Today Report">Send Today Report</button>
+            <button class="send-report-btn" id="sendReportBtn" aria-label="Send Today Report">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22 2L11 13" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Send Today Report
+            </button>
             
-            <a href="https://t.me/earningsupport3_bot" class="support-link" target="_blank" aria-label="Telegram Support">Telegram Support (earningsupport3_bot)</a>
+            <a href="https://t.me/earningsupport3_bot" class="support-link" target="_blank" aria-label="Telegram Support">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 11.5C21 16.7467 16.7467 21 11.5 21C6.25329 21 2 16.7467 2 11.5C2 6.25329 6.25329 2 11.5 2C16.7467 2 21 6.25329 21 11.5Z" stroke="white" stroke-width="2"/>
+                    <path d="M21 21L15.8 15.8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Telegram Support (earningsupport3_bot)
+            </a>
         </div>
 
-        <div class="chart-box">
-            <h4>Clicks/Week Report (Last 7 Days)</h4>
-            <canvas id="weeklyChartCanvas" style="max-height: 200px;"></canvas>
+        <div class="rewards-section" role="region" aria-labelledby="rewardsTitle">
+            <h4 id="rewardsTitle">Rewards & Challenges</h4>
+            <p>Level: <span class="level-badge" id="userLevel">1</span> | Streak: <span id="streakDays" class="streak-info">0 days</span></p>
+            <ul class="challenge-list">
+                <li>View 5 ads today <span id="challenge1">0/5</span></li>
+                <li>Maintain 3-day streak <span id="challenge2">0/3</span></li>
+            </ul>
+            <button id="referralBtn" aria-label="Share Referral">Share Referral Link</button>
+        </div>
+
+        <div class="leaderboard-section" role="region" aria-labelledby="leaderboardTitle">
+            <h4 id="leaderboardTitle">Leaderboard</h4>
+            <table class="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>User</th>
+                        <th>Points</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboardBody">
+                    <!-- Mock data will be inserted via JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="history-section" role="region" aria-labelledby="historyTitle">
+            <h4 id="historyTitle">View History</h4>
+            <ul class="history-list" id="historyList">
+                <!-- Logs inserted via JS -->
+            </ul>
+        </div>
+
+        <div class="chart-box" role="region" aria-labelledby="chartTitle">
+            <h4 id="chartTitle">Clicks/Week Report (Last 7 Days)</h4>
+            <canvas id="weeklyChartCanvas" style="max-height: 220px;"></canvas>
         </div>
         
-        <div class="loader" id="loader">
+        <div class="loader" id="loader" aria-live="polite">
             <div></div>
+        </div>
+
+        <button id="feedbackBtn" aria-label="Give Feedback">Give Feedback</button>
+        <div id="feedbackForm" role="dialog" aria-modal="true">
+            <textarea id="feedbackText" rows="4" placeholder="Your feedback..."></textarea>
+            <button onclick="submitFeedback()">Submit</button>
+        </div>
+    </div>
+
+    <!-- Onboarding Modal -->
+    <div class="modal" id="onboardingModal" role="dialog" aria-modal="true" aria-labelledby="onboardingTitle">
+        <div class="modal-content">
+            <h2 id="onboardingTitle">Welcome to Earnings App!</h2>
+            <p>Step 1: View ads manually or auto.</p>
+            <p>Step 2: Earn points and level up.</p>
+            <p>Step 3: Complete challenges for bonuses.</p>
+            <button class="modal-close" onclick="closeOnboarding()">Got it!</button>
         </div>
     </div>
 
@@ -302,15 +570,17 @@
 
     <script>
         // Constants
-        const BOT_TOKEN = 'YOUR_BOT_API_KEY'; // Move to server-side for security
-        const CHAT_ID = 'YOUR_CHAT_ID'; // Move to server-side for security
+        const BOT_TOKEN = '8078528483:AAGW64DKqazDIqx5XprFeAcPNQpPt9tDMkg'; // Updated bot token
+        const CHAT_ID = '6453637469'; // Updated chat ID
         const MONEYTAG_SHOW_AD_FUNCTION = 'show_9925533';
         const AD_SHOW_INTERVAL = 10000;
         const CHART_MAX_Y = 90;
-        const DAILY_GOAL = 10; // For progress bar
+        const DAILY_GOAL = 10;
+        const POINTS_PER_AD = 10;
+        const LEVEL_THRESHOLDS = [0, 100, 500, 1000]; // Points for levels 1-4
 
         let autoAdInterval;
-        let currentLang = 'en'; // Default language
+        let currentLang = navigator.language.startsWith('bn') ? 'bn' : navigator.language.startsWith('es') ? 'es' : 'en'; // Auto-detection
 
         const translations = {
             bn: {
@@ -320,7 +590,11 @@
                 todayReport: 'আজকের রিপোর্ট',
                 sevenDays: '৭ দিনের মোট',
                 sendReport: 'আজকের রিপোর্ট পাঠান',
-                clicksWeek: 'ক্লিকস/সপ্তাহ রিপোর্ট (শেষ ৭ দিন)'
+                clicksWeek: 'ক্লিকস/সপ্তাহ রিপোর্ট (শেষ ৭ দিন)',
+                rewardsTitle: 'পুরস্কার এবং চ্যালেঞ্জ',
+                leaderboardTitle: 'লিডারবোর্ড',
+                historyTitle: 'দেখার ইতিহাস',
+                // Add more as needed
             },
             en: {
                 manualAdd: 'Manual Add',
@@ -329,7 +603,22 @@
                 todayReport: 'Today Report',
                 sevenDays: '7 Days Total',
                 sendReport: 'Send Today Report',
-                clicksWeek: 'Clicks/Week Report (Last 7 Days)'
+                clicksWeek: 'Clicks/Week Report (Last 7 Days)',
+                rewardsTitle: 'Rewards & Challenges',
+                leaderboardTitle: 'Leaderboard',
+                historyTitle: 'View History',
+            },
+            es: { // Expanded support
+                manualAdd: 'Añadir Manual',
+                autoAd: 'Iniciar Auto',
+                stopAuto: 'Detener Auto',
+                todayReport: 'Informe de Hoy',
+                sevenDays: 'Total de 7 Días',
+                sendReport: 'Enviar Informe de Hoy',
+                clicksWeek: 'Informe de Clics/Semana (Últimos 7 Días)',
+                rewardsTitle: 'Recompensas y Desafíos',
+                leaderboardTitle: 'Tabla de Clasificación',
+                historyTitle: 'Historial de Vistas',
             }
         };
 
@@ -343,19 +632,28 @@
             return JSON.parse(localStorage.getItem('dailyAds') || '{}');
         }
 
+        function setDailyData(data) {
+            localStorage.setItem('dailyAds', JSON.stringify(data));
+        }
+
         function getTodayAdCount() {
             return getDailyData()[getTodayDateKey()] || 0;
         }
 
-        function incrementAdCount() {
+        function incrementAdCount(bonus = 1) {
             const todayKey = getTodayDateKey();
             const dailyData = getDailyData();
             dailyData[todayKey] = (dailyData[todayKey] || 0) + 1;
-            localStorage.setItem('dailyAds', JSON.stringify(dailyData));
+            setDailyData(dailyData);
+            updatePoints(bonus);
             updateReportDisplay();
             drawChart();
             updateProgressBar();
-            updatePoints();
+            logHistory(`Ad viewed at ${new Date().toLocaleTimeString()}`);
+            checkMilestones();
+            checkChallenges();
+            checkStreak();
+            showToast('Ad viewed! +10 points', 'success');
         }
 
         function getSevenDaysAdCount() {
@@ -376,42 +674,51 @@
             document.getElementById('sevenDaysAdsCount').textContent = getSevenDaysAdCount();
         }
 
-        // Show Ad
-        function showAd() {
+        // Ad Show
+        function showAd(type = 'standard') {
+            // Varied ad types: for now, mock different durations or bonuses
+            const bonus = type === 'bonus' ? 2 : 1;
             if (window[MONEYTAG_SHOW_AD_FUNCTION]) {
                 window[MONEYTAG_SHOW_AD_FUNCTION]().then(() => {
-                    console.log("Ad shown successfully.");
-                    incrementAdCount();
+                    incrementAdCount(bonus);
                 }).catch((error) => {
                     console.error("Error showing ad:", error);
+                    showToast('Ad failed to load.', 'error');
                 });
             } else {
-                console.warn("Monetag Ad function not available. Mocking ad show.");
-                setTimeout(incrementAdCount, 1000);
+                console.warn("Monetag Ad function not available. Mocking.");
+                setTimeout(() => incrementAdCount(bonus), 1000);
             }
         }
 
-        // Load Profile
+        // Profile Load
         async function loadTelegramProfile() {
             document.getElementById('loader').style.display = 'block';
             try {
+                const verifiedBadge = ' <svg class="verified-badge" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#0064e0" stroke="#fff" stroke-width="1"/><path d="M7 10l3 3 6-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
                 if (window.Telegram && window.Telegram.WebApp) {
                     const webApp = window.Telegram.WebApp;
                     webApp.ready();
                     const user = webApp.initDataUnsafe.user;
                     if (user) {
                         const fullName = user.first_name + (user.last_name ? ' ' + user.last_name : '');
-                        document.getElementById('userName').textContent = fullName + (user.id ? ` (ID: ${user.id})` : '');
-                        document.getElementById('userStatus').textContent = `@${user.username || 'No Username'}`;
+                        document.getElementById('userName').innerHTML = fullName + verifiedBadge + (user.id ? ` (ID: ${user.id})` : '');
+                        document.getElementById('userStatus').textContent = `@${user.username || 'No Username'} | Points: ${getTotalPoints()} | Level: ${getLevel()}`;
                     }
                 } else {
-                    document.getElementById('userName').textContent = 'Local Test User';
-                    document.getElementById('userStatus').textContent = 'WebApp API Missing';
+                    document.getElementById('userName').innerHTML = 'Local Test User' + verifiedBadge;
+                    document.getElementById('userStatus').textContent = 'WebApp API Missing | Points: 0 | Level: 1';
                 }
                 updateReportDisplay();
                 drawChart();
                 updateProgressBar();
                 updatePoints();
+                loadLeaderboard();
+                loadHistory();
+                updateChallenges();
+                updateStreak();
+                checkOnboarding();
+                requestNotificationPermission();
             } catch (error) {
                 showToast('Error loading profile. ⚠️', 'error');
             } finally {
@@ -419,22 +726,18 @@
             }
         }
 
-        // Button Handlers
+        // Debounce
         function debounce(func, wait) {
             let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
+            return function(...args) {
                 clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
+                timeout = setTimeout(() => func(...args), wait);
             };
         }
 
+        // Button Events
         document.getElementById('manualAddBtn').addEventListener('click', debounce(() => {
-            console.log('Manual Ad Clicked');
-            showAd();
+            showAd('standard');
         }, 500));
 
         document.getElementById('autoAdBtn').addEventListener('click', (e) => {
@@ -442,17 +745,12 @@
             if (button.textContent === translations[currentLang].autoAd) {
                 button.textContent = translations[currentLang].stopAuto;
                 button.style.background = 'linear-gradient(135deg, #dc3545, #f35b5b)';
-                console.log('Auto Ad Started');
-                showAd();
-                autoAdInterval = setInterval(() => {
-                    console.log('Auto Ad Triggered');
-                    showAd();
-                }, AD_SHOW_INTERVAL);
+                showAd('standard');
+                autoAdInterval = setInterval(() => showAd('standard'), AD_SHOW_INTERVAL);
             } else {
                 button.textContent = translations[currentLang].autoAd;
                 button.style.background = 'linear-gradient(135deg, #28a745, #34d058)';
                 clearInterval(autoAdInterval);
-                console.log('Auto Ad Stopped');
             }
         });
 
@@ -464,9 +762,14 @@
             document.getElementById('loader').style.display = 'block';
             const todayAdViews = getTodayAdCount();
             const sevenDaysAdViews = getSevenDaysAdCount();
-            const telegramUserID = (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe.user) ? window.Telegram.WebApp.initDataUnsafe.user.id : 'N/A';
+            let telegramUserID = 'N/A';
+            let telegramUsername = 'N/A';
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe.user) {
+                telegramUserID = window.Telegram.WebApp.initDataUnsafe.user.id;
+                telegramUsername = window.Telegram.WebApp.initDataUnsafe.user.username || 'No Username';
+            }
             const todayKey = getTodayDateKey();
-            const message = `**Daily Ad Report**\n\nDate: ${todayKey}\nUser ID: \`${telegramUserID}\`\nToday's Total Ads Viewed: ${todayAdViews}\nLast 7 Days Total: ${sevenDaysAdViews}`;
+            const message = `**Daily Ad Report**\n\nDate: ${todayKey}\nUser ID: \`${telegramUserID}\`\nUsername: @${telegramUsername}\nToday's Total Ads Viewed: ${todayAdViews}\nLast 7 Days Total: ${sevenDaysAdViews}\nLevel: ${getLevel()}\nPoints: ${getTotalPoints()}`;
             const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
             try {
                 const response = await fetch(url);
@@ -497,9 +800,7 @@
                 date.setDate(today.getDate() - i);
                 const key = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
                 const dayIndex = date.getDay();
-                const dayLabel = labels[dayIndex];
-                const count = dailyData[key] || 0;
-                data.push({ day: dayLabel, count: count });
+                data.push({ day: labels[dayIndex], count: dailyData[key] || 0 });
             }
             return data;
         }
@@ -509,11 +810,7 @@
             const weeklyData = getWeeklyData();
             const labels = weeklyData.map(item => item.day);
             const data = weeklyData.map(item => item.count);
-            const backgroundColors = data.map(count => {
-                if (count > 20) return '#28a745'; // green
-                if (count > 10) return '#ffc107'; // yellow
-                return '#dc3545'; // red
-            });
+            const backgroundColors = data.map(count => count > 20 ? '#28a745' : count > 10 ? '#ffc107' : '#dc3545');
 
             if (chartInstance) chartInstance.destroy();
 
@@ -531,16 +828,9 @@
                 },
                 options: {
                     responsive: true,
-                    scales: {
-                        y: { beginAtZero: true, max: CHART_MAX_Y }
-                    },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { enabled: true }
-                    },
-                    animation: {
-                        duration: 1000
-                    }
+                    scales: { y: { beginAtZero: true, max: CHART_MAX_Y } },
+                    plugins: { legend: { display: false }, tooltip: { enabled: true } },
+                    animation: { duration: 1200, easing: 'easeInOutQuart' }
                 }
             });
         }
@@ -551,11 +841,169 @@
             document.getElementById('progress').style.width = `${Math.min(progress, 100)}%`;
         }
 
-        // Reward System
-        function updatePoints() {
-            const points = getTodayAdCount() * 10; // 10 points per ad
-            document.getElementById('userStatus').textContent = `@${window.Telegram?.WebApp?.initDataUnsafe.user?.username || 'No Username'} | Points: ${points}`;
+        // Rewards System
+        function getTotalPoints() {
+            return parseInt(localStorage.getItem('totalPoints') || '0');
         }
+
+        function updatePoints(bonus = 1) {
+            let points = getTotalPoints();
+            points += POINTS_PER_AD * bonus;
+            localStorage.setItem('totalPoints', points);
+            const level = getLevel();
+            document.getElementById('userStatus').textContent = `@${window.Telegram?.WebApp?.initDataUnsafe.user?.username || 'No Username'} | Points: ${points} | Level: ${level}`;
+            document.getElementById('userLevel').textContent = level;
+            if (bonus > 1) showToast(`Bonus! x${bonus} points`, 'success');
+        }
+
+        function getLevel() {
+            const points = getTotalPoints();
+            for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
+                if (points >= LEVEL_THRESHOLDS[i]) return i + 1;
+            }
+            return 1;
+        }
+
+        // Challenges
+        function updateChallenges() {
+            const todayCount = getTodayAdCount();
+            document.getElementById('challenge1').textContent = `${Math.min(todayCount, 5)}/5`;
+            if (todayCount >= 5) showToast('Challenge complete! +50 bonus points', 'success');
+            // For streak challenge, see checkStreak
+        }
+
+        function checkChallenges() {
+            const todayCount = getTodayAdCount();
+            if (todayCount === 5) {
+                updatePoints(5); // Bonus for challenge
+            }
+        }
+
+        // Streaks
+        function getStreak() {
+            return parseInt(localStorage.getItem('streakDays') || '0');
+        }
+
+        function updateStreak() {
+            const lastViewDate = localStorage.getItem('lastViewDate');
+            const today = getTodayDateKey();
+            let streak = getStreak();
+            if (lastViewDate === today) {
+                // Already viewed today, no change
+            } else if (new Date(today) - new Date(lastViewDate) === 86400000) { // Yesterday
+                streak++;
+            } else {
+                streak = 1;
+            }
+            localStorage.setItem('streakDays', streak);
+            localStorage.setItem('lastViewDate', today);
+            document.getElementById('streakDays').textContent = `${streak} days`;
+            document.getElementById('challenge2').textContent = `${Math.min(streak, 3)}/3`;
+            checkStreak();
+        }
+
+        function checkStreak() {
+            const streak = getStreak();
+            if (streak >= 3) {
+                updatePoints(10); // Multiplier bonus
+                showToast('Streak bonus! x10 points', 'success');
+            }
+        }
+
+        // Milestones & Notifications
+        function requestNotificationPermission() {
+            if (Notification.permission !== 'granted') {
+                Notification.requestPermission();
+            }
+        }
+
+        function sendNotification(title, body) {
+            if (Notification.permission === 'granted') {
+                new Notification(title, { body });
+            }
+        }
+
+        function checkMilestones() {
+            const points = getTotalPoints();
+            if (points % 100 === 0) {
+                sendNotification('Milestone Reached!', `You have ${points} points!`);
+                showToast(`Milestone: ${points} points!`, 'success');
+            }
+        }
+
+        // Leaderboard (Mock)
+        function loadLeaderboard() {
+            const mockData = [
+                { rank: 1, user: 'UserA', points: 1500 },
+                { rank: 2, user: 'UserB', points: 1200 },
+                { rank: 3, user: 'UserC', points: 900 }
+            ];
+            const tbody = document.getElementById('leaderboardBody');
+            tbody.innerHTML = '';
+            mockData.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${item.rank}</td><td>${item.user}</td><td>${item.points}</td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // History Logs
+        function logHistory(message) {
+            let history = JSON.parse(localStorage.getItem('historyLogs') || '[]');
+            history.unshift(message);
+            if (history.length > 10) history.pop();
+            localStorage.setItem('historyLogs', JSON.stringify(history));
+            loadHistory();
+        }
+
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('historyLogs') || '[]');
+            const list = document.getElementById('historyList');
+            list.innerHTML = '';
+            history.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = item;
+                list.appendChild(li);
+            });
+        }
+
+        // Onboarding
+        function checkOnboarding() {
+            if (!localStorage.getItem('onboardingShown')) {
+                document.getElementById('onboardingModal').style.display = 'flex';
+                localStorage.setItem('onboardingShown', 'true');
+            }
+        }
+
+        function closeOnboarding() {
+            document.getElementById('onboardingModal').style.display = 'none';
+        }
+
+        // Feedback
+        document.getElementById('feedbackBtn').addEventListener('click', () => {
+            document.getElementById('feedbackForm').style.display = 'block';
+        });
+
+        function submitFeedback() {
+            const text = document.getElementById('feedbackText').value;
+            if (text) {
+                showToast('Feedback submitted! Thank you.', 'success');
+                // TODO: Send to server
+                document.getElementById('feedbackForm').style.display = 'none';
+                document.getElementById('feedbackText').value = '';
+            } else {
+                showToast('Please enter feedback.', 'error');
+            }
+        }
+
+        // Referral
+        document.getElementById('referralBtn').addEventListener('click', () => {
+            const referralLink = 'https://example.com/refer?user=' + (window.Telegram?.WebApp?.initDataUnsafe.user?.id || 'test');
+            navigator.clipboard.writeText(referralLink).then(() => {
+                showToast('Referral link copied!', 'success');
+            });
+            // Bonus for referrals can be added server-side
+        });
 
         // Toast
         function showToast(message, type = 'success') {
@@ -566,32 +1014,40 @@
             }).showToast();
         }
 
-        // Dark Mode
+        // Theme
         document.getElementById('themeToggle').addEventListener('click', () => {
             const theme = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
             document.body.setAttribute('data-theme', theme);
             document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
         });
 
-        // Language Switcher
+        // Language
         function setLanguage(lang) {
             currentLang = lang;
-            document.getElementById('manualAddBtn').textContent = translations[lang].manualAdd;
-            document.getElementById('autoAdBtn').textContent = translations[lang].autoAd;
+            document.getElementById('manualAddBtn').innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4V20M4 12H20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${translations[lang].manualAdd}`;
+            const autoBtn = document.getElementById('autoAdBtn');
+            const isRunning = autoBtn.textContent.includes(translations[lang].stopAuto) || autoBtn.textContent.includes('Stop') || autoBtn.textContent.includes('Detener');
+            autoBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 5L19 12L5 19V5Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${isRunning ? translations[lang].stopAuto : translations[lang].autoAd}`;
             document.querySelector('.stat-box p:first-child').textContent = translations[lang].todayReport;
             document.querySelector('.stat-box:nth-child(2) p').textContent = translations[lang].sevenDays;
-            document.getElementById('sendReportBtn').textContent = translations[lang].sendReport;
+            document.getElementById('sendReportBtn').innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 2L11 13" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${translations[lang].sendReport}`;
             document.querySelector('.chart-box h4').textContent = translations[lang].clicksWeek;
-            // Update auto button if running
-            if (document.getElementById('autoAdBtn').textContent === translations[lang].stopAuto) {
-                document.getElementById('autoAdBtn').textContent = translations[lang].stopAuto;
-            }
+            document.querySelector('.rewards-section h4').textContent = translations[lang].rewardsTitle;
+            document.querySelector('.leaderboard-section h4').textContent = translations[lang].leaderboardTitle;
+            document.querySelector('.history-section h4').textContent = translations[lang].historyTitle;
         }
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && document.activeElement.tagName === 'BUTTON') {
+                document.activeElement.click();
+            }
+        });
 
         // Init
         document.addEventListener('DOMContentLoaded', () => {
             loadTelegramProfile();
-            setLanguage('en'); // Default
+            setLanguage(currentLang);
         });
     </script>
 </body>
