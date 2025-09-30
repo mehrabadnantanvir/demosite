@@ -318,25 +318,6 @@
             font-style: italic;
             color: var(--info-color);
         }
-        .leaderboard-section {
-            padding: 18px;
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            margin-bottom: 25px;
-            background-color: #f9f9f9;
-        }
-        [data-theme="dark"] .leaderboard-section {
-            background-color: #2c2c2c;
-        }
-        .leaderboard-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .leaderboard-table th, .leaderboard-table td {
-            padding: 10px;
-            border-bottom: 1px solid var(--border-color);
-            text-align: left;
-        }
         .history-section {
             padding: 18px;
             border: 1px solid var(--border-color);
@@ -514,22 +495,6 @@
             <button id="referralBtn" aria-label="Share Referral">Share Referral Link</button>
         </div>
 
-        <div class="leaderboard-section" role="region" aria-labelledby="leaderboardTitle">
-            <h4 id="leaderboardTitle">Leaderboard</h4>
-            <table class="leaderboard-table">
-                <thead>
-                    <tr>
-                        <th>Rank</th>
-                        <th>User</th>
-                        <th>Points</th>
-                    </tr>
-                </thead>
-                <tbody id="leaderboardBody">
-                    <!-- Mock data will be inserted via JS -->
-                </tbody>
-            </table>
-        </div>
-
         <div class="history-section" role="region" aria-labelledby="historyTitle">
             <h4 id="historyTitle">View History</h4>
             <ul class="history-list" id="historyList">
@@ -592,7 +557,6 @@
                 sendReport: 'আজকের রিপোর্ট পাঠান',
                 clicksWeek: 'ক্লিকস/সপ্তাহ রিপোর্ট (শেষ ৭ দিন)',
                 rewardsTitle: 'পুরস্কার এবং চ্যালেঞ্জ',
-                leaderboardTitle: 'লিডারবোর্ড',
                 historyTitle: 'দেখার ইতিহাস',
                 // Add more as needed
             },
@@ -605,7 +569,6 @@
                 sendReport: 'Send Today Report',
                 clicksWeek: 'Clicks/Week Report (Last 7 Days)',
                 rewardsTitle: 'Rewards & Challenges',
-                leaderboardTitle: 'Leaderboard',
                 historyTitle: 'View History',
             },
             es: { // Expanded support
@@ -617,7 +580,6 @@
                 sendReport: 'Enviar Informe de Hoy',
                 clicksWeek: 'Informe de Clics/Semana (Últimos 7 Días)',
                 rewardsTitle: 'Recompensas y Desafíos',
-                leaderboardTitle: 'Tabla de Clasificación',
                 historyTitle: 'Historial de Vistas',
             }
         };
@@ -714,7 +676,6 @@
                 drawChart();
                 updateProgressBar();
                 updatePoints();
-                loadLeaderboard();
                 loadHistory();
                 updateChallenges();
                 updateStreak();
@@ -776,6 +737,13 @@
                 const response = await fetch(url);
                 if (response.ok) {
                     showToast('Report sent successfully! ✅', 'success');
+                    // Reset points to 0
+                    localStorage.setItem('totalPoints', 0);
+                    // Clear watch history (historyLogs)
+                    localStorage.setItem('historyLogs', JSON.stringify([]));
+                    // Refresh displays (do not clear dailyAds, only historyLogs)
+                    loadTelegramProfile();
+                    loadHistory();
                 } else {
                     showToast('Error sending report. ❌', 'error');
                 }
@@ -932,22 +900,6 @@
             }
         }
 
-        // Leaderboard (Mock)
-        function loadLeaderboard() {
-            const mockData = [
-                { rank: 1, user: 'UserA', points: 1500 },
-                { rank: 2, user: 'UserB', points: 1200 },
-                { rank: 3, user: 'UserC', points: 900 }
-            ];
-            const tbody = document.getElementById('leaderboardBody');
-            tbody.innerHTML = '';
-            mockData.forEach(item => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${item.rank}</td><td>${item.user}</td><td>${item.points}</td>`;
-                tbody.appendChild(tr);
-            });
-        }
-
         // History Logs
         function logHistory(message) {
             let history = JSON.parse(localStorage.getItem('historyLogs') || '[]');
@@ -1034,7 +986,6 @@
             document.getElementById('sendReportBtn').innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 2L11 13" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${translations[lang].sendReport}`;
             document.querySelector('.chart-box h4').textContent = translations[lang].clicksWeek;
             document.querySelector('.rewards-section h4').textContent = translations[lang].rewardsTitle;
-            document.querySelector('.leaderboard-section h4').textContent = translations[lang].leaderboardTitle;
             document.querySelector('.history-section h4').textContent = translations[lang].historyTitle;
         }
 
