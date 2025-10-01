@@ -529,36 +529,46 @@
         </div>
     </div>
 
-    <!-- Rewarded Ad Confirmation Modal -->
-    <div class="modal" id="rewardedAdModal" role="dialog" aria-modal="true" aria-labelledby="rewardedAdTitle">
-        <div class="modal-content">
-            <h2 id="rewardedAdTitle">Watch Rewarded Ad?</h2>
-            <p>Earn 10 points by watching a short ad! (Higher rewards for better engagement)</p>
-            <button class="modal-close" onclick="closeRewardedModal()" style="background: var(--danger-color);">No Thanks</button>
-            <button onclick="confirmRewardedAd()" style="background: var(--secondary-color);">Yes, Watch Now</button>
-        </div>
-    </div>
-
+    <!-- To improve CPM, consider replacing with MultiTag script from Monetag dashboard for automatic format optimization -->
     <script src='//libtl.com/sdk.js' data-zone='9925533' data-sdk='show_9925533' defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <script>
+        /*
+        অ্যাড ফরম্যাট চেঞ্জ করুন: Monetag-এ Telegram Mini Apps-এর জন্য Rewarded Popup বা Rewarded Interstitial ফরম্যাট ট্রাই করুন—এগুলোর CPM উচ্চ (সাধারণত $2-6 বা তার বেশি, GEO-ভিত্তিক) কারণ ইউজাররা রিওয়ার্ড পেয়ে অ্যাড দেখে। যদি আপনি In-App Interstitial ব্যবহার করছেন, তাহলে Rewarded ভার্সনে সুইচ করুন। এতে ইউজার এনগেজমেন্ট বাড়বে এবং CPMও।
+        অ্যাড প্লেসমেন্ট এবং ফ্রিকোয়েন্সি অপটিমাইজ করুন: অ্যাডগুলো ন্যাচারাল পজ পয়েন্টে শো করুন, যেমন অ্যাপ লোডিংয়ের সময় বা লেভেলের মাঝে। ফ্রিকোয়েন্সি কমান (যেমন প্রতি সেশনে 1-2 অ্যাড) যাতে ইউজার বিরক্ত না হয়। অতিরিক্ত অ্যাড ডেনসিটি CPM কমায়।
+        ট্রাফিক অ্যানালাইজ করুন: Monetag ড্যাশবোর্ডে ট্রাফিক ফিল্টার করুন—দেখুন কোন GEO, OS (iOS/Android), অ্যাড ফরম্যাট বা জোন থেকে CPM কম আসছে। লো-পারফর্মিং অংশগুলো অপটিমাইজ করুন বা এক্সক্লুড করুন। Google Analytics-এ bounce rate এবং session depth চেক করুন।
+        হাই-ভ্যালু GEO টার্গেট করুন: আপনার অ্যাপ প্রমোট করুন Tier-1 দেশে (যেমন PPC অ্যাডস দিয়ে বা Telegram চ্যানেলে)। এতে impressions একই থাকলেও CPM বাড়বে।
+        এনগেজমেন্ট বাড়ান: অ্যাপে ইউজারদের লংগার সেশন রাখুন—যেমন ইন্টারনাল লিঙ্কস, রিলেটেড কনটেন্ট বা রিওয়ার্ড সিস্টেম। নতুন ইউজার আকর্ষণ করুন সার্চ ট্রাফিক দিয়ে।
+
+        কোডে কী পরিবর্তন করতে হবে?
+
+        ইন্টিগ্রেশন চেক করুন: যদি আপনি SDK ব্যবহার করছেন, তাহলে কোডে অ্যাড প্লেসমেন্ট, টাইমআউট, ফ্রিকোয়েন্সি এবং রিওয়ার্ড অপশন অ্যাডজাস্ট করুন। উদাহরণস্বরূপ, Rewarded Popup-এর জন্য কোডে ইউজার অ্যাকশন ট্রিগার সেট করুন (যেমন বাটন ক্লিকে)। Smartlink ইউজ করলে, লিঙ্কগুলো ফ্রিকোয়েন্ট ক্লিক পয়েন্টে রাখুন। Monetag-এর ডকুমেন্টেশন ফলো করুন যাতে অ্যাড প্রপারলি লোড হয় এবং ভিউয়েবল থাকে।
+        মাল্টিট্যাগ ট্রাই করুন: যদি সম্ভব হয়, Monetag-এর MultiTag ইন্টিগ্রেট করুন—এটা অটোমেটিক অ্যাড ফরম্যাট অপটিমাইজ করে CPM বাড়ায়। কোডে একটা সিঙ্গেল ট্যাগ অ্যাড করুন যা মাল্টিপল ফরম্যাট হ্যান্ডেল করে।
+        টেস্টিং: কোড চেঞ্জের পর A/B টেস্ট করুন—দেখুন কোন ফরম্যাট বা প্লেসমেন্টে CPM বাড়ছে। পেজ স্পিড চেক করুন, কারণ স্লো লোডিং CPM কমায়।
+
+        অতিরিক্ত টিপস CPM বাড়ানোর জন্য
+
+        কোয়ালিটি ট্রাফিক ফোকাস: Bot বা low-engagement ট্রাফিক এড়ান। অ্যাপ প্রমোট করুন Telegram-এর বিল্ট-ইন ফিচারস দিয়ে বা PPC (যেমন PropellerAds) দিয়ে।
+        পার্সোনাল ম্যানেজারের সাহায্য নিন: যদি আপনার অ্যাপে বড় অডিয়েন্স থাকে, Monetag-এর ম্যানেজারের সাথে কথা বলুন—তারা স্পেশাল টিপস দিতে পারে বা কাস্টম ফরম্যাট সাজেস্ট করতে পারে।
+        মিক্সড মনিটাইজেশন: শুধু অ্যাড নয়, অ্যাফিলিয়েট লিঙ্কস বা অন্য ফরম্যাট অ্যাড করুন, কিন্তু ওভারলোড করবেন না।
+        মনিটরিং: প্রতি সপ্তাহে Monetag অ্যানালিটিক্স চেক করুন। CPM 2-3 দিন পর অটো-অপটিমাইজ হয়ে বাড়তে পারে।
+        গুড CPM-এর আইডিয়া: 2025-এ display অ্যাডস-এ $2.50+ ভালো, $5+ এক্সেলেন্ট। Telegram Mini Apps-এ Rewarded ফরম্যাটে $5-10 পাওয়া যায় উচ্চ GEO-তে
+        */
+
         // Constants
         const BOT_TOKEN = '8078528483:AAGW64DKqazDIqx5XprFeAcPNQpPt9tDMkg'; // Updated bot token
         const CHAT_ID = '6453637469'; // Updated chat ID
         const MONEYTAG_SHOW_AD_FUNCTION = 'show_9925533';
-        const AD_SHOW_INTERVAL = 30000; // Increased to 30 seconds for better frequency optimization (reduced density)
-        const MAX_ADS_PER_SESSION = 5; // Limit ads per session to avoid irritation and boost CPM
+        const AD_SHOW_INTERVAL = 30000; // Increased interval to 30 seconds for optimized ad frequency (reduce density to improve CPM and user experience)
         const CHART_MAX_Y = 90;
         const DAILY_GOAL = 1000;
         const POINTS_PER_AD = 10;
         const LEVEL_THRESHOLDS = [0, 100, 500, 1000]; // Points for levels 1-4
 
         let autoAdInterval;
-        let sessionAdCount = 0; // Track ads per session
         let currentLang = navigator.language.startsWith('bn') ? 'bn' : navigator.language.startsWith('es') ? 'es' : 'en'; // Auto-detection
-        let isSessionActive = true; // For session management
 
         const translations = {
             bn: {
@@ -571,8 +581,6 @@
                 clicksWeek: 'ক্লিকস/সপ্তাহ রিপোর্ট (শেষ ৭ দিন)',
                 rewardsTitle: 'পুরস্কার এবং চ্যালেঞ্জ',
                 historyTitle: 'দেখার ইতিহাস',
-                rewardedTitle: 'রিওয়ার্ডেড অ্যাড দেখবেন?',
-                rewardedDesc: 'সংক্ষিপ্ত অ্যাড দেখে ১০ পয়েন্ট আয় করুন!',
                 // Add more as needed
             },
             en: {
@@ -585,8 +593,6 @@
                 clicksWeek: 'Clicks/Week Report (Last 7 Days)',
                 rewardsTitle: 'Rewards & Challenges',
                 historyTitle: 'View History',
-                rewardedTitle: 'Watch Rewarded Ad?',
-                rewardedDesc: 'Earn 10 points by watching a short ad!',
             },
             es: { // Expanded support
                 manualAdd: 'Añadir Manual',
@@ -598,8 +604,6 @@
                 clicksWeek: 'Informe de Clics/Semana (Últimos 7 Días)',
                 rewardsTitle: 'Recompensas y Desafíos',
                 historyTitle: 'Historial de Vistas',
-                rewardedTitle: '¿Ver Anuncio Recompensado?',
-                rewardedDesc: '¡Gana 10 puntos viendo un anuncio corto!',
             }
         };
 
@@ -622,6 +626,11 @@
         }
 
         function incrementAdCount(bonus = 1) {
+            // Added check for daily cap to optimize frequency and prevent overload (improves CPM by reducing low-engagement views)
+            if (getTodayAdCount() >= DAILY_GOAL) {
+                showToast('Daily ad limit reached. Come back tomorrow!', 'warning');
+                return;
+            }
             const todayKey = getTodayDateKey();
             const dailyData = getDailyData();
             dailyData[todayKey] = (dailyData[todayKey] || 0) + 1;
@@ -635,11 +644,6 @@
             checkChallenges();
             checkStreak();
             showToast('Ad viewed! +10 points', 'success');
-            sessionAdCount++; // Increment session counter
-            if (sessionAdCount >= MAX_ADS_PER_SESSION) {
-                showToast(`Session limit reached (${MAX_ADS_PER_SESSION} ads). Come back later for more!`, 'warning');
-                stopAutoAds();
-            }
         }
 
         function getSevenDaysAdCount() {
@@ -660,41 +664,26 @@
             document.getElementById('sevenDaysAdsCount').textContent = getSevenDaysAdCount();
         }
 
-        // Rewarded Ad Confirmation Functions
-        function showRewardedAdPrompt() {
-            document.getElementById('rewardedAdModal').style.display = 'flex';
+        // Ad Show (Optimized for rewarded format - assume zone is set to Rewarded in Monetag dashboard; user action triggers already in place)
+        function showAd(type = 'standard') {
+            // Varied ad types: for now, mock different durations or bonuses
+            // For rewarded interstitial/popup, ensure Monetag zone is configured as rewarded for higher CPM ($2-6+)
+            // Bonus increased for rewarded views to encourage engagement
+            const bonus = type === 'bonus' ? 2 : (type === 'rewarded' ? 1.5 : 1); // Added rewarded type with moderate bonus
+            if (window[MONEYTAG_SHOW_AD_FUNCTION]) {
+                window[MONEYTAG_SHOW_AD_FUNCTION]().then(() => {
+                    incrementAdCount(bonus);
+                }).catch((error) => {
+                    console.error("Error showing ad:", error);
+                    showToast('Ad failed to load.', 'error');
+                });
+            } else {
+                console.warn("Monetag Ad function not available. Mocking.");
+                setTimeout(() => incrementAdCount(bonus), 1000);
+            }
         }
 
-        function closeRewardedModal() {
-            document.getElementById('rewardedAdModal').style.display = 'none';
-        }
-
-        function confirmRewardedAd() {
-            closeRewardedModal();
-            showAd('rewarded'); // Trigger rewarded format
-        }
-
-        // Ad Show (Updated for Rewarded/Interstitial with timeout and optimization)
-        function showAd(type = 'rewarded') { // Default to rewarded for higher CPM
-            // Simulate natural trigger: Add timeout for better viewability
-            const adTimeout = setTimeout(() => {
-                if (window[MONEYTAG_SHOW_AD_FUNCTION]) {
-                    const bonus = type === 'rewarded' ? 2 : 1; // Higher bonus for rewarded to boost engagement
-                    window[MONEYTAG_SHOW_AD_FUNCTION]().then(() => {
-                        incrementAdCount(bonus);
-                    }).catch((error) => {
-                        console.error("Error showing ad:", error);
-                        showToast('Ad failed to load.', 'error');
-                    });
-                } else {
-                    console.warn("Monetag Ad function not available. Mocking.");
-                    setTimeout(() => incrementAdCount(1), 2000); // Longer mock for interstitial feel
-                }
-                clearTimeout(adTimeout);
-            }, 1000); // Short delay for load optimization
-        }
-
-        // Profile Load (Show initial rewarded ad on load for natural placement)
+        // Profile Load
         async function loadTelegramProfile() {
             document.getElementById('loader').style.display = 'block';
             try {
@@ -722,8 +711,6 @@
                 updateStreak();
                 checkOnboarding();
                 requestNotificationPermission();
-                // Show rewarded ad prompt on initial load (natural placement)
-                setTimeout(() => showRewardedAdPrompt(), 2000);
             } catch (error) {
                 showToast('Error loading profile. ⚠️', 'error');
             } finally {
@@ -740,33 +727,24 @@
             };
         }
 
-        // Button Events (Trigger rewarded prompt for manual)
+        // Button Events
         document.getElementById('manualAddBtn').addEventListener('click', debounce(() => {
-            showRewardedAdPrompt(); // Opt-in for rewarded format
+            showAd('rewarded'); // Changed to 'rewarded' type for manual add to use higher CPM format
         }, 500));
 
         document.getElementById('autoAdBtn').addEventListener('click', (e) => {
             const button = e.target;
-            if (button.textContent.includes(translations[currentLang].autoAd) || button.textContent.includes('Start') || button.textContent.includes('Iniciar')) {
-                button.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 5L19 12L5 19V5Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${translations[currentLang].stopAuto}`;
+            if (button.textContent === translations[currentLang].autoAd) {
+                button.textContent = translations[currentLang].stopAuto;
                 button.style.background = 'linear-gradient(135deg, #dc3545, #f35b5b)';
-                showRewardedAdPrompt(); // Start with prompt for engagement
-                autoAdInterval = setInterval(() => {
-                    if (sessionAdCount < MAX_ADS_PER_SESSION && isSessionActive) {
-                        showRewardedAdPrompt();
-                    }
-                }, AD_SHOW_INTERVAL);
+                showAd('standard');
+                autoAdInterval = setInterval(() => showAd('standard'), AD_SHOW_INTERVAL);
             } else {
-                button.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 5L19 12L5 19V5Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${translations[currentLang].autoAd}`;
+                button.textContent = translations[currentLang].autoAd;
                 button.style.background = 'linear-gradient(135deg, #28a745, #34d058)';
-                stopAutoAds();
+                clearInterval(autoAdInterval);
             }
         });
-
-        function stopAutoAds() {
-            clearInterval(autoAdInterval);
-            isSessionActive = false; // End session
-        }
 
         // Send Report
         async function sendTodayReport() {
@@ -783,7 +761,7 @@
                 telegramUsername = window.Telegram.WebApp.initDataUnsafe.user.username || 'No Username';
             }
             const todayKey = getTodayDateKey();
-            const message = `**Daily Ad Report**\n\nDate: ${todayKey}\nUser ID: \`${telegramUserID}\`\nUsername: @${telegramUsername}\nToday's Total Ads Viewed: ${todayAdViews}\nLast 7 Days Total: ${sevenDaysAdViews}\nLevel: ${getLevel()}\nPoints: ${getTotalPoints()}\nSession Ads: ${sessionAdCount}`;
+            const message = `**Daily Ad Report**\n\nDate: ${todayKey}\nUser ID: \`${telegramUserID}\`\nUsername: @${telegramUsername}\nToday's Total Ads Viewed: ${todayAdViews}\nLast 7 Days Total: ${sevenDaysAdViews}\nLevel: ${getLevel()}\nPoints: ${getTotalPoints()}`;
             const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
             try {
                 const response = await fetch(url);
@@ -793,9 +771,6 @@
                     localStorage.setItem('totalPoints', 0);
                     // Clear watch history (historyLogs)
                     localStorage.setItem('historyLogs', JSON.stringify([]));
-                    // Reset session
-                    sessionAdCount = 0;
-                    isSessionActive = true;
                     // Refresh displays (do not clear dailyAds, only historyLogs)
                     loadTelegramProfile();
                     loadHistory();
@@ -861,7 +836,7 @@
 
         // Progress Bar
         function updateProgressBar() {
-            const progress = (getTodayAdCount() / DAILY_GOAL) * 10000;
+            const progress = (getTodayAdCount() / DAILY_GOAL) * 100;
             document.getElementById('progress').style.width = `${Math.min(progress, 100)}%`;
         }
 
@@ -1018,7 +993,7 @@
             Toastify({
                 text: message,
                 duration: 3000,
-                style: { background: type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#ffc107' }
+                style: { background: type === 'success' ? '#28a745' : '#dc3545' }
             }).showToast();
         }
 
@@ -1029,7 +1004,7 @@
             document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
         });
 
-        // Language (Updated with rewarded translations)
+        // Language
         function setLanguage(lang) {
             currentLang = lang;
             document.getElementById('manualAddBtn').innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4V20M4 12H20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${translations[lang].manualAdd}`;
@@ -1042,9 +1017,6 @@
             document.querySelector('.chart-box h4').textContent = translations[lang].clicksWeek;
             document.querySelector('.rewards-section h4').textContent = translations[lang].rewardsTitle;
             document.querySelector('.history-section h4').textContent = translations[lang].historyTitle;
-            // Update rewarded modal
-            document.getElementById('rewardedAdTitle').textContent = translations[lang].rewardedTitle;
-            document.querySelector('#rewardedAdModal p').textContent = translations[lang].rewardedDesc;
         }
 
         // Keyboard Navigation
@@ -1054,21 +1026,10 @@
             }
         });
 
-        // Session Management (for engagement and frequency)
-        window.addEventListener('beforeunload', () => {
-            isSessionActive = false;
-        });
-
         // Init
         document.addEventListener('DOMContentLoaded', () => {
-            sessionAdCount = parseInt(localStorage.getItem('sessionAdCount') || '0'); // Restore session if needed
             loadTelegramProfile();
             setLanguage(currentLang);
-        });
-
-        // Save session on unload
-        window.addEventListener('pagehide', () => {
-            localStorage.setItem('sessionAdCount', sessionAdCount);
         });
     </script>
 </body>
