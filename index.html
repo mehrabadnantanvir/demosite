@@ -603,7 +603,7 @@
         }
 
         // Profile Load
-        async function loadTelegramProfile() {
+        async function loadTelegramProfile(retries = 3) {
             document.getElementById('loader').style.display = 'block';
             try {
                 if (window.Telegram && window.Telegram.WebApp) {
@@ -615,14 +615,19 @@
                         const verifiedBadge = ' <svg class="verified-badge" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="10" fill="#0064e0"/><path d="M5 10l3 3 7-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
                         document.getElementById('userName').innerHTML = fullName + verifiedBadge + (user.id ? ` (ID: ${user.id})` : '');
                         document.getElementById('userStatus').textContent = `@${user.username || 'No Username'} | Points: ${getTotalPoints()}`;
+                        if (user.photo_url) {
+                            document.getElementById('userProfileImage').src = user.photo_url;
+                        }
                     } else {
-                        // Fallback if user data is not available immediately
-                        setTimeout(loadTelegramProfile, 500); // Retry after 500ms
+                        if (retries > 0) {
+                            setTimeout(() => loadTelegramProfile(retries - 1), 500);
+                            return;
+                        } else {
+                            fallbackProfile();
+                        }
                     }
                 } else {
-                    const verifiedBadge = ' <svg class="verified-badge" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="10" fill="#0064e0"/><path d="M5 10l3 3 7-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-                    document.getElementById('userName').innerHTML = 'Local Test User' + verifiedBadge;
-                    document.getElementById('userStatus').textContent = 'WebApp API Missing | Points: 0';
+                    fallbackProfile();
                 }
                 updateReportDisplay();
                 drawChart();
@@ -632,9 +637,16 @@
                 requestNotificationPermission();
             } catch (error) {
                 showToast('Error loading profile. ⚠️', 'error');
+                fallbackProfile();
             } finally {
                 document.getElementById('loader').style.display = 'none';
             }
+        }
+
+        function fallbackProfile() {
+            const verifiedBadge = ' <svg class="verified-badge" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="10" fill="#0064e0"/><path d="M5 10l3 3 7-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+            document.getElementById('userName').innerHTML = 'Local Test User' + verifiedBadge;
+            document.getElementById('userStatus').textContent = 'WebApp API Missing | Points: 0';
         }
 
         // Debounce
@@ -746,7 +758,7 @@
                     }]
                 },
                 options: {
-                    responsive: true,
+                    responsive: true;
                     scales: { y: { beginAtZero: true, max: CHART_MAX_Y } },
                     plugins: { legend: { display: false }, tooltip: { enabled: true } },
                     animation: { duration: 1200, easing: 'easeInOutQuart' }
