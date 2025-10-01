@@ -144,26 +144,33 @@
         }
         .stat-box {
             flex: 1;
-            background-color: var(--container-bg);
-            border: 1px solid var(--border-color);
+            background: linear-gradient(135deg, #28a745, #007bff); /* Gradient background: Green to Blue */
             border-radius: 14px;
             padding: 12px;
             text-align: center;
-            box-shadow: 0 3px 6px var(--shadow-color);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), inset 0 2px 4px rgba(255, 255, 255, 0.2); /* Neumorphism: soft shadow and inset */
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 6px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            backdrop-filter: blur(10px); /* Glassmorphism: blur effect */
+            background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent for glass effect */
+            border: 1px solid rgba(255, 255, 255, 0.18); /* Glow border */
+        }
+        .stat-box:hover {
+            transform: scale(1.05); /* Hover: scale-up */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 0 15px rgba(255, 255, 255, 0.3); /* Hover: glow border */
         }
         .stat-box p {
             margin: 0 0 6px 0;
             font-size: 0.95em;
-            color: #555;
+            color: #fff; /* White text for contrast on gradient */
         }
         .stat-box span {
             font-weight: var(--font-weight-bold);
             font-size: 1.6em;
-            color: var(--secondary-color);
+            color: #fff; /* White for visibility */
         }
         .send-report-btn {
             width: calc(100% - 36px);
@@ -280,65 +287,6 @@
             background-color: var(--primary-color);
             color: white;
         }
-        /* New Sections */
-        .rewards-section {
-            padding: 18px;
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            margin-bottom: 25px;
-            background-color: #f9f9f9;
-            transition: background-color 0.3s;
-        }
-        [data-theme="dark"] .rewards-section {
-            background-color: #2c2c2c;
-        }
-        .rewards-section h4 {
-            margin-top: 0;
-            font-weight: 500;
-        }
-        .level-badge {
-            display: inline-block;
-            padding: 6px 12px;
-            background: var(--accent-color);
-            color: white;
-            border-radius: 20px;
-            font-size: 0.9em;
-        }
-        .challenge-list {
-            list-style: none;
-            padding: 0;
-            margin: 12px 0;
-        }
-        .challenge-list li {
-            padding: 8px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-        }
-        .streak-info {
-            font-style: italic;
-            color: var(--info-color);
-        }
-        .history-section {
-            padding: 18px;
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            margin-bottom: 25px;
-            background-color: #f9f9f9;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        [data-theme="dark"] .history-section {
-            background-color: #2c2c2c;
-        }
-        .history-list {
-            list-style: none;
-            padding: 0;
-        }
-        .history-list li {
-            padding: 6px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
         /* Modal */
         .modal {
             display: none;
@@ -423,7 +371,7 @@
             <img class="profile-image" id="userProfileImage" loading="lazy" src="" alt="User Profile Image">
             <div class="profile-info">
                 <h3 id="userName">User Name (ID: 12345)</h3>
-                <p id="userStatus">Telegram Profile | Points: 0 | Level: 1</p>
+                <p id="userStatus">Telegram Profile | Points: 0</p>
             </div>
         </div>
         
@@ -452,14 +400,19 @@
             <div class="report-stats-boxes">
                 <div class="stat-box">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2V22M2 12H22" stroke="var(--secondary-color)" stroke-width="2"/>
+                        <path d="M19 4H5C3.89543 4 3 4.89543 3 6V18C3 19.1046 3.89543 20 5 20H19C20.1046 20 21 19.1046 21 18V6C21 4.89543 20.1046 4 19 4Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/> <!-- Calendar icon for Today Report -->
+                        <path d="M16 2V6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 2V6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M3 10H21" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                     <p>Today Report</p>
                     <span id="todayAdsCount">0</span>
                 </div>
                 <div class="stat-box">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2V22M2 12H22" stroke="var(--secondary-color)" stroke-width="2"/>
+                        <path d="M3 21H21" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/> <!-- Stats icon for 7 Days Total -->
+                        <path d="M3 7V6.5C3 5.11929 4.11929 4 5.5 4H18.5C19.8807 4 21 5.11929 21 6.5V7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M20 15L18.9525 13.6037C18.038 12.4114 16.6209 11.8355 15.2037 12.0193C13.9844 12.181 13 13.1436 13 14.375C13 16.2124 11.2124 16.5 10.9998 16.5C10.5 16.5 10 15.9999 10 15.5V6.5C10 5.67157 10.6716 5 11.5 5H12.5C13.3284 5 14 5.67157 14 6.5V12.5C14 13.3284 14.6716 14 15.5 14H16.5C17.3284 14 18 13.3284 18 12.5V10.5C18 9.67157 18.6716 9 19.5 9H20" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                     <p>7 Days Total</p>
                     <span id="sevenDaysAdsCount">0</span>
@@ -487,22 +440,6 @@
             </a>
         </div>
 
-        <div class="rewards-section" role="region" aria-labelledby="rewardsTitle">
-            <h4 id="rewardsTitle">Rewards & Challenges</h4>
-            <p>Level: <span class="level-badge" id="userLevel">1</span> | Streak: <span id="streakDays" class="streak-info">0 days</span></p>
-            <ul class="challenge-list">
-                <li>View 5 ads today <span id="challenge1">0/500</span></li>
-                <li>Maintain 3-day streak <span id="challenge2">0/300</span></li>
-            </ul>
-            <button id="referralBtn" aria-label="Share Referral">Share Referral Link</button>
-        </div>
-
-        <div class="history-section" role="region" aria-labelledby="historyTitle">
-            <h4 id="historyTitle">View History</h4>
-            <ul class="history-list" id="historyList">
-                </ul>
-        </div>
-
         <div class="chart-box" role="region" aria-labelledby="chartTitle">
             <h4 id="chartTitle">Clicks/Week Report (Last 7 Days)</h4>
             <canvas id="weeklyChartCanvas" style="max-height: 220px;"></canvas>
@@ -523,8 +460,7 @@
         <div class="modal-content">
             <h2 id="onboardingTitle">Welcome to Earnings App!</h2>
             <p>Step 1: View ads manually or auto.</p>
-            <p>Step 2: Earn points and level up.</p>
-            <p>Step 3: Complete challenges for bonuses.</p>
+            <p>Step 2: Earn points.</p>
             <button class="modal-close" onclick="closeOnboarding()">Got it!</button>
         </div>
     </div>
@@ -551,7 +487,6 @@
         const CHART_MAX_Y = 90;
         const DAILY_GOAL = 1000;
         const POINTS_PER_AD = 10;
-        const LEVEL_THRESHOLDS = [0, 100, 500, 1000]; // Points for levels 1-4
 
         let autoAdInterval;
         let currentLang = navigator.language.startsWith('bn') ? 'bn' : navigator.language.startsWith('es') ? 'es' : 'en'; // Auto-detection
@@ -565,8 +500,6 @@
                 sevenDays: '৭ দিনের মোট',
                 sendReport: 'আজকের রিপোর্ট পাঠান',
                 clicksWeek: 'ক্লিকস/সপ্তাহ রিপোর্ট (শেষ ৭ দিন)',
-                rewardsTitle: 'পুরস্কার এবং চ্যালেঞ্জ',
-                historyTitle: 'দেখার ইতিহাস',
             },
             en: {
                 manualAdd: 'Manual Add',
@@ -576,8 +509,6 @@
                 sevenDays: '7 Days Total',
                 sendReport: 'Send Today Report',
                 clicksWeek: 'Clicks/Week Report (Last 7 Days)',
-                rewardsTitle: 'Rewards & Challenges',
-                historyTitle: 'View History',
             },
             es: { 
                 manualAdd: 'Añadir Manual',
@@ -587,8 +518,6 @@
                 sevenDays: 'Total de 7 Días',
                 sendReport: 'Enviar Informe de Hoy',
                 clicksWeek: 'Informe de Clics/Semana (Últimos 7 Días)',
-                rewardsTitle: 'Recompensas y Desafíos',
-                historyTitle: 'Historial de Vistas',
             }
         };
 
@@ -610,19 +539,15 @@
             return getDailyData()[getTodayDateKey()] || 0;
         }
 
-        function incrementAdCount(bonus = 1) {
+        function incrementAdCount() {
             const todayKey = getTodayDateKey();
             const dailyData = getDailyData();
             dailyData[todayKey] = (dailyData[todayKey] || 0) + 1;
             setDailyData(dailyData);
-            updatePoints(bonus);
+            updatePoints();
             updateReportDisplay();
             drawChart();
             updateProgressBar();
-            logHistory(`Ad viewed at ${new Date().toLocaleTimeString()}`);
-            checkMilestones();
-            checkChallenges();
-            checkStreak();
             showToast('Ad viewed! +10 points', 'success');
         }
 
@@ -645,42 +570,35 @@
         }
 
         // Ad Show
-        function showAd(type = 'standard', isInterstitial = false) {
-            const bonus = type === 'bonus' ? 2 : 1;
-            
-            // যদিInterstitial অ্যাড না হয়, তাহলে CPM Booster দেখান
-            if (!isInterstitial) {
-                const modal = document.getElementById('cpmBoosterModal');
-                modal.style.display = 'flex';
-                let timeLeft = CPM_BOOSTER_WAIT_TIME;
-                const timerSpan = document.getElementById('cpmBoosterTimer');
-                timerSpan.textContent = timeLeft;
+        function showAd() {
+            const modal = document.getElementById('cpmBoosterModal');
+            modal.style.display = 'flex';
+            let timeLeft = CPM_BOOSTER_WAIT_TIME;
+            const timerSpan = document.getElementById('cpmBoosterTimer');
+            timerSpan.textContent = timeLeft;
 
-                const countdown = setInterval(() => {
-                    timeLeft--;
-                    timerSpan.textContent = timeLeft;
-                    if (timeLeft <= 0) {
-                        clearInterval(countdown);
-                        modal.style.display = 'none';
-                        executeAdShow(bonus);
-                    }
-                }, 1000);
-            } else {
-                executeAdShow(bonus);
-            }
+            const countdown = setInterval(() => {
+                timeLeft--;
+                timerSpan.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    modal.style.display = 'none';
+                    executeAdShow();
+                }
+            }, 1000);
         }
         
-        function executeAdShow(bonus) {
+        function executeAdShow() {
             if (window[MONEYTAG_SHOW_AD_FUNCTION]) {
                 window[MONEYTAG_SHOW_AD_FUNCTION]().then(() => {
-                    incrementAdCount(bonus);
+                    incrementAdCount();
                 }).catch((error) => {
                     console.error("Error showing ad:", error);
                     showToast('Ad failed to load.', 'error');
                 });
             } else {
                 console.warn("Monetag Ad function not available. Mocking.");
-                setTimeout(() => incrementAdCount(bonus), 1000);
+                setTimeout(() => incrementAdCount(), 1000);
             }
         }
 
@@ -693,23 +611,23 @@
                     webApp.ready();
                     const user = webApp.initDataUnsafe.user;
                     if (user) {
-                        const fullName = user.first_name + (user.last_name ? ' ' + user.last_name : '');
+                        const fullName = (user.first_name || '') + (user.last_name ? ' ' + user.last_name : '');
                         const verifiedBadge = ' <svg class="verified-badge" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="10" fill="#0064e0"/><path d="M5 10l3 3 7-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
                         document.getElementById('userName').innerHTML = fullName + verifiedBadge + (user.id ? ` (ID: ${user.id})` : '');
-                        document.getElementById('userStatus').textContent = `@${user.username || 'No Username'} | Points: ${getTotalPoints()} | Level: ${getLevel()}`;
+                        document.getElementById('userStatus').textContent = `@${user.username || 'No Username'} | Points: ${getTotalPoints()}`;
+                    } else {
+                        // Fallback if user data is not available immediately
+                        setTimeout(loadTelegramProfile, 500); // Retry after 500ms
                     }
                 } else {
                     const verifiedBadge = ' <svg class="verified-badge" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="10" fill="#0064e0"/><path d="M5 10l3 3 7-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
                     document.getElementById('userName').innerHTML = 'Local Test User' + verifiedBadge;
-                    document.getElementById('userStatus').textContent = 'WebApp API Missing | Points: 0 | Level: 1';
+                    document.getElementById('userStatus').textContent = 'WebApp API Missing | Points: 0';
                 }
                 updateReportDisplay();
                 drawChart();
                 updateProgressBar();
                 updatePoints();
-                loadHistory();
-                updateChallenges();
-                updateStreak();
                 checkOnboarding();
                 requestNotificationPermission();
             } catch (error) {
@@ -730,7 +648,7 @@
 
         // Button Events
         document.getElementById('manualAddBtn').addEventListener('click', debounce(() => {
-            showAd('standard');
+            showAd();
         }, 500));
 
         document.getElementById('autoAdBtn').addEventListener('click', (e) => {
@@ -738,8 +656,8 @@
             if (button.textContent.includes(translations[currentLang].autoAd) || button.textContent.includes('Start')) {
                 button.textContent = translations[currentLang].stopAuto;
                 button.style.background = 'linear-gradient(135deg, #dc3545, #f35b5b)';
-                showAd('standard');
-                autoAdInterval = setInterval(() => showAd('standard'), AD_SHOW_INTERVAL);
+                showAd();
+                autoAdInterval = setInterval(() => showAd(), AD_SHOW_INTERVAL);
             } else {
                 button.textContent = translations[currentLang].autoAd;
                 button.style.background = 'linear-gradient(135deg, #28a745, #34d058)';
@@ -754,11 +672,9 @@
             btn.textContent = 'Sending...';
             document.getElementById('loader').style.display = 'block';
 
-            // এখানে ইন্টারস্টিশিয়াল অ্যাড দেখানো হচ্ছে, যা CPM বাড়াতে সাহায্য করবে
             showToast('Showing a quick ad before sending report...', 'info');
-            executeAdShow(1); // সরাসরি executeAdShow কল করা হচ্ছে
+            executeAdShow(); 
             
-            // ৩ সেকেন্ড পর রিপোর্ট পাঠানোর প্রক্রিয়া শুরু হবে
             setTimeout(async () => {
                 const todayAdViews = getTodayAdCount();
                 const sevenDaysAdViews = getSevenDaysAdCount();
@@ -769,16 +685,14 @@
                     telegramUsername = window.Telegram.WebApp.initDataUnsafe.user.username || 'No Username';
                 }
                 const todayKey = getTodayDateKey();
-                const message = `**Daily Ad Report**\n\nDate: ${todayKey}\nUser ID: \`${telegramUserID}\`\nUsername: @${telegramUsername}\nToday's Total Ads Viewed: ${todayAdViews}\nLast 7 Days Total: ${sevenDaysAdViews}\nLevel: ${getLevel()}\nPoints: ${getTotalPoints()}`;
+                const message = `**Daily Ad Report**\n\nDate: ${todayKey}\nUser ID: \`${telegramUserID}\`\nUsername: @${telegramUsername}\nToday's Total Ads Viewed: ${todayAdViews}\nLast 7 Days Total: ${sevenDaysAdViews}\nPoints: ${getTotalPoints()}`;
                 const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
                 try {
                     const response = await fetch(url);
                     if (response.ok) {
                         showToast('Report sent successfully! ✅', 'success');
-                        localStorage.setItem('totalPoints', 0);
-                        localStorage.setItem('historyLogs', JSON.stringify([]));
+                        localStorage.setItem('totalPoints', 0); // Clear all points
                         loadTelegramProfile();
-                        loadHistory();
                     } else {
                         showToast('Error sending report. ❌', 'error');
                     }
@@ -851,108 +765,18 @@
             return parseInt(localStorage.getItem('totalPoints') || '0');
         }
 
-        function updatePoints(bonus = 1) {
+        function updatePoints() {
             let points = getTotalPoints();
-            points += POINTS_PER_AD * bonus;
+            points += POINTS_PER_AD;
             localStorage.setItem('totalPoints', points);
-            const level = getLevel();
-            document.getElementById('userStatus').textContent = `@${window.Telegram?.WebApp?.initDataUnsafe.user?.username || 'No Username'} | Points: ${points} | Level: ${level}`;
-            document.getElementById('userLevel').textContent = level;
-            if (bonus > 1) showToast(`Bonus! x${bonus} points`, 'success');
+            document.getElementById('userStatus').textContent = `@${window.Telegram?.WebApp?.initDataUnsafe.user?.username || 'No Username'} | Points: ${points}`;
         }
 
-        function getLevel() {
-            const points = getTotalPoints();
-            for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
-                if (points >= LEVEL_THRESHOLDS[i]) return i + 1;
-            }
-            return 1;
-        }
-
-        // Challenges
-        function updateChallenges() {
-            const todayCount = getTodayAdCount();
-            document.getElementById('challenge1').textContent = `${Math.min(todayCount, 500)}/500`;
-            if (todayCount >= 5) showToast('Challenge complete! +50 bonus points', 'success');
-        }
-
-        function checkChallenges() {
-            const todayCount = getTodayAdCount();
-            if (todayCount === 5) {
-                updatePoints(5); // Bonus for challenge
-            }
-        }
-
-        // Streaks
-        function getStreak() {
-            return parseInt(localStorage.getItem('streakDays') || '0');
-        }
-
-        function updateStreak() {
-            const lastViewDate = localStorage.getItem('lastViewDate');
-            const today = getTodayDateKey();
-            let streak = getStreak();
-            if (lastViewDate === today) {
-                // Already viewed today, no change
-            } else if (new Date(today) - new Date(lastViewDate) === 86400000) { // Yesterday
-                streak++;
-            } else {
-                streak = 1;
-            }
-            localStorage.setItem('streakDays', streak);
-            localStorage.setItem('lastViewDate', today);
-            document.getElementById('streakDays').textContent = `${streak} days`;
-            document.getElementById('challenge2').textContent = `${Math.min(streak, 300)}/300a`;
-            checkStreak();
-        }
-
-        function checkStreak() {
-            const streak = getStreak();
-            if (streak >= 3) {
-                updatePoints(10); // Multiplier bonus
-                showToast('Streak bonus! x10 points', 'success');
-            }
-        }
-
-        // Milestones & Notifications
+        // Notifications
         function requestNotificationPermission() {
             if (Notification.permission !== 'granted') {
                 Notification.requestPermission();
             }
-        }
-
-        function sendNotification(title, body) {
-            if (Notification.permission === 'granted') {
-                new Notification(title, { body });
-            }
-        }
-
-        function checkMilestones() {
-            const points = getTotalPoints();
-            if (points % 100 === 0) {
-                sendNotification('Milestone Reached!', `You have ${points} points!`);
-                showToast(`Milestone: ${points} points!`, 'success');
-            }
-        }
-
-        // History Logs
-        function logHistory(message) {
-            let history = JSON.parse(localStorage.getItem('historyLogs') || '[]');
-            history.unshift(message);
-            if (history.length > 10) history.pop();
-            localStorage.setItem('historyLogs', JSON.stringify(history));
-            loadHistory();
-        }
-
-        function loadHistory() {
-            const history = JSON.parse(localStorage.getItem('historyLogs') || '[]');
-            const list = document.getElementById('historyList');
-            list.innerHTML = '';
-            history.forEach(item => {
-                const li = document.createElement('li');
-                li.textContent = item;
-                list.appendChild(li);
-            });
         }
 
         // Onboarding
@@ -983,14 +807,6 @@
                 showToast('Please enter feedback.', 'error');
             }
         }
-
-        // Referral
-        document.getElementById('referralBtn').addEventListener('click', () => {
-            const referralLink = 'https://example.com/refer?user=' + (window.Telegram?.WebApp?.initDataUnsafe.user?.id || 'test');
-            navigator.clipboard.writeText(referralLink).then(() => {
-                showToast('Referral link copied!', 'success');
-            });
-        });
 
         // Toast
         function showToast(message, type = 'info') {
@@ -1024,8 +840,6 @@
             document.querySelector('.stat-box:nth-child(2) p').textContent = translations[lang].sevenDays;
             document.getElementById('sendReportBtn').innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 2L11 13" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${translations[lang].sendReport}`;
             document.querySelector('.chart-box h4').textContent = translations[lang].clicksWeek;
-            document.querySelector('.rewards-section h4').textContent = translations[lang].rewardsTitle;
-            document.querySelector('.history-section h4').textContent = translations[lang].historyTitle;
         }
 
         // Keyboard Navigation
@@ -1043,6 +857,3 @@
     </script>
 </body>
 </html>
-
-
-
