@@ -349,6 +349,7 @@
             background: rgba(0,0,0,0.5);
             justify-content: center;
             align-items: center;
+            z-index: 1000;
         }
         .modal-content {
             background: var(--container-bg);
@@ -427,8 +428,7 @@
         <div class="lang-switcher" role="navigation" aria-label="Language Switcher">
             <button onclick="setLanguage('bn')">BN</button>
             <button onclick="setLanguage('en')">EN</button>
-            <button onclick="setLanguage('es')">ES</button> <!-- Expanded language support -->
-        </div>
+            <button onclick="setLanguage('es')">ES</button> </div>
         
         <div class="button-group">
             <button id="manualAddBtn" aria-label="Manual Add">
@@ -498,8 +498,7 @@
         <div class="history-section" role="region" aria-labelledby="historyTitle">
             <h4 id="historyTitle">View History</h4>
             <ul class="history-list" id="historyList">
-                <!-- Logs inserted via JS -->
-            </ul>
+                </ul>
         </div>
 
         <div class="chart-box" role="region" aria-labelledby="chartTitle">
@@ -518,7 +517,6 @@
         </div>
     </div>
 
-    <!-- Onboarding Modal -->
     <div class="modal" id="onboardingModal" role="dialog" aria-modal="true" aria-labelledby="onboardingTitle">
         <div class="modal-content">
             <h2 id="onboardingTitle">Welcome to Earnings App!</h2>
@@ -529,39 +527,25 @@
         </div>
     </div>
 
-    <!-- To improve CPM, consider replacing with MultiTag script from Monetag dashboard for automatic format optimization -->
+    <div class="modal" id="cpmBoosterModal">
+        <div class="modal-content">
+            <h2 id="cpmBoosterTitle">Please wait for high value ad...</h2>
+            <p>Stay on this screen for <span id="cpmBoosterTimer">15</span> seconds to get a better ad.</p>
+            <div class="loader"><div></div></div>
+        </div>
+    </div>
+
     <script src='//libtl.com/sdk.js' data-zone='9925533' data-sdk='show_9925533' defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <script>
-        /*
-        অ্যাড ফরম্যাট চেঞ্জ করুন: Monetag-এ Telegram Mini Apps-এর জন্য Rewarded Popup বা Rewarded Interstitial ফরম্যাট ট্রাই করুন—এগুলোর CPM উচ্চ (সাধারণত $2-6 বা তার বেশি, GEO-ভিত্তিক) কারণ ইউজাররা রিওয়ার্ড পেয়ে অ্যাড দেখে। যদি আপনি In-App Interstitial ব্যবহার করছেন, তাহলে Rewarded ভার্সনে সুইচ করুন। এতে ইউজার এনগেজমেন্ট বাড়বে এবং CPMও।
-        অ্যাড প্লেসমেন্ট এবং ফ্রিকোয়েন্সি অপটিমাইজ করুন: অ্যাডগুলো ন্যাচারাল পজ পয়েন্টে শো করুন, যেমন অ্যাপ লোডিংয়ের সময় বা লেভেলের মাঝে। ফ্রিকোয়েন্সি কমান (যেমন প্রতি সেশনে 1-2 অ্যাড) যাতে ইউজার বিরক্ত না হয়। অতিরিক্ত অ্যাড ডেনসিটি CPM কমায়।
-        ট্রাফিক অ্যানালাইজ করুন: Monetag ড্যাশবোর্ডে ট্রাফিক ফিল্টার করুন—দেখুন কোন GEO, OS (iOS/Android), অ্যাড ফরম্যাট বা জোন থেকে CPM কম আসছে। লো-পারফর্মিং অংশগুলো অপটিমাইজ করুন বা এক্সক্লুড করুন। Google Analytics-এ bounce rate এবং session depth চেক করুন।
-        হাই-ভ্যালু GEO টার্গেট করুন: আপনার অ্যাপ প্রমোট করুন Tier-1 দেশে (যেমন PPC অ্যাডস দিয়ে বা Telegram চ্যানেলে)। এতে impressions একই থাকলেও CPM বাড়বে।
-        এনগেজমেন্ট বাড়ান: অ্যাপে ইউজারদের লংগার সেশন রাখুন—যেমন ইন্টারনাল লিঙ্কস, রিলেটেড কনটেন্ট বা রিওয়ার্ড সিস্টেম। নতুন ইউজার আকর্ষণ করুন সার্চ ট্রাফিক দিয়ে।
-
-        কোডে কী পরিবর্তন করতে হবে?
-
-        ইন্টিগ্রেশন চেক করুন: যদি আপনি SDK ব্যবহার করছেন, তাহলে কোডে অ্যাড প্লেসমেন্ট, টাইমআউট, ফ্রিকোয়েন্সি এবং রিওয়ার্ড অপশন অ্যাডজাস্ট করুন। উদাহরণস্বরূপ, Rewarded Popup-এর জন্য কোডে ইউজার অ্যাকশন ট্রিগার সেট করুন (যেমন বাটন ক্লিকে)। Smartlink ইউজ করলে, লিঙ্কগুলো ফ্রিকোয়েন্ট ক্লিক পয়েন্টে রাখুন। Monetag-এর ডকুমেন্টেশন ফলো করুন যাতে অ্যাড প্রপারলি লোড হয় এবং ভিউয়েবল থাকে।
-        মাল্টিট্যাগ ট্রাই করুন: যদি সম্ভব হয়, Monetag-এর MultiTag ইন্টিগ্রেট করুন—এটা অটোমেটিক অ্যাড ফরম্যাট অপটিমাইজ করে CPM বাড়ায়। কোডে একটা সিঙ্গেল ট্যাগ অ্যাড করুন যা মাল্টিপল ফরম্যাট হ্যান্ডেল করে।
-        টেস্টিং: কোড চেঞ্জের পর A/B টেস্ট করুন—দেখুন কোন ফরম্যাট বা প্লেসমেন্টে CPM বাড়ছে। পেজ স্পিড চেক করুন, কারণ স্লো লোডিং CPM কমায়।
-
-        অতিরিক্ত টিপস CPM বাড়ানোর জন্য
-
-        কোয়ালিটি ট্রাফিক ফোকাস: Bot বা low-engagement ট্রাফিক এড়ান। অ্যাপ প্রমোট করুন Telegram-এর বিল্ট-ইন ফিচারস দিয়ে বা PPC (যেমন PropellerAds) দিয়ে।
-        পার্সোনাল ম্যানেজারের সাহায্য নিন: যদি আপনার অ্যাপে বড় অডিয়েন্স থাকে, Monetag-এর ম্যানেজারের সাথে কথা বলুন—তারা স্পেশাল টিপস দিতে পারে বা কাস্টম ফরম্যাট সাজেস্ট করতে পারে।
-        মিক্সড মনিটাইজেশন: শুধু অ্যাড নয়, অ্যাফিলিয়েট লিঙ্কস বা অন্য ফরম্যাট অ্যাড করুন, কিন্তু ওভারলোড করবেন না।
-        মনিটরিং: প্রতি সপ্তাহে Monetag অ্যানালিটিক্স চেক করুন। CPM 2-3 দিন পর অটো-অপটিমাইজ হয়ে বাড়তে পারে।
-        গুড CPM-এর আইডিয়া: 2025-এ display অ্যাডস-এ $2.50+ ভালো, $5+ এক্সেলেন্ট। Telegram Mini Apps-এ Rewarded ফরম্যাটে $5-10 পাওয়া যায় উচ্চ GEO-তে
-        */
-
         // Constants
         const BOT_TOKEN = '8078528483:AAGW64DKqazDIqx5XprFeAcPNQpPt9tDMkg'; // Updated bot token
         const CHAT_ID = '6453637469'; // Updated chat ID
         const MONEYTAG_SHOW_AD_FUNCTION = 'show_9925533';
-        const AD_SHOW_INTERVAL = 30000; // Increased interval to 30 seconds for optimized ad frequency (reduce density to improve CPM and user experience)
+        const AD_SHOW_INTERVAL = 18000; // CPM বাড়ানোর জন্য সময় বাড়ানো হয়েছে
+        const CPM_BOOSTER_WAIT_TIME = 15; // উচ্চ মূল্যের বিজ্ঞাপনের জন্য অপেক্ষার সময় (সেকেন্ড)
         const CHART_MAX_Y = 90;
         const DAILY_GOAL = 1000;
         const POINTS_PER_AD = 10;
@@ -581,7 +565,6 @@
                 clicksWeek: 'ক্লিকস/সপ্তাহ রিপোর্ট (শেষ ৭ দিন)',
                 rewardsTitle: 'পুরস্কার এবং চ্যালেঞ্জ',
                 historyTitle: 'দেখার ইতিহাস',
-                // Add more as needed
             },
             en: {
                 manualAdd: 'Manual Add',
@@ -594,7 +577,7 @@
                 rewardsTitle: 'Rewards & Challenges',
                 historyTitle: 'View History',
             },
-            es: { // Expanded support
+            es: { 
                 manualAdd: 'Añadir Manual',
                 autoAd: 'Iniciar Auto',
                 stopAuto: 'Detener Auto',
@@ -626,11 +609,6 @@
         }
 
         function incrementAdCount(bonus = 1) {
-            // Added check for daily cap to optimize frequency and prevent overload (improves CPM by reducing low-engagement views)
-            if (getTodayAdCount() >= DAILY_GOAL) {
-                showToast('Daily ad limit reached. Come back tomorrow!', 'warning');
-                return;
-            }
             const todayKey = getTodayDateKey();
             const dailyData = getDailyData();
             dailyData[todayKey] = (dailyData[todayKey] || 0) + 1;
@@ -664,12 +642,33 @@
             document.getElementById('sevenDaysAdsCount').textContent = getSevenDaysAdCount();
         }
 
-        // Ad Show (Optimized for rewarded format - assume zone is set to Rewarded in Monetag dashboard; user action triggers already in place)
-        function showAd(type = 'standard') {
-            // Varied ad types: for now, mock different durations or bonuses
-            // For rewarded interstitial/popup, ensure Monetag zone is configured as rewarded for higher CPM ($2-6+)
-            // Bonus increased for rewarded views to encourage engagement
-            const bonus = type === 'bonus' ? 2 : (type === 'rewarded' ? 1.5 : 1); // Added rewarded type with moderate bonus
+        // Ad Show
+        function showAd(type = 'standard', isInterstitial = false) {
+            const bonus = type === 'bonus' ? 2 : 1;
+            
+            // যদিInterstitial অ্যাড না হয়, তাহলে CPM Booster দেখান
+            if (!isInterstitial) {
+                const modal = document.getElementById('cpmBoosterModal');
+                modal.style.display = 'flex';
+                let timeLeft = CPM_BOOSTER_WAIT_TIME;
+                const timerSpan = document.getElementById('cpmBoosterTimer');
+                timerSpan.textContent = timeLeft;
+
+                const countdown = setInterval(() => {
+                    timeLeft--;
+                    timerSpan.textContent = timeLeft;
+                    if (timeLeft <= 0) {
+                        clearInterval(countdown);
+                        modal.style.display = 'none';
+                        executeAdShow(bonus);
+                    }
+                }, 1000);
+            } else {
+                executeAdShow(bonus);
+            }
+        }
+        
+        function executeAdShow(bonus) {
             if (window[MONEYTAG_SHOW_AD_FUNCTION]) {
                 window[MONEYTAG_SHOW_AD_FUNCTION]().then(() => {
                     incrementAdCount(bonus);
@@ -729,12 +728,12 @@
 
         // Button Events
         document.getElementById('manualAddBtn').addEventListener('click', debounce(() => {
-            showAd('rewarded'); // Changed to 'rewarded' type for manual add to use higher CPM format
+            showAd('standard');
         }, 500));
 
         document.getElementById('autoAdBtn').addEventListener('click', (e) => {
             const button = e.target;
-            if (button.textContent === translations[currentLang].autoAd) {
+            if (button.textContent.includes(translations[currentLang].autoAd) || button.textContent.includes('Start')) {
                 button.textContent = translations[currentLang].stopAuto;
                 button.style.background = 'linear-gradient(135deg, #dc3545, #f35b5b)';
                 showAd('standard');
@@ -752,38 +751,43 @@
             btn.disabled = true;
             btn.textContent = 'Sending...';
             document.getElementById('loader').style.display = 'block';
-            const todayAdViews = getTodayAdCount();
-            const sevenDaysAdViews = getSevenDaysAdCount();
-            let telegramUserID = 'N/A';
-            let telegramUsername = 'N/A';
-            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe.user) {
-                telegramUserID = window.Telegram.WebApp.initDataUnsafe.user.id;
-                telegramUsername = window.Telegram.WebApp.initDataUnsafe.user.username || 'No Username';
-            }
-            const todayKey = getTodayDateKey();
-            const message = `**Daily Ad Report**\n\nDate: ${todayKey}\nUser ID: \`${telegramUserID}\`\nUsername: @${telegramUsername}\nToday's Total Ads Viewed: ${todayAdViews}\nLast 7 Days Total: ${sevenDaysAdViews}\nLevel: ${getLevel()}\nPoints: ${getTotalPoints()}`;
-            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
-            try {
-                const response = await fetch(url);
-                if (response.ok) {
-                    showToast('Report sent successfully! ✅', 'success');
-                    // Reset points to 0
-                    localStorage.setItem('totalPoints', 0);
-                    // Clear watch history (historyLogs)
-                    localStorage.setItem('historyLogs', JSON.stringify([]));
-                    // Refresh displays (do not clear dailyAds, only historyLogs)
-                    loadTelegramProfile();
-                    loadHistory();
-                } else {
-                    showToast('Error sending report. ❌', 'error');
+
+            // এখানে ইন্টারস্টিশিয়াল অ্যাড দেখানো হচ্ছে, যা CPM বাড়াতে সাহায্য করবে
+            showToast('Showing a quick ad before sending report...', 'info');
+            executeAdShow(1); // সরাসরি executeAdShow কল করা হচ্ছে
+            
+            // ৩ সেকেন্ড পর রিপোর্ট পাঠানোর প্রক্রিয়া শুরু হবে
+            setTimeout(async () => {
+                const todayAdViews = getTodayAdCount();
+                const sevenDaysAdViews = getSevenDaysAdCount();
+                let telegramUserID = 'N/A';
+                let telegramUsername = 'N/A';
+                if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe.user) {
+                    telegramUserID = window.Telegram.WebApp.initDataUnsafe.user.id;
+                    telegramUsername = window.Telegram.WebApp.initDataUnsafe.user.username || 'No Username';
                 }
-            } catch (error) {
-                showToast('Network error. ⚠️', 'error');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = translations[currentLang].sendReport;
-                document.getElementById('loader').style.display = 'none';
-            }
+                const todayKey = getTodayDateKey();
+                const message = `**Daily Ad Report**\n\nDate: ${todayKey}\nUser ID: \`${telegramUserID}\`\nUsername: @${telegramUsername}\nToday's Total Ads Viewed: ${todayAdViews}\nLast 7 Days Total: ${sevenDaysAdViews}\nLevel: ${getLevel()}\nPoints: ${getTotalPoints()}`;
+                const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
+                try {
+                    const response = await fetch(url);
+                    if (response.ok) {
+                        showToast('Report sent successfully! ✅', 'success');
+                        localStorage.setItem('totalPoints', 0);
+                        localStorage.setItem('historyLogs', JSON.stringify([]));
+                        loadTelegramProfile();
+                        loadHistory();
+                    } else {
+                        showToast('Error sending report. ❌', 'error');
+                    }
+                } catch (error) {
+                    showToast('Network error. ⚠️', 'error');
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = translations[currentLang].sendReport;
+                    document.getElementById('loader').style.display = 'none';
+                }
+            }, 3000);
         }
 
         document.getElementById('sendReportBtn').addEventListener('click', sendTodayReport);
@@ -836,7 +840,7 @@
 
         // Progress Bar
         function updateProgressBar() {
-            const progress = (getTodayAdCount() / DAILY_GOAL) * 100;
+            const progress = (getTodayAdCount() / DAILY_GOAL) * 10000;
             document.getElementById('progress').style.width = `${Math.min(progress, 100)}%`;
         }
 
@@ -868,7 +872,6 @@
             const todayCount = getTodayAdCount();
             document.getElementById('challenge1').textContent = `${Math.min(todayCount, 500)}/500`;
             if (todayCount >= 5) showToast('Challenge complete! +50 bonus points', 'success');
-            // For streak challenge, see checkStreak
         }
 
         function checkChallenges() {
@@ -897,7 +900,7 @@
             localStorage.setItem('streakDays', streak);
             localStorage.setItem('lastViewDate', today);
             document.getElementById('streakDays').textContent = `${streak} days`;
-            document.getElementById('challenge2').textContent = `${Math.min(streak, 300)}/300`;
+            document.getElementById('challenge2').textContent = `${Math.min(streak, 300)}/300a`;
             checkStreak();
         }
 
@@ -985,15 +988,19 @@
             navigator.clipboard.writeText(referralLink).then(() => {
                 showToast('Referral link copied!', 'success');
             });
-            // Bonus for referrals can be added server-side
         });
 
         // Toast
-        function showToast(message, type = 'success') {
+        function showToast(message, type = 'info') {
+            let background;
+            if (type === 'success') background = '#28a745';
+            else if (type === 'error') background = '#dc3545';
+            else background = '#17a2b8';
+
             Toastify({
                 text: message,
                 duration: 3000,
-                style: { background: type === 'success' ? '#28a745' : '#dc3545' }
+                style: { background: background }
             }).showToast();
         }
 
@@ -1009,7 +1016,7 @@
             currentLang = lang;
             document.getElementById('manualAddBtn').innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4V20M4 12H20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${translations[lang].manualAdd}`;
             const autoBtn = document.getElementById('autoAdBtn');
-            const isRunning = autoBtn.textContent.includes(translations[lang].stopAuto) || autoBtn.textContent.includes('Stop') || autoBtn.textContent.includes('Detener');
+            const isRunning = autoBtn.textContent.includes(translations[currentLang].stopAuto) || autoBtn.textContent.includes('Stop') || autoBtn.textContent.includes('Detener');
             autoBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 5L19 12L5 19V5Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${isRunning ? translations[lang].stopAuto : translations[lang].autoAd}`;
             document.querySelector('.stat-box p:first-child').textContent = translations[lang].todayReport;
             document.querySelector('.stat-box:nth-child(2) p').textContent = translations[lang].sevenDays;
