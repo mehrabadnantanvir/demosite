@@ -529,6 +529,16 @@
         </div>
     </div>
 
+    <!-- Rewarded Ad Confirmation Modal -->
+    <div class="modal" id="rewardedAdModal" role="dialog" aria-modal="true" aria-labelledby="rewardedAdTitle">
+        <div class="modal-content">
+            <h2 id="rewardedAdTitle">Watch Rewarded Ad?</h2>
+            <p>Earn 10 points by watching a short ad! (Higher rewards for better engagement)</p>
+            <button class="modal-close" onclick="closeRewardedModal()" style="background: var(--danger-color);">No Thanks</button>
+            <button onclick="confirmRewardedAd()" style="background: var(--secondary-color);">Yes, Watch Now</button>
+        </div>
+    </div>
+
     <script src='//libtl.com/sdk.js' data-zone='9925533' data-sdk='show_9925533' defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
@@ -538,14 +548,17 @@
         const BOT_TOKEN = '8078528483:AAGW64DKqazDIqx5XprFeAcPNQpPt9tDMkg'; // Updated bot token
         const CHAT_ID = '6453637469'; // Updated chat ID
         const MONEYTAG_SHOW_AD_FUNCTION = 'show_9925533';
-        const AD_SHOW_INTERVAL = 10000;
+        const AD_SHOW_INTERVAL = 30000; // Increased to 30 seconds for better frequency optimization (reduced density)
+        const MAX_ADS_PER_SESSION = 5; // Limit ads per session to avoid irritation and boost CPM
         const CHART_MAX_Y = 90;
         const DAILY_GOAL = 1000;
         const POINTS_PER_AD = 10;
         const LEVEL_THRESHOLDS = [0, 100, 500, 1000]; // Points for levels 1-4
 
         let autoAdInterval;
+        let sessionAdCount = 0; // Track ads per session
         let currentLang = navigator.language.startsWith('bn') ? 'bn' : navigator.language.startsWith('es') ? 'es' : 'en'; // Auto-detection
+        let isSessionActive = true; // For session management
 
         const translations = {
             bn: {
@@ -558,6 +571,8 @@
                 clicksWeek: 'ক্লিকস/সপ্তাহ রিপোর্ট (শেষ ৭ দিন)',
                 rewardsTitle: 'পুরস্কার এবং চ্যালেঞ্জ',
                 historyTitle: 'দেখার ইতিহাস',
+                rewardedTitle: 'রিওয়ার্ডেড অ্যাড দেখবেন?',
+                rewardedDesc: 'সংক্ষিপ্ত অ্যাড দেখে ১০ পয়েন্ট আয় করুন!',
                 // Add more as needed
             },
             en: {
@@ -570,6 +585,8 @@
                 clicksWeek: 'Clicks/Week Report (Last 7 Days)',
                 rewardsTitle: 'Rewards & Challenges',
                 historyTitle: 'View History',
+                rewardedTitle: 'Watch Rewarded Ad?',
+                rewardedDesc: 'Earn 10 points by watching a short ad!',
             },
             es: { // Expanded support
                 manualAdd: 'Añadir Manual',
@@ -581,6 +598,8 @@
                 clicksWeek: 'Informe de Clics/Semana (Últimos 7 Días)',
                 rewardsTitle: 'Recompensas y Desafíos',
                 historyTitle: 'Historial de Vistas',
+                rewardedTitle: '¿Ver Anuncio Recompensado?',
+                rewardedDesc: '¡Gana 10 puntos viendo un anuncio corto!',
             }
         };
 
@@ -616,6 +635,11 @@
             checkChallenges();
             checkStreak();
             showToast('Ad viewed! +10 points', 'success');
+            sessionAdCount++; // Increment session counter
+            if (sessionAdCount >= MAX_ADS_PER_SESSION) {
+                showToast(`Session limit reached (${MAX_ADS_PER_SESSION} ads). Come back later for more!`, 'warning');
+                stopAutoAds();
+            }
         }
 
         function getSevenDaysAdCount() {
@@ -636,24 +660,41 @@
             document.getElementById('sevenDaysAdsCount').textContent = getSevenDaysAdCount();
         }
 
-        // Ad Show
-        function showAd(type = 'standard') {
-            // Varied ad types: for now, mock different durations or bonuses
-            const bonus = type === 'bonus' ? 2 : 1;
-            if (window[MONEYTAG_SHOW_AD_FUNCTION]) {
-                window[MONEYTAG_SHOW_AD_FUNCTION]().then(() => {
-                    incrementAdCount(bonus);
-                }).catch((error) => {
-                    console.error("Error showing ad:", error);
-                    showToast('Ad failed to load.', 'error');
-                });
-            } else {
-                console.warn("Monetag Ad function not available. Mocking.");
-                setTimeout(() => incrementAdCount(bonus), 1000);
-            }
+        // Rewarded Ad Confirmation Functions
+        function showRewardedAdPrompt() {
+            document.getElementById('rewardedAdModal').style.display = 'flex';
         }
 
-        // Profile Load
+        function closeRewardedModal() {
+            document.getElementById('rewardedAdModal').style.display = 'none';
+        }
+
+        function confirmRewardedAd() {
+            closeRewardedModal();
+            showAd('rewarded'); // Trigger rewarded format
+        }
+
+        // Ad Show (Updated for Rewarded/Interstitial with timeout and optimization)
+        function showAd(type = 'rewarded') { // Default to rewarded for higher CPM
+            // Simulate natural trigger: Add timeout for better viewability
+            const adTimeout = setTimeout(() => {
+                if (window[MONEYTAG_SHOW_AD_FUNCTION]) {
+                    const bonus = type === 'rewarded' ? 2 : 1; // Higher bonus for rewarded to boost engagement
+                    window[MONEYTAG_SHOW_AD_FUNCTION]().then(() => {
+                        incrementAdCount(bonus);
+                    }).catch((error) => {
+                        console.error("Error showing ad:", error);
+                        showToast('Ad failed to load.', 'error');
+                    });
+                } else {
+                    console.warn("Monetag Ad function not available. Mocking.");
+                    setTimeout(() => incrementAdCount(1), 2000); // Longer mock for interstitial feel
+                }
+                clearTimeout(adTimeout);
+            }, 1000); // Short delay for load optimization
+        }
+
+        // Profile Load (Show initial rewarded ad on load for natural placement)
         async function loadTelegramProfile() {
             document.getElementById('loader').style.display = 'block';
             try {
@@ -681,6 +722,8 @@
                 updateStreak();
                 checkOnboarding();
                 requestNotificationPermission();
+                // Show rewarded ad prompt on initial load (natural placement)
+                setTimeout(() => showRewardedAdPrompt(), 2000);
             } catch (error) {
                 showToast('Error loading profile. ⚠️', 'error');
             } finally {
@@ -697,24 +740,33 @@
             };
         }
 
-        // Button Events
+        // Button Events (Trigger rewarded prompt for manual)
         document.getElementById('manualAddBtn').addEventListener('click', debounce(() => {
-            showAd('standard');
+            showRewardedAdPrompt(); // Opt-in for rewarded format
         }, 500));
 
         document.getElementById('autoAdBtn').addEventListener('click', (e) => {
             const button = e.target;
-            if (button.textContent === translations[currentLang].autoAd) {
-                button.textContent = translations[currentLang].stopAuto;
+            if (button.textContent.includes(translations[currentLang].autoAd) || button.textContent.includes('Start') || button.textContent.includes('Iniciar')) {
+                button.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 5L19 12L5 19V5Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${translations[currentLang].stopAuto}`;
                 button.style.background = 'linear-gradient(135deg, #dc3545, #f35b5b)';
-                showAd('standard');
-                autoAdInterval = setInterval(() => showAd('standard'), AD_SHOW_INTERVAL);
+                showRewardedAdPrompt(); // Start with prompt for engagement
+                autoAdInterval = setInterval(() => {
+                    if (sessionAdCount < MAX_ADS_PER_SESSION && isSessionActive) {
+                        showRewardedAdPrompt();
+                    }
+                }, AD_SHOW_INTERVAL);
             } else {
-                button.textContent = translations[currentLang].autoAd;
+                button.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 5L19 12L5 19V5Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${translations[currentLang].autoAd}`;
                 button.style.background = 'linear-gradient(135deg, #28a745, #34d058)';
-                clearInterval(autoAdInterval);
+                stopAutoAds();
             }
         });
+
+        function stopAutoAds() {
+            clearInterval(autoAdInterval);
+            isSessionActive = false; // End session
+        }
 
         // Send Report
         async function sendTodayReport() {
@@ -731,7 +783,7 @@
                 telegramUsername = window.Telegram.WebApp.initDataUnsafe.user.username || 'No Username';
             }
             const todayKey = getTodayDateKey();
-            const message = `**Daily Ad Report**\n\nDate: ${todayKey}\nUser ID: \`${telegramUserID}\`\nUsername: @${telegramUsername}\nToday's Total Ads Viewed: ${todayAdViews}\nLast 7 Days Total: ${sevenDaysAdViews}\nLevel: ${getLevel()}\nPoints: ${getTotalPoints()}`;
+            const message = `**Daily Ad Report**\n\nDate: ${todayKey}\nUser ID: \`${telegramUserID}\`\nUsername: @${telegramUsername}\nToday's Total Ads Viewed: ${todayAdViews}\nLast 7 Days Total: ${sevenDaysAdViews}\nLevel: ${getLevel()}\nPoints: ${getTotalPoints()}\nSession Ads: ${sessionAdCount}`;
             const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
             try {
                 const response = await fetch(url);
@@ -741,6 +793,9 @@
                     localStorage.setItem('totalPoints', 0);
                     // Clear watch history (historyLogs)
                     localStorage.setItem('historyLogs', JSON.stringify([]));
+                    // Reset session
+                    sessionAdCount = 0;
+                    isSessionActive = true;
                     // Refresh displays (do not clear dailyAds, only historyLogs)
                     loadTelegramProfile();
                     loadHistory();
@@ -867,7 +922,7 @@
             localStorage.setItem('streakDays', streak);
             localStorage.setItem('lastViewDate', today);
             document.getElementById('streakDays').textContent = `${streak} days`;
-            document.getElementById('challenge2').textContent = `${Math.min(streak, 300)}/300a`;
+            document.getElementById('challenge2').textContent = `${Math.min(streak, 300)}/300`;
             checkStreak();
         }
 
@@ -963,7 +1018,7 @@
             Toastify({
                 text: message,
                 duration: 3000,
-                style: { background: type === 'success' ? '#28a745' : '#dc3545' }
+                style: { background: type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#ffc107' }
             }).showToast();
         }
 
@@ -974,7 +1029,7 @@
             document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
         });
 
-        // Language
+        // Language (Updated with rewarded translations)
         function setLanguage(lang) {
             currentLang = lang;
             document.getElementById('manualAddBtn').innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4V20M4 12H20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${translations[lang].manualAdd}`;
@@ -987,6 +1042,9 @@
             document.querySelector('.chart-box h4').textContent = translations[lang].clicksWeek;
             document.querySelector('.rewards-section h4').textContent = translations[lang].rewardsTitle;
             document.querySelector('.history-section h4').textContent = translations[lang].historyTitle;
+            // Update rewarded modal
+            document.getElementById('rewardedAdTitle').textContent = translations[lang].rewardedTitle;
+            document.querySelector('#rewardedAdModal p').textContent = translations[lang].rewardedDesc;
         }
 
         // Keyboard Navigation
@@ -996,10 +1054,21 @@
             }
         });
 
+        // Session Management (for engagement and frequency)
+        window.addEventListener('beforeunload', () => {
+            isSessionActive = false;
+        });
+
         // Init
         document.addEventListener('DOMContentLoaded', () => {
+            sessionAdCount = parseInt(localStorage.getItem('sessionAdCount') || '0'); // Restore session if needed
             loadTelegramProfile();
             setLanguage(currentLang);
+        });
+
+        // Save session on unload
+        window.addEventListener('pagehide', () => {
+            localStorage.setItem('sessionAdCount', sessionAdCount);
         });
     </script>
 </body>
