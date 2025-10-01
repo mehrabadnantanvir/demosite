@@ -484,12 +484,14 @@
         const MONEYTAG_SHOW_AD_FUNCTION = 'show_9925533';
         const AD_SHOW_INTERVAL = 18000; // CPM বাড়ানোর জন্য সময় বাড়ানো হয়েছে
         const CPM_BOOSTER_WAIT_TIME = 15; // উচ্চ মূল্যের বিজ্ঞাপনের জন্য অপেক্ষার সময় (সেকেন্ড)
-        const CHART_MAX_Y = 90;
+        const CHART_MAX_Y = 1000;
         const DAILY_GOAL = 1000;
         const POINTS_PER_AD = 10;
 
         let autoAdInterval;
         let currentLang = navigator.language.startsWith('bn') ? 'bn' : navigator.language.startsWith('es') ? 'es' : 'en'; // Auto-detection
+        let retryCount = 0;
+        const maxRetries = 5;
 
         const translations = {
             bn: {
@@ -603,7 +605,7 @@
         }
 
         // Profile Load
-        async function loadTelegramProfile(retries = 3) {
+        async function loadTelegramProfile() {
             document.getElementById('loader').style.display = 'block';
             try {
                 if (window.Telegram && window.Telegram.WebApp) {
@@ -615,19 +617,21 @@
                         const verifiedBadge = ' <svg class="verified-badge" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="10" fill="#0064e0"/><path d="M5 10l3 3 7-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
                         document.getElementById('userName').innerHTML = fullName + verifiedBadge + (user.id ? ` (ID: ${user.id})` : '');
                         document.getElementById('userStatus').textContent = `@${user.username || 'No Username'} | Points: ${getTotalPoints()}`;
-                        if (user.photo_url) {
-                            document.getElementById('userProfileImage').src = user.photo_url;
-                        }
                     } else {
-                        if (retries > 0) {
-                            setTimeout(() => loadTelegramProfile(retries - 1), 500);
+                        if (retryCount < maxRetries) {
+                            retryCount++;
+                            setTimeout(loadTelegramProfile, 500); // Retry after 500ms
                             return;
                         } else {
-                            fallbackProfile();
+                            const verifiedBadge = ' <svg class="verified-badge" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="10" fill="#0064e0"/><path d="M5 10l3 3 7-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+                            document.getElementById('userName').innerHTML = 'Local Test User' + verifiedBadge;
+                            document.getElementById('userStatus').textContent = 'WebApp API Missing | Points: 0';
                         }
                     }
                 } else {
-                    fallbackProfile();
+                    const verifiedBadge = ' <svg class="verified-badge" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="10" fill="#0064e0"/><path d="M5 10l3 3 7-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+                    document.getElementById('userName').innerHTML = 'Local Test User' + verifiedBadge;
+                    document.getElementById('userStatus').textContent = 'WebApp API Missing | Points: 0';
                 }
                 updateReportDisplay();
                 drawChart();
@@ -636,17 +640,10 @@
                 checkOnboarding();
                 requestNotificationPermission();
             } catch (error) {
-                showToast('Error loading profile. ⚠️', 'error');
-                fallbackProfile();
+                console.error('Error loading profile:', error);
             } finally {
                 document.getElementById('loader').style.display = 'none';
             }
-        }
-
-        function fallbackProfile() {
-            const verifiedBadge = ' <svg class="verified-badge" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="10" fill="#0064e0"/><path d="M5 10l3 3 7-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-            document.getElementById('userName').innerHTML = 'Local Test User' + verifiedBadge;
-            document.getElementById('userStatus').textContent = 'WebApp API Missing | Points: 0';
         }
 
         // Debounce
@@ -758,8 +755,16 @@
                     }]
                 },
                 options: {
-                    responsive: true;
-                    scales: { y: { beginAtZero: true, max: CHART_MAX_Y } },
+                    responsive: true,
+                    scales: { 
+                        y: { 
+                            beginAtZero: true, 
+                            max: CHART_MAX_Y,
+                            ticks: {
+                                stepSize: 100
+                            }
+                        } 
+                    },
                     plugins: { legend: { display: false }, tooltip: { enabled: true } },
                     animation: { duration: 1200, easing: 'easeInOutQuart' }
                 }
